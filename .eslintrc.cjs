@@ -5,6 +5,13 @@ module.exports = {
   parserOptions: { ecmaFeatures: { jsx: true }, ecmaVersion: 'latest', sourceType: 'module' },
   plugins: ['react', '@typescript-eslint', 'react-hooks'],
   settings: { react: { version: 'detect' } },
-  rules: { 'react/prop-types': 'off' }
+  rules: {
+    'react/prop-types': 'off',
+    // enforce double quotes
+    quotes: ['error', 'double', { avoidEscape: true, allowTemplateLiterals: true }],
+    // require semicolons
+    semi: ['error', 'always'],
+    // disallow explicit `any` in TypeScript
+    '@typescript-eslint/no-explicit-any': 'error'
+  }
 }
-
