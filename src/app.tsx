@@ -1,13 +1,28 @@
-import React from 'react'
-import Header from './components/header/header'
-import HomePage from './pages/home-page'
-
+import React from "react";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import Header from "./components/header/header";
+import AppRouter from "./routes/app-router";
+import NotificationCenter from "./components/notification-center/notification-center";
+import { useIsAuthenticated } from "./hooks";
+import LoginForm from "./components/login-form/login-form";
 export default function App() {
-  return (
-    <>
-      <Header />
-      <HomePage />
-    </>
-  )
-}
+  const isAuthenticated = useIsAuthenticated();
 
+  return (
+    <BrowserRouter  future={{
+      v7_relativeSplatPath: true,
+    }}>
+      {isAuthenticated ? (
+        <>
+          <Header />
+          <AppRouter />
+          <NotificationCenter />
+        </>
+      ) : (
+        <Routes>
+          <Route path="*" element={<LoginForm />} />
+        </Routes>
+      )}
+    </BrowserRouter>
+  );
+}

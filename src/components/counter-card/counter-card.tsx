@@ -1,14 +1,14 @@
-import React from 'react'
-import { Card, CardContent, Typography, Button, Stack } from '@mui/material'
-import { useAppDispatch, useAppSelector } from '../../hooks'
-import { increment, decrement } from '../../features/counter/counter-slice'
+import React from "react";
+import { Card, CardContent, Typography, Button, Stack } from "@mui/material";
+import { useAppDispatch, useAppSelector } from "../../hooks";
+import { increment, decrement } from "../../features/counter/counter-slice";
 
 export default function CounterCard() {
-  const count = useAppSelector((s) => s.counter.value)
-  const dispatch = useAppDispatch()
+  const count = useAppSelector((s) => s.counter.value);
+  const dispatch = useAppDispatch();
 
   return (
-    <Card sx={{ maxWidth: 360, mx: 'auto', mt: 4 }}>
+    <Card sx={{ maxWidth: 360, mx: "auto", mt: 4 }}>
       <CardContent>
         <Typography variant="h6">Counter</Typography>
         <Typography variant="h4">{count}</Typography>
@@ -22,6 +22,6 @@ export default function CounterCard() {
         </Stack>
       </CardContent>
     </Card>
-  )
+  );
 }
 
