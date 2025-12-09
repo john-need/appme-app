@@ -1,31 +1,8 @@
 import toIso from "@/utils/to-iso";
+import generateUUID from "@/utils/generate-uuid";
 
-function getUuid(): string {
-  try {
-    if (typeof globalThis !== "undefined" && (globalThis as any).crypto && typeof (globalThis as any).crypto.randomUUID === "function") {
-      return (globalThis as any).crypto.randomUUID();
-    }
-  } catch (e) {
-    // ignore
-  }
-  // fallback: timestamp + random
-  return `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 10)}`;
-}
-
-interface UserInput {
-  id?: string;
-  email?: string;
-  name?: string;
-  startOfWeek?: "MONDAY" | "SUNDAY";
-  timezone?: string;
-  defaultView?: "WEEK" | "DAY";
-  created?: string | number;
-  updated?: string | number;
-  roles?: string[];
-}
-
-const userFactory = (data: UserInput = {}): User => ({
-  id: typeof data.id === "string" ? data.id : getUuid(),
+ const userFactory = (data: Partial<User> = {}): User => ({
+  id: typeof data.id === "string" ? data.id : generateUUID(),
   email: typeof data.email === "string" ? data.email : "",
   name: typeof data.name === "string" ? data.name : "",
   startOfWeek: data.startOfWeek === "MONDAY" || data.startOfWeek === "SUNDAY" ? data.startOfWeek : "MONDAY",

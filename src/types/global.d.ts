@@ -26,7 +26,6 @@ declare global {
     interface TimeEntry {
         activityId: string;
         created: string;
-        date: string; // YYYY-MM-DD
         id: string;
         minutes: number;
         notes?: string;

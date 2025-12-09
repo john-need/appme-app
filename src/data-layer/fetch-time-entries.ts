@@ -1,6 +1,6 @@
 import getApiBase from "@/utils/get-api-base";
 
-const fetchTimeEntries = async (jwt: string): Promise<TimeEntry[]> => {
+const query = async (jwt: string): Promise<TimeEntry[]> => {
   const API_BASE = getApiBase();
   const url = `${API_BASE.replace(/\/$/, "")}/time-entries`;
 
@@ -20,5 +20,5 @@ const fetchTimeEntries = async (jwt: string): Promise<TimeEntry[]> => {
   return json as TimeEntry[];
 };
 
-export default fetchTimeEntries;
+export default query;
 

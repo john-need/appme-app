@@ -24,8 +24,8 @@ describe("activityFactory", () => {
       comment: "morning",
       goal: 5,
       type: "MUDA",
-      created: now,
-      updated: now,
+      created: (now as unknown) as string,
+      updated: (now as unknown) as string,
     });
 
     expect(a.id).toBe("my-id");

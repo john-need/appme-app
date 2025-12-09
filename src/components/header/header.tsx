@@ -2,11 +2,12 @@ import React, { useState } from "react";
 import { AppBar, Toolbar, Typography, Button, IconButton } from "@mui/material";
 import { Link as RouterLink, useLocation } from "react-router-dom";
 import MenuIcon from "@mui/icons-material/Menu";
-import { useIsAuthenticated } from "../../hooks";
+import { useIsAuthenticated, useCurrentUser } from "@/hooks";
 import LeftNavDrawer from "../left-nav-drawer/left-nav-drawer";
 
 export default function Header() {
   const isAuthenticated = useIsAuthenticated();
+  const currentUser = useCurrentUser();
   const location = useLocation();
   const [drawerOpen, setDrawerOpen] = useState(false);
 
@@ -15,13 +16,13 @@ export default function Header() {
 
   return (
     <>
-      <AppBar position="static">
+      <AppBar position="sticky" sx={{ top: 0, zIndex: (theme) => theme.zIndex.appBar }}>
         <Toolbar>
           <IconButton edge="start" color="inherit" aria-label="menu" sx={{ mr: 2 }} onClick={openDrawer}>
             <MenuIcon/>
           </IconButton>
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            AppMe
+            AppMe{currentUser ? ` - ${currentUser.name}` : ""}
           </Typography>
           {isAuthenticated && (
             <>
@@ -30,7 +31,7 @@ export default function Header() {
                   Dashboard
                 </Button>
               )}
-              {location.pathname === "/dashboard" && (
+              {location.pathname !== "/" && (
                 <Button color="inherit" component={RouterLink} to="/">
                   Entries
                 </Button>
