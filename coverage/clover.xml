@@ -71,7 +71,7 @@
     </package>
     <package name="src.pages">
       <metrics statements="9" coveredstatements="8" conditionals="0" coveredconditionals="0" methods="2" coveredmethods="1"/>
-      <file name="about-page.tsx" path="/Users/johnneed/Projects/appme-app/src/pages/about-page.tsx">
+      <file name="activities-page.tsx" path="/Users/johnneed/Projects/appme-app/src/pages/activities-page.tsx">
         <metrics statements="4" coveredstatements="3" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="0"/>
         <line num="1" count="1" type="stmt"/>
         <line num="2" count="1" type="stmt"/>

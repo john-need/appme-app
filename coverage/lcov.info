@@ -103,11 +103,11 @@ BRF:0
 BRH:0
 end_of_record
 TN:
-SF:src/pages/about-page.tsx
-FN:4,AboutPage
+SF:src/pages/activities-page.tsx
+FN:4,ActivitiesPage
 FNF:1
 FNH:0
-FNDA:0,AboutPage
+FNDA:0,ActivitiesPage
 DA:1,1
 DA:2,1
 DA:4,1

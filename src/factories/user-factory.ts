@@ -16,7 +16,7 @@ interface UserInput {
   id?: string;
   email?: string;
   name?: string;
-  weekStart?: "MONDAY" | "SUNDAY";
+  startOfWeek?: "MONDAY" | "SUNDAY";
   timezone?: string;
   defaultView?: "WEEK" | "DAY";
   created?: string | number;
@@ -28,7 +28,7 @@ const userFactory = (data: UserInput = {}): User => ({
   id: typeof data.id === "string" ? data.id : getUuid(),
   email: typeof data.email === "string" ? data.email : "",
   name: typeof data.name === "string" ? data.name : "",
-  weekStart: data.weekStart === "MONDAY" || data.weekStart === "SUNDAY" ? data.weekStart : "MONDAY",
+  startOfWeek: data.startOfWeek === "MONDAY" || data.startOfWeek === "SUNDAY" ? data.startOfWeek : "MONDAY",
   timezone: typeof data.timezone === "string" ? data.timezone : "UTC",
   defaultView: data.defaultView === "WEEK" || data.defaultView === "DAY" ? data.defaultView : "WEEK",
   created: toIso(data.created),
