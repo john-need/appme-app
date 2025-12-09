@@ -1,9 +1,10 @@
-import { configureStore, type PreloadedState } from "@reduxjs/toolkit";
+import { configureStore } from "@reduxjs/toolkit";
 import counterReducer from "../features/counter/counter-slice";
 import preferencesReducer from "../features/preferences/preferences-slice";
 import authReducer from "../features/auth/auth-slice";
 import notificationReducer from "../features/notification/notification-slice";
 import activitiesReducer from "../features/activities/activities-slice";
+import timeEntriesReducer from "../features/time-entries/time-entries-slice";
 import { loadFromLocalStorage, saveToLocalStorage } from "@/utils/local-storage";
 import { PREFERENCES_PERSIST_KEY, AUTH_PERSIST_KEY } from "@/config/persist-keys";
 
@@ -19,9 +20,10 @@ type RootReducerState = {
   auth: ReturnType<typeof authReducer>;
   notification: ReturnType<typeof notificationReducer>;
   activities: ReturnType<typeof activitiesReducer>;
+  timeEntries: ReturnType<typeof timeEntriesReducer>;
 };
 
-const preloaded = rawPreloaded as unknown as PreloadedState<RootReducerState>;
+const preloaded = rawPreloaded as unknown as RootReducerState;
 
 export const store = configureStore({
   reducer: {
@@ -30,6 +32,7 @@ export const store = configureStore({
     auth: authReducer,
     notification: notificationReducer,
     activities: activitiesReducer,
+    timeEntries: timeEntriesReducer,
   },
   preloadedState: preloaded,
 });

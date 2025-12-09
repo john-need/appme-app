@@ -31,7 +31,7 @@ describe("auth thunks", () => {
 
   it("dispatches setCredentials on successful login", async () => {
     const fakeToken = "header." + Buffer.from(JSON.stringify({ id: "user-1" })).toString("base64") + ".sig";
-    const fakeUser = { id: "user-1", email: "a@b.com", name: "A", weekStart: "MONDAY", timezone: "UTC", defaultView: "WEEK", created: new Date().toISOString(), updated: new Date().toISOString() };
+    const fakeUser = { id: "user-1", email: "a@b.com", name: "A", startOfWeek: "MONDAY", timezone: "UTC", defaultView: "WEEK", created: new Date().toISOString(), updated: new Date().toISOString() };
 
     // define global.fetch as jest fn (jsdom may not polyfill fetch)
     // mock /auth then /users/:id

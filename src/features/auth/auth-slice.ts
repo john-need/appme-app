@@ -4,6 +4,12 @@ export interface AuthUser {
   name: string
   email: string
   id: string
+  // preference fields made part of AuthUser so they can live in the auth slice
+  startOfWeek?: "MONDAY" | "SUNDAY"
+  defaultView?: "WEEK" | "DAY"
+  timezone?: string
+  created?: string
+  updated?: string
 }
 
 interface AuthState {
@@ -22,7 +28,7 @@ const authSlice = createSlice({
   name: 'auth',
   initialState,
   reducers: {
-    setCredentials(state, action: PayloadAction<{ jwt: string; user: AuthUser }>) {
+    setCredentials(state, action: PayloadAction<{ jwt: string; user: AuthUser | null }>) {
       state.jwt = action.payload.jwt
       state.user = action.payload.user
       state.isAuthenticated = true
@@ -45,4 +51,3 @@ const authSlice = createSlice({
 
 export const { setCredentials, clearCredentials, setUser, setJwt } = authSlice.actions
 export default authSlice.reducer
-

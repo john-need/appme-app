@@ -6,13 +6,21 @@ declare global {
     export type Role = "ADMIN" | "USER";
 
     interface Activity {
-        id: string;
-        name: string;
-        type: ActivityType;
-        created: string;
-        updated: string;
-        comment?: string;
-        goal?: number;
+      id: string;
+      name: string;
+      type: ActivityType;
+      created: string;
+      updated: string;
+      comment?: string;
+      goal?: number;
+      monday:boolean;
+      tuesday:boolean;
+      wednesday:boolean;
+      thursday:boolean;
+      friday:boolean;
+      saturday:boolean;
+      sunday:boolean;
+      weekends:boolean;
     }
 
     interface TimeEntry {
@@ -29,7 +37,7 @@ declare global {
         id?: string;
         email: string;
         name: string;
-        weekStart: "MONDAY" | "SUNDAY";
+        startOfWeek: "MONDAY" | "SUNDAY";
         timezone: string; // IANA
         defaultView: "WEEK" | "DAY";
         created: string;
