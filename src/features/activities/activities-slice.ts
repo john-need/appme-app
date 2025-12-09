@@ -3,6 +3,7 @@ import type { AppDispatch, RootState } from "@/store/root-store";
 import { queryClient } from "@/api/query-client";
 import fetchActivities from "@/data-layer/fetch-activities";
 import { addNotification } from "@/features/notification/notification-slice";
+import { sortMostRecentFirst } from "@/utils/sort-by-created";
 
 interface ActivitiesState {
   items: Activity[]
@@ -17,12 +18,7 @@ const activitiesSlice = createSlice({
   initialState,
   reducers: {
     setActivities(state, action: PayloadAction<Activity[]>) {
-      // ensure items are ordered most-recent-first by created timestamp
-      state.items = (action.payload ?? []).slice().sort((a, b) => {
-        const ta = new Date(a.created).getTime();
-        const tb = new Date(b.created).getTime();
-        return tb - ta;
-      });
+      state.items = sortMostRecentFirst(action.payload ?? []);
     },
     clearActivities(state) {
       state.items = [];
@@ -31,19 +27,13 @@ const activitiesSlice = createSlice({
       const activity = action.payload;
       // remove any existing item with same id, then insert new activity
       state.items = [activity, ...state.items.filter((a) => a.id !== activity.id)];
-      // sort by created date descending (most recent first)
-      state.items.sort((a, b) => {
-        const ta = new Date(a.created).getTime();
-        const tb = new Date(b.created).getTime();
-        return tb - ta;
-      });
+      state.items = sortMostRecentFirst(state.items);
     },
     updateActivity(state, action: PayloadAction<Activity>) {
       const activity = action.payload;
       // replace existing activity with same id (if present)
       state.items = state.items.map((a) => (a.id === activity.id ? activity : a));
-      // keep items ordered by created (most recent first)
-      state.items.sort((a, b) => new Date(b.created).getTime() - new Date(a.created).getTime());
+      state.items = sortMostRecentFirst(state.items);
     },
     removeActivity(state, action: PayloadAction<string>) {
       const id = action.payload;

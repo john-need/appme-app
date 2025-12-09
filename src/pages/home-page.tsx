@@ -1,11 +1,13 @@
 import React from "react";
-import {Container} from "@mui/material";
+import { Container } from "@mui/material";
+import TimeEntries from "@/components/time-entries/time-entries";
+import { useAppSelector } from "@/hooks";
 
 export default function HomePage() {
-    return (
-        <Container sx={{py: 4}}>
-      <div>Entries</div>
-        </Container>
-    );
+  const timeEntries = useAppSelector((s) => s.timeEntries?.items ?? []);
+  return (
+    <Container sx={{ py: 4 }}>
+      <TimeEntries timeEntries={timeEntries}/>
+    </Container>
+  );
 }
-

@@ -27,7 +27,7 @@ export default function ActivitiesPage() {
   }, [deleteMutation]);
 
   return (
-    <Container sx={{ py: 4 }}>
+    <Container>
       <Activities activities={activities}
                   updateActivity={updateActivity}
                   deleteActivity={deleteActivity}

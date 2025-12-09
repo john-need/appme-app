@@ -1,53 +1,43 @@
-import { configureStore } from "@reduxjs/toolkit";
+import { configureStore, combineReducers } from "@reduxjs/toolkit";
 import counterReducer from "../features/counter/counter-slice";
 import preferencesReducer from "../features/preferences/preferences-slice";
 import authReducer from "../features/auth/auth-slice";
 import notificationReducer from "../features/notification/notification-slice";
 import activitiesReducer from "../features/activities/activities-slice";
 import timeEntriesReducer from "../features/time-entries/time-entries-slice";
-import { loadFromLocalStorage, saveToLocalStorage } from "@/utils/local-storage";
-import { PREFERENCES_PERSIST_KEY, AUTH_PERSIST_KEY } from "@/config/persist-keys";
 
-// Create the preloaded object (runtime values) then cast to PreloadedState of the store shape
-const rawPreloaded = {
-  preferences: loadFromLocalStorage(PREFERENCES_PERSIST_KEY) || undefined,
-  auth: loadFromLocalStorage(AUTH_PERSIST_KEY) || undefined,
+import { persistStore, persistReducer, FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER } from "redux-persist";
+import storage from "redux-persist/lib/storage"; // defaults to localStorage for web
+
+const rootReducer = combineReducers({
+  counter: counterReducer,
+  preferences: preferencesReducer,
+  auth: authReducer,
+  notification: notificationReducer,
+  activities: activitiesReducer,
+  timeEntries: timeEntriesReducer,
+});
+
+const persistConfig = {
+  key: "root",
+  storage,
+  whitelist: ["preferences", "auth", "activities", "timeEntries"],
 };
 
-type RootReducerState = {
-  counter: ReturnType<typeof counterReducer>;
-  preferences: ReturnType<typeof preferencesReducer>;
-  auth: ReturnType<typeof authReducer>;
-  notification: ReturnType<typeof notificationReducer>;
-  activities: ReturnType<typeof activitiesReducer>;
-  timeEntries: ReturnType<typeof timeEntriesReducer>;
-};
-
-const preloaded = rawPreloaded as unknown as RootReducerState;
+const persistedReducer = persistReducer(persistConfig, rootReducer);
 
 export const store = configureStore({
-  reducer: {
-    counter: counterReducer,
-    preferences: preferencesReducer,
-    auth: authReducer,
-    notification: notificationReducer,
-    activities: activitiesReducer,
-    timeEntries: timeEntriesReducer,
-  },
-  preloadedState: preloaded,
+  reducer: persistedReducer,
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({
+      serializableCheck: {
+        // Ignore redux-persist action types
+        ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
+      },
+    }),
 });
 
-// subscribe to save preferences and auth changes
-store.subscribe(() => {
-  const state = store.getState();
-  if (state && state.preferences) {
-    saveToLocalStorage(PREFERENCES_PERSIST_KEY, state.preferences);
-  }
-  if (state && state.auth) {
-    // only persist relevant auth fields (avoid persisting transient flags if desired)
-    saveToLocalStorage(AUTH_PERSIST_KEY, state.auth);
-  }
-});
+export const persistor = persistStore(store);
 
 export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;
