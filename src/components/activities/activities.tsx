@@ -46,7 +46,7 @@ export default function Activities({ activities, updateActivity, deleteActivity,
 
   const handleDeleteResponse = (response: boolean) => {
     if (response && activeActivity?.id) {
-      deleteActivity(activeActivity?.id)
+      deleteActivity(activeActivity?.id);
     }
     setDeleteAlertOpen(false);
   };
@@ -72,7 +72,7 @@ export default function Activities({ activities, updateActivity, deleteActivity,
 
         {/* Rows */}
         {activities.map((a) => (
-          <Grid key={a.id} container spacing={2} sx={{ px: 1, py: 1, alignItems: 'center' }}>
+          <Grid key={a.id} container spacing={2} sx={{ px: 1, py: 1, alignItems: "center" }}>
             <Grid item xs={3}>
               <Typography>{a.name}</Typography>
             </Grid>
@@ -97,7 +97,7 @@ export default function Activities({ activities, updateActivity, deleteActivity,
         <Fab
           color="primary"
           aria-label="add-activity"
-          sx={{ position: 'fixed', bottom: 16, right: 16 }}
+          sx={{ position: "fixed", bottom: 16, right: 16 }}
           onClick={handleOpen}
         >
           <AddIcon/>

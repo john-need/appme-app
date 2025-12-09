@@ -30,12 +30,12 @@ describe("toIso utility", () => {
   });
 
   it("returns an ISO string for null and Date objects", () => {
-    const outNull = toIso(null as any);
+    const outNull = toIso(null as unknown as string | number | Date | undefined);
     expect(typeof outNull).toBe("string");
     expect(isoRegex.test(outNull)).toBe(true);
 
     const d = new Date(2000, 0, 1, 0, 0, 0, 123);
-    const outDate = toIso(d as any);
+    const outDate = toIso(d as unknown as string | number | Date | undefined);
     // because toIso treats non-string/number as "now", it will return current-ish time (not the Date's value)
     // we assert it's an ISO formatted string
     expect(typeof outDate).toBe("string");

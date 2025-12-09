@@ -14,7 +14,7 @@ const patchTimeEntry = async (entry: Partial<TimeEntry> & { id: string }, jwt?: 
   for (const k of Object.keys(entry) as Array<keyof TimeEntry>) {
     if (k === "id" || k === "created") continue;
     const val = entry[k];
-    if (val !== undefined) (payload as any)[k] = val;
+    if (val !== undefined) (payload as Record<string, unknown>)[k as string] = val as unknown;
   }
   payload.updated = new Date().toISOString();
 
@@ -28,4 +28,3 @@ const patchTimeEntry = async (entry: Partial<TimeEntry> & { id: string }, jwt?: 
 };
 
 export default patchTimeEntry;
-
