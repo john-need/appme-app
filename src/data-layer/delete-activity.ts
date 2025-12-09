@@ -1,6 +1,4 @@
 import getApiBase from "@/utils/get-api-base";
-import { store } from "@/store/root-store";
-
 
 const deleteActivity = async (id: string, jwt?: string): Promise<boolean> => {
   if (!id || !jwt) return false;

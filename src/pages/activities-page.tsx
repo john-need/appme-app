@@ -1,5 +1,5 @@
-import React, { useCallback } from 'react'
-import { Container } from '@mui/material'
+import React, { useCallback } from "react";
+import { Container } from "@mui/material";
 import { selectActivities } from "@/features/activities/activities-slice";
 import { useSelector } from "react-redux";
 import Activities from "@/components/activities/activities";
@@ -33,5 +33,5 @@ export default function ActivitiesPage() {
                   deleteActivity={deleteActivity}
                   addActivity={addActivity}/>
     </Container>
-  )
+  );
 }

@@ -13,9 +13,9 @@ import "./styles.css";
 try {
   const state = store.getState();
   if (state && state.auth) {
-    const { user, jwt } = state.auth as { user: any; jwt: string | null };
-    if (user) queryClient.setQueryData(['auth', 'user'], user);
-    if (jwt) queryClient.setQueryData(['auth', 'token'], jwt);
+    const auth = state.auth as { user?: unknown; jwt?: string | null };
+    if (auth.user) queryClient.setQueryData(["auth", "user"], auth.user);
+    if (auth.jwt) queryClient.setQueryData(["auth", "token"], auth.jwt);
   }
 } catch (e) {
   // ignore

@@ -18,7 +18,7 @@ export default function ConfirmDeleteDialog({ open, entry, onClose }: Props) {
       <DialogTitle>Delete time entry</DialogTitle>
       <DialogContent>
         <Typography>
-          Are you sure you want to delete the time entry for "{activityName}" ({entry?.minutes} min)? This cannot be undone.
+          {`Are you sure you want to delete the time entry for "${activityName}" (${entry?.minutes} min)? This cannot be undone.`}
         </Typography>
       </DialogContent>
       <DialogActions>

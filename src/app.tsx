@@ -23,7 +23,7 @@ export default function App() {
         {isAuthenticated ? (
           <>
             <Header />
-            <Box sx={{ flexGrow: 1, height: 'calc(100vh - 64px)', overflow: 'auto' }} >
+            <Box sx={{ flexGrow: 1, height: "calc(100vh - 64px)", overflow: "auto" }} >
               <AppRouter />
             </Box>
             <NotificationCenter />

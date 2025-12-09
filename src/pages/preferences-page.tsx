@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import {
   Box,
   Typography,
@@ -25,8 +25,8 @@ export default function PreferencesPage() {
   const jwt = useJwt();
 
   const [name, setName] = useState(currentUser?.name || "");
-  const [startOfWeek, setStartOfWeek] = useState<User['startOfWeek']>(currentUser?.startOfWeek || "MONDAY");
-  const [defaultView, setDefaultView] = useState<User['defaultView']>(currentUser?.defaultView || "DAY");
+  const [startOfWeek, setStartOfWeek] = useState<User["startOfWeek"]>(currentUser?.startOfWeek || "MONDAY");
+  const [defaultView, setDefaultView] = useState<User["defaultView"]>(currentUser?.defaultView || "DAY");
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
@@ -47,8 +47,9 @@ export default function PreferencesPage() {
       setError(null);
       setSaving(false);
     },
-    onError: (err: any) => {
-      setError(err?.message ?? String(err));
+    onError: (err: unknown) => {
+      const message = err instanceof Error ? err.message : String(err ?? "An unknown error occurred");
+      setError(message);
       setSuccess(false);
       setSaving(false);
     },
@@ -58,8 +59,13 @@ export default function PreferencesPage() {
     setError(null);
     setSuccess(false);
     setSaving(true);
+    if (!currentUser?.id) {
+      setError("No current user to update");
+      setSaving(false);
+      return;
+    }
     const userToUpdate: Partial<User> & { id: string } = {
-      id: currentUser?.id as string,
+      id: currentUser.id,
       name,
       startOfWeek,
       defaultView,
@@ -69,9 +75,9 @@ export default function PreferencesPage() {
 
   const handleReset = () => {
     if (!currentUser) return;
-    setName((currentUser as any).name ?? "");
-    setStartOfWeek((currentUser as any).startOfWeek ?? "MONDAY");
-    setDefaultView((currentUser as any).defaultView ?? "WEEK");
+    setName(currentUser.name ?? "");
+    setStartOfWeek(currentUser.startOfWeek ?? "MONDAY");
+    setDefaultView(currentUser.defaultView ?? "WEEK");
     setError(null);
     setSuccess(false);
   };
@@ -113,7 +119,7 @@ export default function PreferencesPage() {
             labelId="startOfWeek-label"
             value={startOfWeek}
             label="Week Start"
-            onChange={(e) => setStartOfWeek(e.target.value as User['startOfWeek'])}
+            onChange={(e) => setStartOfWeek(e.target.value as User["startOfWeek"])}
           >
             <MenuItem value="MONDAY">Monday</MenuItem>
             <MenuItem value="SUNDAY">Sunday</MenuItem>
@@ -126,7 +132,7 @@ export default function PreferencesPage() {
             labelId="defaultView-label"
             value={defaultView}
             label="Default View"
-            onChange={(e) => setDefaultView(e.target.value as User['defaultView'])}
+            onChange={(e) => setDefaultView(e.target.value as User["defaultView"])}
           >
             <MenuItem value="WEEK">Week</MenuItem>
             <MenuItem value="DAY">Day</MenuItem>

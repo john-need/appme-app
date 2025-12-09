@@ -1,19 +1,19 @@
-import React, { useEffect, useState } from 'react'
-import { Container, Box, TextField, Button, Typography, CircularProgress, Checkbox, FormControlLabel } from '@mui/material'
-import { useLogin } from '../../hooks'
-import { useAppDispatch } from '../../hooks'
-import { addNotification } from '../../features/notification/notification-slice'
-import { useNavigate } from 'react-router-dom'
+import React, { useEffect, useState } from "react";
+import { Container, Box, TextField, Button, Typography, CircularProgress, Checkbox, FormControlLabel } from "@mui/material";
+import { useLogin } from "../../hooks";
+import { useAppDispatch } from "../../hooks";
+import { addNotification } from "../../features/notification/notification-slice";
+import { useNavigate } from "react-router-dom";
 
 export default function LoginForm() {
-  const [email, setEmail] = useState("")
-  const [password, setPassword] = useState("")
-  const [rememberMe, setRememberMe] = useState(false)
-  const [errors, setErrors] = useState<{ email?: string; password?: string }>({})
-  const dispatch = useAppDispatch()
-  const navigate = useNavigate()
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [rememberMe, setRememberMe] = useState(false);
+  const [errors, setErrors] = useState<{ email?: string; password?: string }>({});
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
 
-  const { login, isLoading, isError, error, isSuccess } = useLogin()
+  const { login, isLoading, isError, error, isSuccess } = useLogin();
 
   // load remembered email on mount
   useEffect(() => {
@@ -26,21 +26,21 @@ export default function LoginForm() {
 
   useEffect(() => {
     if (isError) {
-      const msg = (error as any)?.message ?? "Login failed";
+      // const msg = error instanceof Error ? error.message : String(error ?? "Login failed");
       // error toast is already added by useLogin, optional extra handling available
       // dispatch(addNotification({ id: String(Date.now()), message: msg, severity: 'error' }))
     }
-  }, [isError, error, dispatch])
+  }, [isError, error, dispatch]);
 
   useEffect(() => {
     if (isSuccess) {
-      dispatch(addNotification({ id: String(Date.now()), message: 'Logged in', severity: 'success' }))
-      navigate('/')
+      dispatch(addNotification({ id: String(Date.now()), message: "Logged in", severity: "success" }));
+      navigate("/");
     }
-  }, [isSuccess, dispatch, navigate])
+  }, [isSuccess, dispatch, navigate]);
 
   const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
+    e.preventDefault();
 
     // client-side validation
     const nextErrors: { email?: string; password?: string } = {};
@@ -62,8 +62,8 @@ export default function LoginForm() {
       localStorage.removeItem("appme:rememberedEmail");
     }
 
-    login(email, password)
-  }
+    login(email, password);
+  };
 
   return (
     <Container maxWidth="sm">
@@ -77,8 +77,8 @@ export default function LoginForm() {
           type="email"
           value={email}
           onChange={(e) => {
-            setEmail(e.target.value)
-            if (errors.email) setErrors((prev) => ({ ...prev, email: undefined }))
+            setEmail(e.target.value);
+            if (errors.email) setErrors((prev) => ({ ...prev, email: undefined }));
           }}
           fullWidth
           margin="normal"
@@ -92,8 +92,8 @@ export default function LoginForm() {
           type="password"
           value={password}
           onChange={(e) => {
-            setPassword(e.target.value)
-            if (errors.password) setErrors((prev) => ({ ...prev, password: undefined }))
+            setPassword(e.target.value);
+            if (errors.password) setErrors((prev) => ({ ...prev, password: undefined }));
           }}
           fullWidth
           margin="normal"
@@ -107,12 +107,12 @@ export default function LoginForm() {
           label="Remember me"
         />
 
-        <Box sx={{ mt: 2, display: 'flex', alignItems: 'center' }}>
+        <Box sx={{ mt: 2, display: "flex", alignItems: "center" }}>
           <Button type="submit" variant="contained" disabled={isLoading}>
-            {isLoading ? <CircularProgress size={20} color="inherit" /> : 'Login'}
+            {isLoading ? <CircularProgress size={20} color="inherit" /> : "Login"}
           </Button>
         </Box>
       </Box>
     </Container>
-  )
+  );
 }

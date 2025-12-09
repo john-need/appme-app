@@ -14,7 +14,7 @@ const patchActivity = async (activity: Partial<Activity> & { id: string }, jwt?:
   for (const key of Object.keys(activity) as Array<keyof Activity>) {
     if (key === "id" || key === "created") continue;
     const val = activity[key];
-    if (val !== undefined) payload[key] = val as any;
+    if (val !== undefined) (payload as Record<string, unknown>)[key as string] = val as unknown;
   }
 
   // set an updated timestamp

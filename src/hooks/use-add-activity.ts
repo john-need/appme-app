@@ -1,5 +1,4 @@
 import { useMutation, type UseMutationOptions, type UseMutationResult } from "@tanstack/react-query";
-import getApiBase from "@/utils/get-api-base";
 import { store } from "@/store/root-store";
 import activityFactory from "@/factories/activity-factory";
 import { addActivity as addActivityAction } from "@/features/activities/activities-slice";

@@ -3,9 +3,16 @@ import fetchUser from "./fetch-user";
 function getApiBase(): string {
   // try to access import.meta.env via a dynamic function to avoid parse-time import.meta token
   try {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const meta = (new Function('return typeof import.meta !== "undefined" ? import.meta : undefined') as any)();
-    const env = meta?.env;
+    // probe import.meta safely without using `any`
+    // @ts-expect-error -- runtime probe; bundlers may transform import.meta at build time
+    const meta = (new Function('return typeof import.meta !== "undefined" ? import.meta : undefined') as unknown)();
+    let env: Record<string, unknown> | undefined;
+    if (meta && typeof meta === "object" && meta !== null && "env" in meta) {
+      const metaObj = meta as { env?: unknown };
+      if (metaObj.env && typeof metaObj.env === "object" && metaObj.env !== null) {
+        env = metaObj.env as Record<string, unknown>;
+      }
+    }
     if (env && typeof env.VITE_API_BASE_URL === "string" && env.VITE_API_BASE_URL) {
       return env.VITE_API_BASE_URL;
     }
@@ -13,8 +20,7 @@ function getApiBase(): string {
     // ignore
   }
   try {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const proc = typeof process !== "undefined" ? (process as any).env : undefined;
+    const proc = typeof process !== "undefined" ? (process as unknown as { env?: Record<string, unknown> }).env : undefined;
     if (proc) {
       return (proc.REACT_APP_API_BASE_URL as string) || (proc.API_BASE_URL as string) || "http://localhost:3000";
     }
@@ -23,10 +29,9 @@ function getApiBase(): string {
   }
   // fallback to globalThis variables (if an app injected them)
   try {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const g = globalThis as any;
-    if (g?.VITE_API_BASE_URL) return g.VITE_API_BASE_URL;
-    if (g?.REACT_APP_API_BASE_URL) return g.REACT_APP_API_BASE_URL;
+    const g = globalThis as unknown as Record<string, unknown>;
+    if (typeof g?.VITE_API_BASE_URL === "string") return g.VITE_API_BASE_URL as string;
+    if (typeof g?.REACT_APP_API_BASE_URL === "string") return g.REACT_APP_API_BASE_URL as string;
   } catch (e) {
     // ignore
   }
@@ -35,7 +40,7 @@ function getApiBase(): string {
 
 const API_BASE = getApiBase();
 
-function parseJwtPayload(token: string): any {
+function parseJwtPayload(token: string): Record<string, unknown> | null {
   try {
     const parts = token.split(".");
     if (parts.length < 2) return null;
@@ -48,7 +53,8 @@ function parseJwtPayload(token: string): any {
     const json = typeof atob === "function"
       ? atob(padded)
       : Buffer.from(padded, "base64").toString("utf8");
-    return JSON.parse(json);
+    const parsed = JSON.parse(json);
+    return typeof parsed === "object" && parsed !== null ? parsed as Record<string, unknown> : null;
   } catch (err) {
     return null;
   }

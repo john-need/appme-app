@@ -1,5 +1,4 @@
 import { useMutation, type UseMutationOptions, type UseMutationResult } from "@tanstack/react-query";
-import getApiBase from "@/utils/get-api-base";
 import { store } from "@/store/root-store";
 import timeEntryFactory from "@/factories/time-entry-factory";
 import { addTimeEntry as addTimeEntryAction } from "@/features/time-entries/time-entries-slice";

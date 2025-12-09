@@ -58,7 +58,7 @@ const TimeEntries = ({ timeEntries }: Props) => {
       Boolean(a.thursday),
       Boolean(a.friday),
       Boolean(a.saturday) || Boolean(a.weekends)
-    ]
+    ];
     return days[dayIndex];
   };
 
@@ -121,8 +121,6 @@ const TimeEntries = ({ timeEntries }: Props) => {
     setDate(today);
   };
 
-  const getActivityName = (id: string) => activities.find((a) => a.id === id)?.name ?? id;
-
   return (
     <Box>
       <Box component="form" onSubmit={handleSubmit} sx={{ mb: 3 }}>
@@ -141,7 +139,7 @@ const TimeEntries = ({ timeEntries }: Props) => {
                 ))}
                 {group1.length === 0 && group2.length === 0 && (
                   <MenuItem value="" disabled>
-                    Huzzah!  You've done all the things.
+                    Huzzah! You&#39;ve done all the things.
                   </MenuItem>
                 )}
               </Select>

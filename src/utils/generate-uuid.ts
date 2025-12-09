@@ -2,9 +2,10 @@
 // Prefer Web Crypto's `randomUUID` in browsers if available, otherwise fall back to a RFC4122 v4 generator.
 export default function generateUUID(): string {
   try {
-    // @ts-ignore
-    const webCrypto = (globalThis as any)?.crypto;
-    if (webCrypto && typeof webCrypto.randomUUID === "function") return webCrypto.randomUUID();
+    // try to access web crypto in a typed-safe way
+    const g = globalThis as unknown as { crypto?: unknown };
+    const webCrypto = g?.crypto as { randomUUID?: unknown } | undefined;
+    if (webCrypto && typeof webCrypto.randomUUID === "function") return (webCrypto.randomUUID as () => string)();
   } catch (e) {
     // ignore
   }
@@ -16,4 +17,3 @@ export default function generateUUID(): string {
     return v.toString(16);
   });
 }
-

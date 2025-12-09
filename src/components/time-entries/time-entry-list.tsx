@@ -70,7 +70,7 @@ export default function TimeEntryList({ timeEntries, onEntryDeleted: propsOnEntr
 
   return (
     <Box>
-      <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 1 }}>
+      <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", mb: 1 }}>
         <Typography variant="h6">{showAll ? "All Entries" : "Today's Entries"}</Typography>
         <Button size="small" onClick={() => setShowAll((s) => !s)}>
           {showAll ? "show today" : "show all"}
@@ -84,13 +84,13 @@ export default function TimeEntryList({ timeEntries, onEntryDeleted: propsOnEntr
             mb: 1,
             p: 1,
             border: 1,
-            borderColor: 'divider',
+            borderColor: "divider",
             borderRadius: 1,
-            cursor: 'pointer',
-            transition: 'background-color 150ms ease, box-shadow 150ms ease',
-            '&:hover': {
-              backgroundColor: 'action.hover',
-              boxShadow: (theme) => `0 1px 3px ${theme.palette.mode === 'light' ? 'rgba(0,0,0,0.08)' : 'rgba(0,0,0,0.24)'}`,
+            cursor: "pointer",
+            transition: "background-color 150ms ease, box-shadow 150ms ease",
+            "&:hover": {
+              backgroundColor: "action.hover",
+              boxShadow: (theme) => `0 1px 3px ${theme.palette.mode === "light" ? "rgba(0,0,0,0.08)" : "rgba(0,0,0,0.24)"}`,
             },
           }}
           onClick={() => handleOpen(t)}
