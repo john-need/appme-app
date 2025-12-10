@@ -1,5 +1,4 @@
 import { configureStore, combineReducers } from "@reduxjs/toolkit";
-import counterReducer from "../features/counter/counter-slice";
 import preferencesReducer from "../features/preferences/preferences-slice";
 import authReducer from "../features/auth/auth-slice";
 import notificationReducer from "../features/notification/notification-slice";
@@ -10,7 +9,6 @@ import { persistStore, persistReducer, FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, 
 import storage from "redux-persist/lib/storage"; // defaults to localStorage for web
 
 const rootReducer = combineReducers({
-  counter: counterReducer,
   preferences: preferencesReducer,
   auth: authReducer,
   notification: notificationReducer,

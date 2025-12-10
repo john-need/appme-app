@@ -1,5 +1,5 @@
-import { loginThunk } from "../auth-thunks";
-import { setCredentials } from "../auth-slice";
+import { loginThunk } from "./auth-thunks";
+import { setCredentials } from "./auth-slice";
 import type { AnyAction } from "redux";
 
 type Thunk = (dispatch: (action: AnyAction | Thunk) => Promise<unknown> | AnyAction) => Promise<unknown> | AnyAction;

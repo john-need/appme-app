@@ -2,10 +2,10 @@ import React from "react";
 import { render, screen, within } from "@testing-library/react";
 import { Provider } from "react-redux";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import ThemeProvider from "../theme/theme-provider";
-import App from "../app";
-import { store } from "../store/root-store";
-import { setCredentials } from "../features/auth/auth-slice";
+import ThemeProvider from "./theme/theme-provider";
+import App from "./app";
+import { store } from "./store/root-store";
+import { setCredentials } from "./features/auth/auth-slice";
 
 const queryClient = new QueryClient();
 

@@ -85,7 +85,7 @@ const auth = async (email: string, password: string): Promise<{ token: string; u
     throw new Error("Token does not contain a user id claim");
   }
 
-  const user = await fetchUser(userId);
+  const user = await fetchUser(token, userId);
   if (!user) {
     throw new Error("User not found");
   }
