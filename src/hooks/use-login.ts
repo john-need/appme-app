@@ -43,7 +43,7 @@ export function useLogin() {
           // ignore
         }
       } else {
-        dispatch(setCredentials({ jwt, user: null }));
+        dispatch(setCredentials({ jwt: "", user: null }));
       }
     },
     onError(error: unknown) {
