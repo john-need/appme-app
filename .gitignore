@@ -1,6 +1,8 @@
 /tmp
 /out-tsc
 /coverage
+.env
+dist
 
 /node_modules
 npm-debug.log*
