@@ -20,17 +20,18 @@ export default function TimeEntryList({ timeEntries, onEntryDeleted: propsOnEntr
   const deleteMutation = useDeleteTimeEntry();
   const getActivityName = (id: string) => activities.find((a) => a.id === id)?.name ?? id;
 
-  // helper: local YYYY-MM-DD for a Date/ISO string
-  const toLocalYMD = (v?: string) => {
+  // helper: local YYYY-MM-DD for a Date or ISO string
+  const toLocalYMD = (v?: string | Date) => {
     if (!v) return "";
-    const d = new Date(v);
+    const d = v instanceof Date ? v : new Date(v);
     const y = d.getFullYear();
     const m = String(d.getMonth() + 1).padStart(2, "0");
     const day = String(d.getDate()).padStart(2, "0");
     return `${y}-${m}-${day}`;
   };
 
-  const todayLocal = toLocalYMD(new Date().toISOString());
+  // compute today's local date without going through ISO/UTC conversion
+  const todayLocal = toLocalYMD(new Date());
 
   const [showAll, setShowAll] = React.useState(false);
   const displayed = showAll ? timeEntries : timeEntries.filter((t) => toLocalYMD(t.created) === todayLocal);

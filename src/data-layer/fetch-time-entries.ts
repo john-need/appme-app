@@ -16,6 +16,7 @@ const query = async (jwt: string): Promise<TimeEntry[]> => {
   }
 
   const json = await res.json();
+
   if (!Array.isArray(json)) throw new Error("Invalid time entries response: expected an array");
   return json as TimeEntry[];
 };

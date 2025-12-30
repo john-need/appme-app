@@ -1,6 +1,6 @@
-/tmp
-/out-tsc
-/coverage
+tmp
+out-tsc
+coverage
 .env
 dist
 

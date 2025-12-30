@@ -3,7 +3,7 @@ import getApiBase from "@/utils/get-api-base";
 
 
 const API_BASE = getApiBase();
-console.log("API_BASE", API_BASE);
+
 function parseJwtPayload(token: string): Record<string, unknown> | null {
   try {
     const parts = token.split(".");
