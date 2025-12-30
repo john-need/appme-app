@@ -56,7 +56,6 @@ export const selectActivityById = (state: RootState, id?: string): Activity | un
 
 // Thunk that fetches activities using react-query and stores them in the slice
 export const fetchActivitiesThunk = () => async (dispatch: AppDispatch, getState: () => RootState) => {
- console.log("fetchActivitiesThunk");
   try {
     const jwt = getState().auth?.jwt ?? "";
     // fetch activities (cache key includes jwt to scope cache per user)

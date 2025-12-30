@@ -171,4 +171,97 @@ describe("Activities component", () => {
 
     expect(deleteMock).toHaveBeenCalledTimes(1);
   });
+
+  describe("sorting", () => {
+    function getRenderedOrderByEditAria(): string[] {
+      const buttons = screen.getAllByLabelText(/edit-/i);
+      return buttons.map((b) => (b as HTMLElement).getAttribute("aria-label")!.replace("edit-", ""));
+    }
+
+    it("renders initial order as provided (no sort active)", () => {
+      render(
+        React.createElement(Activities, { activities: sampleActivities, updateActivity: jest.fn(), deleteActivity: jest.fn(), addActivity: jest.fn() })
+      );
+      expect(getRenderedOrderByEditAria()).toEqual(["a-1", "a-2"]);
+    });
+
+    it("clicking Name header toggles ascending then descending (case-insensitive)", async () => {
+      const data: Activity[] = [
+        { ...sampleActivities[0], id: "a1", name: "Yoga" },
+        { ...sampleActivities[0], id: "a2", name: "run" },
+        { ...sampleActivities[0], id: "a3", name: "Book Club" },
+        { ...sampleActivities[0], id: "a4", name: "coding" },
+        { ...sampleActivities[0], id: "a5", name: "ALPHA" },
+      ];
+      render(
+        React.createElement(Activities, { activities: data, updateActivity: jest.fn(), deleteActivity: jest.fn(), addActivity: jest.fn() })
+      );
+      const user = userEvent.setup();
+      const nameHeader = screen.getByRole("button", { name: /name/i });
+
+      await user.click(nameHeader); // asc
+      expect(getRenderedOrderByEditAria()).toEqual(["a5", "a3", "a4", "a2", "a1"]); // ALPHA, Book Club, coding, run, Yoga
+
+      await user.click(nameHeader); // desc
+      expect(getRenderedOrderByEditAria()).toEqual(["a1", "a2", "a4", "a3", "a5"]); // Yoga, run, coding, Book Club, ALPHA
+    });
+
+    it("clicking Type header toggles ascending then descending", async () => {
+      const data: Activity[] = [
+        { ...sampleActivities[0], id: "b1", type: "Wellness" },
+        { ...sampleActivities[0], id: "b2", type: "Fitness" },
+        { ...sampleActivities[0], id: "b3", type: "Social" },
+        { ...sampleActivities[0], id: "b4", type: "Learning" },
+        { ...sampleActivities[0], id: "b5", type: "Work" },
+      ];
+      render(
+        React.createElement(Activities, { activities: data, updateActivity: jest.fn(), deleteActivity: jest.fn(), addActivity: jest.fn() })
+      );
+      const user = userEvent.setup();
+      const typeHeader = screen.getByRole("button", { name: /type/i });
+
+      await user.click(typeHeader); // asc: Fitness, Learning, Social, Wellness, Work
+      expect(getRenderedOrderByEditAria()).toEqual(["b2", "b4", "b3", "b1", "b5"]);
+
+      await user.click(typeHeader); // desc
+      expect(getRenderedOrderByEditAria()).toEqual(["b5", "b1", "b3", "b4", "b2"]);
+    });
+
+    it("clicking Goal header sorts numbers and handles null/undefined (asc then desc)", async () => {
+      const base = sampleActivities[0];
+      const data: Activity[] = [
+        { ...base, id: "g1", goal: 30 },
+        { ...base, id: "g2", goal: 5 },
+        { ...base, id: "g3", goal: null as unknown as number },
+        { ...base, id: "g4", goal: undefined as unknown as number },
+        { ...base, id: "g5", goal: 10 },
+      ];
+      render(
+        React.createElement(Activities, { activities: data, updateActivity: jest.fn(), deleteActivity: jest.fn(), addActivity: jest.fn() })
+      );
+      const user = userEvent.setup();
+      const goalHeader = screen.getByRole("button", { name: /goal/i });
+
+      await user.click(goalHeader); // asc: 5, 10, 30, (nullish last)
+      expect(getRenderedOrderByEditAria()).toEqual(["g2", "g5", "g1", "g3", "g4"]);
+
+      await user.click(goalHeader); // desc: (nullish first), 30, 10, 5
+      expect(getRenderedOrderByEditAria()).toEqual(["g3", "g4", "g1", "g5", "g2"]);
+    });
+
+    it("keyboard Enter on Type header triggers sorting", async () => {
+      render(
+        React.createElement(Activities, { activities: sampleActivities, updateActivity: jest.fn(), deleteActivity: jest.fn(), addActivity: jest.fn() })
+      );
+      const user = userEvent.setup();
+      const typeHeader = screen.getByRole("button", { name: /type/i });
+      (typeHeader as HTMLElement).focus();
+      await user.keyboard("{Enter}");
+      // With sampleActivities types MUDA, TASSEI -> MUDA < TASSEI (asc)
+      expect(getRenderedOrderByEditAria()).toEqual(["a-1", "a-2"]);
+      // Toggle to desc
+      await user.keyboard("{Enter}");
+      expect(getRenderedOrderByEditAria()).toEqual(["a-2", "a-1"]);
+    });
+  });
 });
