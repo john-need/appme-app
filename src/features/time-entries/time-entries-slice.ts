@@ -4,6 +4,7 @@ import { queryClient } from "@/api/query-client";
 import fetchTimeEntries from "@/data-layer/fetch-time-entries";
 import { addNotification } from "@/features/notification/notification-slice";
 import { sortMostRecentFirst } from "@/utils/sort-by-created";
+import timeEntryFactory from "@/factories/time-entry-factory";
 
 interface TimeEntriesState {
   items: TimeEntry[];
@@ -55,9 +56,10 @@ export const fetchTimeEntriesThunk = () => async (dispatch: AppDispatch, getStat
       queryKey: ["timeEntries"],
       queryFn: () => fetchTimeEntries(jwt),
     });
+    const normalizedTimeEntries = timeEntries.map(timeEntryFactory);
     dispatch(setTimeEntries(timeEntries));
     try {
-      queryClient.setQueryData(["timeEntries"], timeEntries);
+      queryClient.setQueryData(["timeEntries"], normalizedTimeEntries );
     } catch (e) {
       // ignore
     }
