@@ -1,21 +1,14 @@
-// helper to normalize input to ISO string
-export default function toIso(input?: string | number | Date): string {
-  // handle zero epoch explicitly
-  if (input === 0) return new Date(0).toISOString();
-  if (input === undefined || input === null) return new Date().toISOString();
-  if (typeof input === "string") {
-    const d = new Date(input);
-    if (!isNaN(d.getTime())) return d.toISOString();
-    // if the string looks like a timestamp number
-    const asNum = Number(input);
-    if (!isNaN(asNum)) return new Date(asNum).toISOString();
-    return new Date().toISOString();
-  }
-  if (typeof input === "number") {
-    return new Date(input).toISOString();
-  }
-  if (input instanceof Date) {
-    return input.toISOString();
-  }
-  return new Date().toISOString();
-}
+type ValidInput = Date | string | number;
+
+const isValidDate = (d: unknown) => {
+  const isValidInput = d instanceof Date || typeof d === "string" || typeof d === "number";
+  return isValidInput && !isNaN(new Date(d as ValidInput).getTime());
+};
+
+
+const toIso = (v: unknown): string => {
+  const date = isValidDate(v) ? new Date(v as ValidInput) : new Date();
+  return date.toISOString();
+};
+
+export default toIso;
