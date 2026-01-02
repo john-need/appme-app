@@ -25,7 +25,9 @@ describe("StopWatchModal", () => {
   });
 
   afterEach(() => {
-    jest.runOnlyPendingTimers();
+    act(() => {
+      jest.runOnlyPendingTimers();
+    });
     jest.useRealTimers();
   });
 
@@ -83,7 +85,9 @@ describe("StopWatchModal", () => {
     fireEvent.click(screen.getByText("reset"));
     expect(screen.getByText("Are you sure you want to reset the timer to 0:00?")).toBeInTheDocument();
 
-    fireEvent.click(screen.getByText("Yes, Reset"));
+    act(() => {
+      fireEvent.click(screen.getByText("Yes, Reset"));
+    });
     expect(screen.getByText("0:00")).toBeInTheDocument();
     
     // Wait for the dialog to close
@@ -98,11 +102,18 @@ describe("StopWatchModal", () => {
     fireEvent.click(screen.getByText("cancel"));
     expect(screen.getByText("Are you sure you want to close without saving?")).toBeInTheDocument();
 
-    fireEvent.click(screen.getByText("Yes, Close"));
+    act(() => {
+      fireEvent.click(screen.getByText("Yes, Close"));
+    });
     expect(defaultProps.onClose).toHaveBeenCalled();
+    
+    // Wait for the dialog to close
+    await act(async () => {
+      jest.runOnlyPendingTimers();
+    });
   });
 
-  it("shows save prompt when save is clicked", () => {
+  it("shows save prompt when save is clicked", async () => {
     render(<StopWatchModal {...defaultProps} />);
     fireEvent.click(screen.getByText("start"));
     act(() => {
@@ -112,9 +123,14 @@ describe("StopWatchModal", () => {
 
     expect(screen.getByText("Save Time")).toBeInTheDocument();
     expect(screen.getByText(/You have 10 minutes recorded/)).toBeInTheDocument();
+    
+    // Wait for the save prompt to appear (it might have transition)
+    await act(async () => {
+      jest.runOnlyPendingTimers();
+    });
   });
 
-  it("handles 'add to current time' option", () => {
+  it("handles 'add to current time' option", async () => {
     render(<StopWatchModal {...defaultProps} />);
     fireEvent.click(screen.getByText("start"));
     act(() => {
@@ -122,16 +138,23 @@ describe("StopWatchModal", () => {
     });
     fireEvent.click(screen.getByText("save"));
 
-    fireEvent.click(screen.getByText("add to current time"));
+    act(() => {
+      fireEvent.click(screen.getByText("add to current time"));
+    });
 
     expect(defaultProps.onSubmit).toHaveBeenCalledWith({
       ...mockTimeEntry,
       minutes: 12, // 10 + 2
     });
     expect(defaultProps.onClose).toHaveBeenCalled();
+    
+    // Wait for the dialogs to close
+    await act(async () => {
+      jest.runOnlyPendingTimers();
+    });
   });
 
-  it("handles 'save' (overwrite) option", () => {
+  it("handles 'save' (overwrite) option", async () => {
     render(<StopWatchModal {...defaultProps} />);
     fireEvent.click(screen.getByText("start"));
     act(() => {
@@ -139,27 +162,42 @@ describe("StopWatchModal", () => {
     });
     fireEvent.click(screen.getByText("save"));
 
-    fireEvent.click(screen.getByRole("button", { name: "save" }));
+    act(() => {
+      fireEvent.click(screen.getByRole("button", { name: "save" }));
+    });
 
     expect(defaultProps.onSubmit).toHaveBeenCalledWith({
       ...mockTimeEntry,
       minutes: 3, // Overwritten to 3
     });
     expect(defaultProps.onClose).toHaveBeenCalled();
+    
+    // Wait for the dialogs to close
+    await act(async () => {
+      jest.runOnlyPendingTimers();
+    });
   });
 
-  it("handles 'resume' option", () => {
+  it("handles 'resume' option", async () => {
     render(<StopWatchModal {...defaultProps} />);
     fireEvent.click(screen.getByText("start"));
     act(() => {
       jest.advanceTimersByTime(5000);
     });
     fireEvent.click(screen.getByText("save"));
-    fireEvent.click(screen.getByText("resume"));
+    
+    act(() => {
+      fireEvent.click(screen.getByText("resume"));
+    });
 
     act(() => {
       jest.advanceTimersByTime(1000);
     });
     expect(screen.getByText("0:06")).toBeInTheDocument();
+    
+    // Wait for the save prompt to close
+    await act(async () => {
+      jest.runOnlyPendingTimers();
+    });
   });
 });
