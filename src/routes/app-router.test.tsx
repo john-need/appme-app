@@ -4,7 +4,7 @@ import { MemoryRouter } from "react-router-dom";
 import AppRouter from "./app-router";
 
 // Mock route target components with identifiable text
-jest.mock("@/pages/home-page", () => ({ __esModule: true, default: () => <div>HomePage</div> }));
+jest.mock("@/pages/time-entries-page", () => ({ __esModule: true, default: () => <div>HomePage</div> }));
 jest.mock("@/pages/activities-page", () => ({ __esModule: true, default: () => <div>ActivitiesPage</div> }));
 jest.mock("@/pages/preferences-page", () => ({ __esModule: true, default: () => <div>PreferencesPage</div> }));
 jest.mock("@/pages/dashboard-page", () => ({ __esModule: true, default: () => <div>DashboardPage</div> }));
@@ -38,8 +38,8 @@ describe("AppRouter", () => {
         <AppRouter />
       </MemoryRouter>
     );
-    // After redirect, the HomePage should render
-    expect(screen.getByText("HomePage")).toBeInTheDocument();
+    // After redirect, the TimeEntriesPage should render
+    expect(screen.getByText("TimeEntriesPage")).toBeInTheDocument();
   });
 
   it("renders ActivitiesPage on /activities", () => {

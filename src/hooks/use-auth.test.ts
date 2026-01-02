@@ -1,5 +1,11 @@
 import { renderHook, act } from "@testing-library/react";
 import { useAuth, useIsAuthenticated, useCurrentUser, useJwt } from "./use-auth";
+import { isJwtValid } from "@/utils/jwt";
+
+// Mock jwt utility
+jest.mock("@/utils/jwt", () => ({
+  isJwtValid: jest.fn(),
+}));
 
 // Mock hooks index to control dispatch/selector
 const mockDispatch = jest.fn();
@@ -13,6 +19,7 @@ describe("use-auth hooks", () => {
   beforeEach(() => {
     mockDispatch.mockClear();
     mockSelector.mockReset();
+    (isJwtValid as jest.Mock).mockReturnValue(true);
   });
 
   it("returns auth slice and action wrappers", () => {
@@ -26,8 +33,17 @@ describe("use-auth hooks", () => {
       result.current.updateJwt("jwt2");
       result.current.updateUser({ id: "u2" } as any);
     });
-    // Should dispatch 4 times
+    // Should dispatch 4 times + 0 from useEffect because token is valid
     expect(mockDispatch).toHaveBeenCalledTimes(4);
+  });
+
+  it("dispatches clearCredentials if JWT is invalid in useAuth", () => {
+    (isJwtValid as jest.Mock).mockReturnValue(false);
+    mockSelector.mockImplementation((fn: any) => fn({ auth: { isAuthenticated: true, user: { id: "u1" }, jwt: "expired-jwt" } }));
+    
+    renderHook(() => useAuth());
+    
+    expect(mockDispatch).toHaveBeenCalledWith(expect.objectContaining({ type: "auth/clearCredentials" }));
   });
 
   it("selectors work: useIsAuthenticated/useCurrentUser/useJwt", () => {
@@ -38,5 +54,21 @@ describe("use-auth hooks", () => {
     expect(isAuth).toBe(false);
     expect(user).toBeNull();
     expect(jwt).toBeNull();
+  });
+
+  it("selectors dispatch clearCredentials if JWT is invalid", () => {
+    (isJwtValid as jest.Mock).mockReturnValue(false);
+    mockSelector.mockImplementation((fn: any) => fn({ auth: { isAuthenticated: true, user: { id: "u1" }, jwt: "expired-jwt" } }));
+    
+    renderHook(() => useIsAuthenticated());
+    expect(mockDispatch).toHaveBeenCalledWith(expect.objectContaining({ type: "auth/clearCredentials" }));
+    
+    mockDispatch.mockClear();
+    renderHook(() => useCurrentUser());
+    expect(mockDispatch).toHaveBeenCalledWith(expect.objectContaining({ type: "auth/clearCredentials" }));
+
+    mockDispatch.mockClear();
+    renderHook(() => useJwt());
+    expect(mockDispatch).toHaveBeenCalledWith(expect.objectContaining({ type: "auth/clearCredentials" }));
   });
 });

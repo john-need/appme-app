@@ -1,35 +1,25 @@
 .activities_header {
-    background-color: #efefef;
     padding: 14px;
     margin: 1px;
     transition: all 0.3s ease;
-    color: #555;
-    border-bottom: 1px solid #bbb;
-
-    &:hover {
-        background-color: #e0e0e0;
-        color: #000;
-    }
 }
 
 
 .activities_header:last-child {
     cursor: default;
-
-    &:hover {
-        background-color: #efefef;
-    }
 }
 
 .activities_row {
     margin-top: auto !important;
-    &:first-child {
-        border-top: 1px solid #fff;
+
+    &:nth-of-type(2) {
+        border-top-width: 1px;
+        border-top-style: solid;
     }
 }
 
 .activities_row:nth-child(even) {
-    background-color: #f2f2f2;
+    /*background-color: #f2f2f2;*/
 }
 
 .activities_row-cell {

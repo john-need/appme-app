@@ -17,18 +17,20 @@ import TimeEntryList from "./time-entry-list";
 
 interface Props {
   timeEntries: TimeEntry[];
+  onAddTime: (entry: TimeEntry) => void;
+  startStopWatch?: (entry: TimeEntry) => void;
 }
 
-const TimeEntries = ({ timeEntries }: Props) => {
+const TimeEntries = ({ timeEntries, onAddTime, startStopWatch }: Props) => {
   const activities = useAppSelector(selectActivities);
   const addMutation = useAddTimeEntry();
 
   const today = new Date().toISOString().slice(0, 10);
   const [date, setDate] = useState<string>(today);
   const [activityId, setActivityId] = useState<string>("");
-  const [minutes, setMinutes] = useState<number | "">("");
+  const [minutes, setMinutes] = useState<number>(0);
   const [notes, setNotes] = useState<string>("");
-  // optimistic excluded activity ids (hide immediately after submission)
+  // optimistically excluded activity ids (hide immediately after submission)
   const [excludedActivityIds, setExcludedActivityIds] = React.useState<Set<string>>(new Set());
 
   // Compute activities already logged for today (normalize entry dates to YYYY-MM-DD)
@@ -77,7 +79,7 @@ const TimeEntries = ({ timeEntries }: Props) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [availableActivities.length, group1.length, group2.length, excludedActivityIds.size, timeEntries.length]);
 
-  const canSubmit = activityId && activityId !== "" && minutes !== "" && Number(minutes) > 0 && date !== "";
+  const canSubmit = activityId && activityId !== "" && Number(minutes) >= 0 && date !== "";
 
   const handleSubmit = (e?: React.FormEvent) => {
     e?.preventDefault();
@@ -116,7 +118,7 @@ const TimeEntries = ({ timeEntries }: Props) => {
     });
 
     // reset form
-    setMinutes("");
+    setMinutes(0);
     setNotes("");
     setDate(today);
   };
@@ -145,33 +147,56 @@ const TimeEntries = ({ timeEntries }: Props) => {
               </Select>
             </FormControl>
           </Grid>
-
           <Grid item xs={6} sm={2}>
-            <TextField label="Minutes" type="number" fullWidth value={minutes}
-                       onChange={(e) => setMinutes(e.target.value === "" ? "" : Number(e.target.value))}/>
-          </Grid>
+            <TextField label="Minutes"
+                       type="number"
+                       fullWidth
+                       value={minutes}
+                       onChange={(e) => {
+                         const val = Number(e.target.value);
+                         if (isNaN(val) || val < 0) {
+                           setMinutes(0);
+                         } else {
+                           setMinutes(Math.round(val));
+                         }
+                       }}
 
-          <Grid item xs={6} sm={3}>
-            <Button variant="contained" color="primary" type="submit" disabled={!canSubmit || addMutation.isLoading}
+            />
+
+
+          </Grid>
+          <Grid item xs={12} sm={5}>
+            <TextField label="Notes"
+                       fullWidth
+                       multiline
+                       minRows={1}
+                       value={notes}
+                       onChange={(e) => setNotes(e.target.value)}/>
+          </Grid>
+          <Grid item xs={6} sm={1}>
+            <Button variant="contained"
+                    color="primary"
+                    type="submit"
+                    disabled={!canSubmit || addMutation.isLoading}
                     fullWidth>
-              {addMutation.isLoading ? "Adding..." : "Add Entry"}
+              {addMutation.isLoading ? "Adding..." : "Add"}
             </Button>
           </Grid>
 
-          <Grid item xs={12}>
-            <TextField label="Notes" fullWidth multiline minRows={2} value={notes}
-                       onChange={(e) => setNotes(e.target.value)}/>
-          </Grid>
+
         </Grid>
       </Box>
-      <Divider sx={{marginBottom: "20px"}}/>
-      <TimeEntryList timeEntries={timeEntries} onEntryDeleted={(activityId) => {
-        setExcludedActivityIds((prev) => {
-          const n = new Set(prev);
-          n.delete(activityId);
-          return n;
-        });
-      }} />
+      <Divider sx={{ marginBottom: "20px" }}/>
+      <TimeEntryList timeEntries={timeEntries}
+                     onAddTime={onAddTime}
+                     onStartStopWatch={startStopWatch}
+                     onEntryDeleted={(activityId) => {
+                       setExcludedActivityIds((prev) => {
+                         const n = new Set(prev);
+                         n.delete(activityId);
+                         return n;
+                       });
+                     }}/>
     </Box>
   );
 };

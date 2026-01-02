@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from "react";
-import { Grid, Box, Typography, IconButton, Fab } from "@mui/material";
+import { Grid, Box, Typography, IconButton, Fab, lighten, darken, useTheme } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import AddIcon from "@mui/icons-material/Add";
@@ -24,7 +24,7 @@ export default function Activities({ activities, updateActivity, deleteActivity,
   const [deleteAlertOpen, setDeleteAlertOpen] = React.useState(false);
   const [sortBy, setSortBy] = useState<keyof Pick<Activity, "name" | "type" | "goal"> | null>(null);
   const [sortDir, setSortDir] = useState<"asc" | "desc">("asc");
-
+  const theme = useTheme();
   const handleSort = (field: keyof Pick<Activity, "name" | "type" | "goal">) => () => {
     if (sortBy !== field) {
       setSortBy(field);
@@ -85,12 +85,49 @@ export default function Activities({ activities, updateActivity, deleteActivity,
     setDeleteAlertOpen(false);
   };
 
+  const headerBgColor: string = useMemo(() => {
+    return theme.palette.mode === "dark"
+      ? lighten(theme.palette.background.default, 0.1)
+      : darken(theme.palette.background.default, 0.1);
+  }, [theme]);
+
+
+  const headerHoverBgColor: string = useMemo(() => {
+    return theme.palette.mode === "dark"
+      ? lighten(theme.palette.background.default, 0.05)
+      : darken(theme.palette.background.default, 0.05);
+  }, [theme]);
+
+  const rowOddBgColor = useMemo(() => {
+    return theme.palette.mode === "dark"
+      ? lighten(theme.palette.background.default, 0.05)
+      : darken(theme.palette.background.default, 0.05);
+  }, [theme]);
+
+
+  const headerBorderColor = useMemo(() => {
+    return theme.palette.mode === "dark"
+      ? lighten(theme.palette.background.default, 0.2)
+      : darken(theme.palette.background.default, 0.2);
+  }, [theme]);
+
+
   return (
     <>
       <Box sx={{ paddingTop: "16px" }}>
         {/* Header row (sticky) */}
         <Grid container spacing={2}>
-          <Grid item xs={5} className={styles["activities_header"]}>
+          <Grid
+            item
+            xs={4}
+            sx={{
+              backgroundColor: headerBgColor,
+              "&:hover": {
+                backgroundColor: headerHoverBgColor
+              }
+            }}
+            className={styles["activities_header"]}
+          >
             <Typography
               variant="subtitle2"
               role="button"
@@ -112,7 +149,17 @@ export default function Activities({ activities, updateActivity, deleteActivity,
               )}
             </Typography>
           </Grid>
-          <Grid item xs={4} className={styles["activities_header"]}>
+          <Grid
+            item
+            xs={4}
+            sx={{
+              backgroundColor: headerBgColor,
+              "&:hover": {
+                backgroundColor: headerHoverBgColor
+              }
+            }}
+            className={styles["activities_header"]}
+          >
             <Typography
               variant="subtitle2"
               role="button"
@@ -134,7 +181,17 @@ export default function Activities({ activities, updateActivity, deleteActivity,
               )}
             </Typography>
           </Grid>
-          <Grid item xs={2} className={styles["activities_header"]}>
+          <Grid
+            item
+            xs={2}
+            sx={{
+              backgroundColor: headerBgColor,
+              "&:hover": {
+                backgroundColor: headerHoverBgColor
+              }
+            }}
+            className={styles["activities_header"]}
+          >
             <Typography
               variant="subtitle2"
               role="button"
@@ -156,15 +213,33 @@ export default function Activities({ activities, updateActivity, deleteActivity,
               )}
             </Typography>
           </Grid>
-          <Grid item xs={1} className={styles["activities_header"]}>
+          <Grid
+            item
+            xs={2}
+            sx={{
+              backgroundColor: headerBgColor
+            }}
+            className={styles["activities_header"]}
+          >
             <Typography variant="subtitle2">&nbsp;</Typography>
           </Grid>
         </Grid>
 
         {/* Rows */}
         {sortedActivities.map((a) => (
-          <Grid className={styles["activities_row"]} key={a.id} container spacing={2}>
-            <Grid item xs={5} className={styles["activities_row-cell"]}>
+          <Grid
+            className={styles["activities_row"]}
+            key={a.id}
+            container
+            spacing={2}
+            sx={{
+              "&:nth-of-type(odd)": {
+                backgroundColor: rowOddBgColor
+              },
+              "&:nth-of-type(2)": { borderTopColor: headerBorderColor }
+            }}
+          >
+            <Grid item xs={4} className={styles["activities_row-cell"]}>
               <Typography>{a.name}</Typography>
             </Grid>
             <Grid item xs={4} className={styles["activities_row-cell"]}>
@@ -173,7 +248,7 @@ export default function Activities({ activities, updateActivity, deleteActivity,
             <Grid item xs={2} className={styles["activities_row-cell"]}>
               <Typography>{a.goal ?? ""}</Typography>
             </Grid>
-            <Grid item xs={1} className={styles["activities_row-cell"]}>
+            <Grid item xs={2} className={styles["activities_row-cell"]}>
               <IconButton aria-label={`edit-${a.id}`} size="small" onClick={() => handleEditOpen(a)}>
                 <EditIcon fontSize="small"/>
               </IconButton>
