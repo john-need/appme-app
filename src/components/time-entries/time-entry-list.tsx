@@ -7,14 +7,18 @@ import useUpdateTimeEntry from "@/hooks/use-update-time-entry";
 import useDeleteTimeEntry from "@/hooks/use-delete-time-entry";
 import DeleteIcon from "@mui/icons-material/Delete";
 import IconButton from "@mui/material/IconButton";
+import MoreTimeIcon from "@mui/icons-material/MoreTime";
+import TimerIcon from "@mui/icons-material/Timer";
 import ConfirmDeleteDialog from "./confirm-delete-dialog";
 
 interface Props {
   timeEntries: TimeEntry[];
   onEntryDeleted?: (activityId: string) => void;
+  onAddTime?: (entry: TimeEntry) => void;
+  onStartStopWatch?: (entry: TimeEntry) => void;
 }
 
-export default function TimeEntryList({ timeEntries, onEntryDeleted: propsOnEntryDeleted }: Props) {
+export default function TimeEntryList({ timeEntries,  onEntryDeleted, onAddTime, onStartStopWatch }: Props) {
   const activities = useAppSelector(selectActivities);
   const updateMutation = useUpdateTimeEntry();
   const deleteMutation = useDeleteTimeEntry();
@@ -47,9 +51,23 @@ export default function TimeEntryList({ timeEntries, onEntryDeleted: propsOnEntr
     handleClose();
   };
 
+  const handleStartStopWatch = (entry: TimeEntry) => {
+
+    if (onStartStopWatch) {
+      onStartStopWatch(entry);
+    }
+  };
+
+
   const handleDelete = (entry: TimeEntry) => {
     setToDelete(entry);
     setConfirmOpen(true);
+  };
+
+  const handleAddTime = (entry: TimeEntry) => {
+    if(onAddTime){
+      onAddTime(entry);
+    }
   };
 
   const handleConfirm = (confirmed: boolean) => {
@@ -61,7 +79,7 @@ export default function TimeEntryList({ timeEntries, onEntryDeleted: propsOnEntr
       // pass onSuccess to notify parent so it can remove any optimistic exclusion
       deleteMutation.mutate(id, {
         onSuccess() {
-          if (propsOnEntryDeleted) propsOnEntryDeleted(aid);
+          if (onEntryDeleted) onEntryDeleted(aid);
         },
       });
     } else {
@@ -97,10 +115,16 @@ export default function TimeEntryList({ timeEntries, onEntryDeleted: propsOnEntr
           onClick={() => handleOpen(t)}
         >
           <Grid container spacing={1} alignItems="center">
-            <Grid item xs={5}><Typography>{getActivityName(t.activityId)}</Typography></Grid>
-            <Grid item xs={4}><Typography>{t.minutes} min</Typography></Grid>
-            <Grid item xs={2}><Typography>{t.notes ?? ""}</Typography></Grid>
-            <Grid item xs={1}>
+            <Grid item xs={3}><Typography>{getActivityName(t.activityId)}</Typography></Grid>
+            <Grid item xs={2}><Typography>{t.minutes} min</Typography></Grid>
+            <Grid item xs={5}><Typography>{t.notes ?? ""}</Typography></Grid>
+            <Grid item xs={2} sx={{textAlign: "right"}}>
+              <IconButton size="small" aria-label={`add-time-${t.id}`} onClick={(e) => { e.stopPropagation(); handleStartStopWatch(t); }}>
+                <TimerIcon  fontSize="small" />
+              </IconButton>
+              <IconButton size="small" aria-label={`add-time-${t.id}`} onClick={(e) => { e.stopPropagation(); handleAddTime(t); }}>
+                <MoreTimeIcon fontSize="small" />
+              </IconButton>
               <IconButton size="small" aria-label={`delete-${t.id}`} onClick={(e) => { e.stopPropagation(); handleDelete(t); }}>
                 <DeleteIcon fontSize="small" />
               </IconButton>

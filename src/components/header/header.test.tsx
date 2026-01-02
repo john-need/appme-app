@@ -9,6 +9,10 @@ import { store } from "@/store/root-store";
 import { setCredentials } from "@/features/auth/auth-slice";
 import { MemoryRouter } from "react-router-dom";
 
+jest.mock("@/utils/jwt", () => ({
+  isJwtValid: jest.fn().mockReturnValue(true),
+}));
+
 const queryClient = new QueryClient();
 
 // Mock LeftNavDrawer to reflect `open` prop and call onClose when its internal close button is clicked

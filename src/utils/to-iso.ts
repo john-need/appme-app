@@ -1,10 +1,4 @@
-type ValidInput = Date | string | number;
-
-const isValidDate = (d: unknown) => {
-  const isValidInput = d instanceof Date || typeof d === "string" || typeof d === "number";
-  return isValidInput && !isNaN(new Date(d as ValidInput).getTime());
-};
-
+import isValidDate, {ValidInput}  from "@/utils/is-valid-date";
 
 const toIso = (v: unknown): string => {
   const date = isValidDate(v) ? new Date(v as ValidInput) : new Date();
