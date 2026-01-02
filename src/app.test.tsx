@@ -7,6 +7,10 @@ import App from "./app";
 import { store } from "./store/root-store";
 import { setCredentials } from "./features/auth/auth-slice";
 
+jest.mock("./utils/jwt", () => ({
+  isJwtValid: jest.fn().mockReturnValue(true),
+}));
+
 const queryClient = new QueryClient();
 
 test("renders app header", () => {
