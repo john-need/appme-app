@@ -104,7 +104,7 @@ const TimeEntries = ({ timeEntries, onAddTime, startStopWatch, onDeleteTimeEntry
 
     // immediately pick a new valid activityId so the Select value is always in the available options
     // compute available activities after the optimistic exclusion
-    const newAvailable = activities.filter((a) => !todayActivityIds.has(a.id) && a.id !== activityId);
+    const newAvailable = activities.filter((a) => !todayActivityIds.has(a.id) && !excludedActivityIds.has(a.id) && a.id !== activityId);
     const newGroup1 = newAvailable.filter(matchesToday).sort((x, y) => x.name.localeCompare(y.name));
     const newGroup2 = newAvailable.filter((a) => !matchesToday(a)).sort((x, y) => x.name.localeCompare(y.name));
     const newFirst = newGroup1[0]?.id ?? newGroup2[0]?.id ?? "";

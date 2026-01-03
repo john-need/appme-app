@@ -142,11 +142,11 @@ export const StopWatchModal: React.FC<StopWatchModalProps> = ({
               <NotStartedIcon/>
             </Fab>
           ) : (
-            <Fab aria-label="start" color="primary" onClick={handlePause}>
+            <Fab aria-label="pause" color="primary" onClick={handlePause}>
               <StopCircleIcon/>
             </Fab>
           )}
-          <Fab disabled={seconds === 0} aria-label="start" color="primary" onClick={handleResetClick}>
+          <Fab disabled={seconds === 0} aria-label="reset" color="primary" onClick={handleResetClick}>
             <RestoreIcon/>
           </Fab>
 

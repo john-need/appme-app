@@ -21,6 +21,8 @@ const defaultProps = {
 describe("StopWatchModal", () => {
   beforeEach(() => {
     jest.useFakeTimers();
+    defaultProps.onClose.mockClear();
+    defaultProps.onSubmit.mockClear();
     jest.clearAllMocks();
   });
 
@@ -45,7 +47,7 @@ describe("StopWatchModal", () => {
 
   it("starts the timer when start button is clicked", () => {
     render(<StopWatchModal {...defaultProps} />);
-    const startButton = screen.getByText("start");
+    const startButton = screen.getByLabelText("start");
     fireEvent.click(startButton);
 
     act(() => {
@@ -61,13 +63,13 @@ describe("StopWatchModal", () => {
 
   it("pauses the timer when pause button is clicked", () => {
     render(<StopWatchModal {...defaultProps} />);
-    fireEvent.click(screen.getByText("start"));
+    fireEvent.click(screen.getByLabelText("start"));
     act(() => {
       jest.advanceTimersByTime(2000);
     });
     expect(screen.getByText("0:02")).toBeInTheDocument();
 
-    fireEvent.click(screen.getByText("pause"));
+    fireEvent.click(screen.getByLabelText("pause"));
     act(() => {
       jest.advanceTimersByTime(2000);
     });
@@ -76,13 +78,13 @@ describe("StopWatchModal", () => {
 
   it("resets the timer after confirmation", async () => {
     render(<StopWatchModal {...defaultProps} />);
-    fireEvent.click(screen.getByText("start"));
+    fireEvent.click(screen.getByLabelText("start"));
     act(() => {
       jest.advanceTimersByTime(5000);
     });
     expect(screen.getByText("0:05")).toBeInTheDocument();
 
-    fireEvent.click(screen.getByText("reset"));
+    fireEvent.click(screen.getByLabelText("reset"));
     expect(screen.getByText("Are you sure you want to reset the timer to 0:00?")).toBeInTheDocument();
 
     act(() => {
@@ -98,8 +100,22 @@ describe("StopWatchModal", () => {
   });
 
   it("closes the modal when cancel is confirmed", async () => {
+    // When seconds is 0, it should close immediately
+    const { unmount } = render(<StopWatchModal {...defaultProps} />);
+    fireEvent.click(screen.getByLabelText("cancel"));
+    expect(defaultProps.onClose).toHaveBeenCalled();
+    unmount();
+    
+    // Clear mock for next part
+    jest.clearAllMocks();
+
+    // Now test with seconds > 0
     render(<StopWatchModal {...defaultProps} />);
-    fireEvent.click(screen.getByText("cancel"));
+    fireEvent.click(screen.getByLabelText("start"));
+    act(() => {
+      jest.advanceTimersByTime(1000);
+    });
+    fireEvent.click(screen.getByLabelText("cancel"));
     expect(screen.getByText("Are you sure you want to close without saving?")).toBeInTheDocument();
 
     act(() => {
@@ -115,11 +131,11 @@ describe("StopWatchModal", () => {
 
   it("shows save prompt when save is clicked", async () => {
     render(<StopWatchModal {...defaultProps} />);
-    fireEvent.click(screen.getByText("start"));
+    fireEvent.click(screen.getByLabelText("start"));
     act(() => {
       jest.advanceTimersByTime(120000); // 2 minutes
     });
-    fireEvent.click(screen.getByText("save"));
+    fireEvent.click(screen.getByLabelText("save"));
 
     expect(screen.getByText("Save Time")).toBeInTheDocument();
     expect(screen.getByText(/You have 10 minutes recorded/)).toBeInTheDocument();
@@ -132,11 +148,11 @@ describe("StopWatchModal", () => {
 
   it("handles 'add to current time' option", async () => {
     render(<StopWatchModal {...defaultProps} />);
-    fireEvent.click(screen.getByText("start"));
+    fireEvent.click(screen.getByLabelText("start"));
     act(() => {
       jest.advanceTimersByTime(120000); // 2 minutes
     });
-    fireEvent.click(screen.getByText("save"));
+    fireEvent.click(screen.getByLabelText("save"));
 
     act(() => {
       fireEvent.click(screen.getByText("add to current time"));
@@ -156,11 +172,11 @@ describe("StopWatchModal", () => {
 
   it("handles 'save' (overwrite) option", async () => {
     render(<StopWatchModal {...defaultProps} />);
-    fireEvent.click(screen.getByText("start"));
+    fireEvent.click(screen.getByLabelText("start"));
     act(() => {
       jest.advanceTimersByTime(180000); // 3 minutes
     });
-    fireEvent.click(screen.getByText("save"));
+    fireEvent.click(screen.getByLabelText("save"));
 
     act(() => {
       fireEvent.click(screen.getByRole("button", { name: "save" }));
@@ -180,11 +196,11 @@ describe("StopWatchModal", () => {
 
   it("handles 'resume' option", async () => {
     render(<StopWatchModal {...defaultProps} />);
-    fireEvent.click(screen.getByText("start"));
+    fireEvent.click(screen.getByLabelText("start"));
     act(() => {
       jest.advanceTimersByTime(5000);
     });
-    fireEvent.click(screen.getByText("save"));
+    fireEvent.click(screen.getByLabelText("save"));
     
     act(() => {
       fireEvent.click(screen.getByText("resume"));
