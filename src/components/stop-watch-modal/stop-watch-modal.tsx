@@ -82,8 +82,14 @@ export const StopWatchModal: React.FC<StopWatchModalProps> = ({
   };
 
   const handleSaveClick = () => {
-    setIsActive(false);
-    setShowSavePrompt(true);
+    if(Number(timeEntry.minutes) > 0) {
+      setIsActive(false);
+      setShowSavePrompt(true);
+      return;
+    }
+    onSubmit({ ...timeEntry, minutes: Math.floor(seconds / 60) });
+    setShowSavePrompt(false);
+    onClose();
   };
 
   const handleSubmit = (timeEntry: TimeEntry) => {
@@ -155,7 +161,7 @@ export const StopWatchModal: React.FC<StopWatchModalProps> = ({
         <DialogActions>
           <Button onClick={() => setShowCancelConfirm(false)}>No</Button>
           <Button onClick={confirmCancel} color="error" variant="contained">
-            Yes, Close
+            Yes
           </Button>
         </DialogActions>
       </Dialog>
@@ -168,11 +174,18 @@ export const StopWatchModal: React.FC<StopWatchModalProps> = ({
             You have {timeEntry.minutes} minutes recorded. What would you like to do?
           </Typography>
         </DialogContent>
+
         <DialogActions sx={{ flexDirection: "column", gap: 1, p: 2 }}>
-          <Button fullWidth variant="contained"
-                  onClick={() => handleSubmit({ ...timeEntry, minutes: Math.floor(seconds / 60) + timeEntry.minutes })}>
-            add to current time
-          </Button>
+          {
+            timeEntry.minutes > 0 &&
+            <Button fullWidth variant="contained"
+                    onClick={() => handleSubmit({
+                      ...timeEntry,
+                      minutes: Math.floor(seconds / 60) + timeEntry.minutes
+                    })}>
+              add to current time
+            </Button>
+          }
           <Button fullWidth variant="contained"
                   onClick={() => handleSubmit({ ...timeEntry, minutes: Math.floor(seconds / 60) })}>
             save

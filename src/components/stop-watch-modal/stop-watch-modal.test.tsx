@@ -103,7 +103,7 @@ describe("StopWatchModal", () => {
     expect(screen.getByText("Are you sure you want to close without saving?")).toBeInTheDocument();
 
     act(() => {
-      fireEvent.click(screen.getByText("Yes, Close"));
+      fireEvent.click(screen.getByText("Yes"));
     });
     expect(defaultProps.onClose).toHaveBeenCalled();
     
