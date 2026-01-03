@@ -28,7 +28,7 @@ const TimeEntries = ({ timeEntries, onAddTime, startStopWatch, onDeleteTimeEntry
   const today = new Date().toISOString().slice(0, 10);
   const [date, setDate] = useState<string>(today);
   const [activityId, setActivityId] = useState<string>("");
-  const [minutes, setMinutes] = useState<number>(0);
+  const [minutes, setMinutes] = useState<number | string>("");
   const [notes, setNotes] = useState<string>("");
   // optimistically excluded activity ids (hide immediately after submission)
   const [excludedActivityIds, setExcludedActivityIds] = React.useState<Set<string>>(new Set());
@@ -112,7 +112,7 @@ const TimeEntries = ({ timeEntries, onAddTime, startStopWatch, onDeleteTimeEntry
     onAddTimeEntry(payload);
 
     // reset form
-    setMinutes(0);
+    setMinutes("");
     setNotes("");
     setDate(today);
   };
