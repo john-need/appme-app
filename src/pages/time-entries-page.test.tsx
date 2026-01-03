@@ -43,6 +43,8 @@ jest.mock("@/components/time-entries/time-entries", () => {
       <button onClick={() => props.startStopWatch(props.timeEntries[0])}>Start StopWatch</button>
       <button onClick={() => props.startStopWatch(props.timeEntries[1])}>Start StopWatch for t2</button>
       <button onClick={() => props.onAddTime(props.timeEntries[0])}>Add Time</button>
+      <button onClick={() => props.onDeleteTimeEntry(props.timeEntries[0].id)}>Delete Entry</button>
+      <button onClick={() => props.onAddTimeEntry({ activityId: "a1", minutes: 30 })}>Add New Entry</button>
     </div>
   );
   TimeEntriesMock.displayName = "TimeEntriesMock";
@@ -137,5 +139,27 @@ describe("TimeEntriesPage", () => {
 
       expect(mockMutate).not.toHaveBeenCalled();
     });
+  });
+
+  it("calls addMutation.mutate when onAddTimeEntry is called", () => {
+    render(<TimeEntriesPage />);
+    fireEvent.click(screen.getByText("Add New Entry"));
+
+    expect(mockAddMutate).toHaveBeenCalledWith(
+      expect.objectContaining({
+        timeEntry: expect.objectContaining({
+          activityId: "a1",
+          minutes: 30,
+        }),
+      }),
+      expect.any(Object)
+    );
+  });
+
+  it("calls deleteMutation.mutate when onDeleteTimeEntry is called", () => {
+    render(<TimeEntriesPage />);
+    fireEvent.click(screen.getByText("Delete Entry"));
+
+    expect(mockDeleteMutate).toHaveBeenCalledWith("t1");
   });
 });

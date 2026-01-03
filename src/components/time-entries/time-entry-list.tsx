@@ -112,13 +112,13 @@ export default function TimeEntryList({ timeEntries, onDelete, onAddTime, onStar
                   sx={{ display: { xs: "none", sm: "block" } }}>
               <Typography>{t.notes ?? ""}</Typography></Grid>
             <Grid item xs={4} sm={3} sx={{ textAlign: "right" }}>
-              <IconButton size="small" aria-label={`add-time-${t.id}`} onClick={(e) => {
+              <IconButton size="small" aria-label={`timer-${t.id}`} onClick={(e) => {
                 e.stopPropagation();
                 handleStartStopWatch(t);
               }}>
                 <TimerIcon fontSize="small"/>
               </IconButton>
-              <IconButton size="small" aria-label={`add-time-${t.id}`} onClick={(e) => {
+              <IconButton size="small" aria-label={`more-time-${t.id}`} onClick={(e) => {
                 e.stopPropagation();
                 handleAddTime(t);
               }}>
