@@ -6,8 +6,13 @@ import {
   DialogActions,
   Button,
   Typography,
-  Box,
+  Box, Fab, IconButton, Stack,
 } from "@mui/material";
+import NotStartedIcon from "@mui/icons-material/NotStarted";
+import StopCircleIcon from "@mui/icons-material/StopCircle";
+import RestoreIcon from "@mui/icons-material/Restore";
+import SaveIcon from "@mui/icons-material/Save";
+import CancelIcon from "@mui/icons-material/Cancel";
 
 interface StopWatchModalProps {
   open: boolean;
@@ -74,6 +79,10 @@ export const StopWatchModal: React.FC<StopWatchModalProps> = ({
   };
 
   const handleCancelClick = () => {
+    if (seconds === 0) {
+      onClose();
+      return;
+    }
     setShowCancelConfirm(true);
   };
 
@@ -82,7 +91,7 @@ export const StopWatchModal: React.FC<StopWatchModalProps> = ({
   };
 
   const handleSaveClick = () => {
-    if(Number(timeEntry.minutes) > 0) {
+    if (Number(timeEntry.minutes) > 0) {
       setIsActive(false);
       setShowSavePrompt(true);
       return;
@@ -98,7 +107,6 @@ export const StopWatchModal: React.FC<StopWatchModalProps> = ({
     onClose();
   };
 
-
   const handleResume = () => {
     setShowSavePrompt(false);
     setIsActive(true);
@@ -107,7 +115,19 @@ export const StopWatchModal: React.FC<StopWatchModalProps> = ({
   return (
     <>
       <Dialog open={open} onClose={handleCancelClick} maxWidth="xs" fullWidth>
-        <DialogTitle>Stopwatch: {activityName}</DialogTitle>
+        <Stack direction="row" justifyContent="space-between" alignItems="center">
+          <DialogTitle>
+            <Typography component={"span"}>Stopwatch: {activityName}</Typography>
+          </DialogTitle>
+          <IconButton
+            aria-label="cancel"
+            color="secondary"
+            sx={{ transform: "translate(7px, -18px)" }}
+            onClick={handleCancelClick}>
+            <CancelIcon/>
+          </IconButton>
+
+        </Stack>
         <DialogContent>
           <Box sx={{ textAlign: "center", my: 2 }}>
             <Typography variant="h6">Current: {timeEntry.minutes} min</Typography>
@@ -118,23 +138,23 @@ export const StopWatchModal: React.FC<StopWatchModalProps> = ({
         </DialogContent>
         <DialogActions sx={{ justifyContent: "center", flexWrap: "wrap", gap: 1, pb: 2 }}>
           {!isActive ? (
-            <Button variant="contained" color="primary" onClick={handleStart}>
-              start
-            </Button>
+            <Fab aria-label="start" color="primary" onClick={handleStart}>
+              <NotStartedIcon/>
+            </Fab>
           ) : (
-            <Button variant="contained" color="warning" onClick={handlePause}>
-              pause
-            </Button>
+            <Fab aria-label="start" color="primary" onClick={handlePause}>
+              <StopCircleIcon/>
+            </Fab>
           )}
-          <Button variant="outlined" color="error" onClick={handleResetClick}>
-            reset
-          </Button>
-          <Button variant="outlined" onClick={handleCancelClick}>
-            cancel
-          </Button>
-          <Button variant="contained" color="success" onClick={handleSaveClick}>
-            save
-          </Button>
+          <Fab disabled={seconds === 0} aria-label="start" color="primary" onClick={handleResetClick}>
+            <RestoreIcon/>
+          </Fab>
+
+          <Fab disabled={seconds === 0} aria-label="save" color="primary" onClick={handleSaveClick}>
+            <SaveIcon/>
+          </Fab>
+
+
         </DialogActions>
       </Dialog>
 
