@@ -1,4 +1,0 @@
-
-> appme-app@1.0.0 test
-> jest --watchAll=false
-
