@@ -69,7 +69,7 @@ export default function TimeEntryList({ timeEntries, onDelete, onAddTime, onStar
   };
 
   const handleConfirm = (confirmed: boolean) => {
-    const deleteMe = {...toDelete};
+    const deleteMe = { ...toDelete };
     setConfirmOpen(false);
     setToDelete(null);
     if (!confirmed || !deleteMe || !onDelete) {
@@ -106,10 +106,12 @@ export default function TimeEntryList({ timeEntries, onDelete, onAddTime, onStar
           onClick={() => handleOpen(t)}
         >
           <Grid container spacing={1} alignItems="center">
-            <Grid item xs={3}><Typography>{getActivityName(t.activityId)}</Typography></Grid>
-            <Grid item xs={2}><Typography>{t.minutes} min</Typography></Grid>
-            <Grid item xs={5}><Typography>{t.notes ?? ""}</Typography></Grid>
-            <Grid item xs={2} sx={{ textAlign: "right" }}>
+            <Grid item xs={5} sm={3}><Typography>{getActivityName(t.activityId)}</Typography></Grid>
+            <Grid item xs={3} sm={2}><Typography>{t.minutes} min</Typography></Grid>
+            <Grid item xs={12} sm={4}
+                  sx={{ display: { xs: "none", sm: "block" } }}>
+              <Typography>{t.notes ?? ""}</Typography></Grid>
+            <Grid item xs={4} sm={3} sx={{ textAlign: "right" }}>
               <IconButton size="small" aria-label={`add-time-${t.id}`} onClick={(e) => {
                 e.stopPropagation();
                 handleStartStopWatch(t);
