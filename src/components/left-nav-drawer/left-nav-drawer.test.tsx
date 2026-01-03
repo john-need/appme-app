@@ -25,7 +25,7 @@ describe("LeftNavDrawer", () => {
     const onOpen = jest.fn();
     const onClose = jest.fn();
     render(
-      <MemoryRouter initialEntries={["/"]}>
+      <MemoryRouter initialEntries={["/"]} future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
         <LeftNavDrawer open onOpen={onOpen} onClose={onClose} />
       </MemoryRouter>
     );

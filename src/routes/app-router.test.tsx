@@ -24,7 +24,7 @@ describe("AppRouter", () => {
   it("renders LoginForm on /login when unauthenticated", () => {
     isAuthed = false;
     render(
-      <MemoryRouter initialEntries={["/login"]}>
+      <MemoryRouter initialEntries={["/login"]} future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
         <AppRouter />
       </MemoryRouter>
     );
@@ -34,7 +34,7 @@ describe("AppRouter", () => {
   it("redirects /login to / when authenticated", () => {
     isAuthed = true;
     render(
-      <MemoryRouter initialEntries={["/login"]}>
+      <MemoryRouter initialEntries={["/login"]} future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
         <AppRouter />
       </MemoryRouter>
     );
@@ -44,7 +44,7 @@ describe("AppRouter", () => {
 
   it("renders ActivitiesPage on /activities", () => {
     render(
-      <MemoryRouter initialEntries={["/activities"]}>
+      <MemoryRouter initialEntries={["/activities"]} future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
         <AppRouter />
       </MemoryRouter>
     );
@@ -53,7 +53,7 @@ describe("AppRouter", () => {
 
   it("renders PreferencesPage route", () => {
     render(
-      <MemoryRouter initialEntries={["/preferences"]}>
+      <MemoryRouter initialEntries={["/preferences"]} future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
         <AppRouter />
       </MemoryRouter>
     );
@@ -62,7 +62,7 @@ describe("AppRouter", () => {
 
   it("renders DashboardPage route", () => {
     render(
-      <MemoryRouter initialEntries={["/dashboard"]}>
+      <MemoryRouter initialEntries={["/dashboard"]} future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
         <AppRouter />
       </MemoryRouter>
     );
