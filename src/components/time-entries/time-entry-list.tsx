@@ -4,7 +4,6 @@ import { useAppSelector } from "@/hooks";
 import { selectActivities } from "@/features/activities/activities-slice";
 import EditTimeEntryModal from "./edit-time-entry-modal";
 import useUpdateTimeEntry from "@/hooks/use-update-time-entry";
-import useDeleteTimeEntry from "@/hooks/use-delete-time-entry";
 import DeleteIcon from "@mui/icons-material/Delete";
 import IconButton from "@mui/material/IconButton";
 import MoreTimeIcon from "@mui/icons-material/MoreTime";
@@ -13,15 +12,15 @@ import ConfirmDeleteDialog from "./confirm-delete-dialog";
 
 interface Props {
   timeEntries: TimeEntry[];
-  onEntryDeleted?: (activityId: string) => void;
+  onDelete?: (timeEntry: TimeEntry) => void;
   onAddTime?: (entry: TimeEntry) => void;
   onStartStopWatch?: (entry: TimeEntry) => void;
 }
 
-export default function TimeEntryList({ timeEntries,  onEntryDeleted, onAddTime, onStartStopWatch }: Props) {
+export default function TimeEntryList({ timeEntries, onDelete, onAddTime, onStartStopWatch }: Props) {
   const activities = useAppSelector(selectActivities);
   const updateMutation = useUpdateTimeEntry();
-  const deleteMutation = useDeleteTimeEntry();
+
   const getActivityName = (id: string) => activities.find((a) => a.id === id)?.name ?? id;
 
   // helper: local YYYY-MM-DD for a Date or ISO string
@@ -52,7 +51,6 @@ export default function TimeEntryList({ timeEntries,  onEntryDeleted, onAddTime,
   };
 
   const handleStartStopWatch = (entry: TimeEntry) => {
-
     if (onStartStopWatch) {
       onStartStopWatch(entry);
     }
@@ -65,26 +63,19 @@ export default function TimeEntryList({ timeEntries,  onEntryDeleted, onAddTime,
   };
 
   const handleAddTime = (entry: TimeEntry) => {
-    if(onAddTime){
+    if (onAddTime) {
       onAddTime(entry);
     }
   };
 
   const handleConfirm = (confirmed: boolean) => {
+    const deleteMe = {...toDelete};
     setConfirmOpen(false);
-    if (confirmed && toDelete) {
-      const id = toDelete.id;
-      const aid = toDelete.activityId;
-      setToDelete(null);
-      // pass onSuccess to notify parent so it can remove any optimistic exclusion
-      deleteMutation.mutate(id, {
-        onSuccess() {
-          if (onEntryDeleted) onEntryDeleted(aid);
-        },
-      });
-    } else {
-      setToDelete(null);
+    setToDelete(null);
+    if (!confirmed || !deleteMe || !onDelete) {
+      return;
     }
+    onDelete(deleteMe as TimeEntry);
   };
 
   return (
@@ -118,24 +109,33 @@ export default function TimeEntryList({ timeEntries,  onEntryDeleted, onAddTime,
             <Grid item xs={3}><Typography>{getActivityName(t.activityId)}</Typography></Grid>
             <Grid item xs={2}><Typography>{t.minutes} min</Typography></Grid>
             <Grid item xs={5}><Typography>{t.notes ?? ""}</Typography></Grid>
-            <Grid item xs={2} sx={{textAlign: "right"}}>
-              <IconButton size="small" aria-label={`add-time-${t.id}`} onClick={(e) => { e.stopPropagation(); handleStartStopWatch(t); }}>
-                <TimerIcon  fontSize="small" />
+            <Grid item xs={2} sx={{ textAlign: "right" }}>
+              <IconButton size="small" aria-label={`add-time-${t.id}`} onClick={(e) => {
+                e.stopPropagation();
+                handleStartStopWatch(t);
+              }}>
+                <TimerIcon fontSize="small"/>
               </IconButton>
-              <IconButton size="small" aria-label={`add-time-${t.id}`} onClick={(e) => { e.stopPropagation(); handleAddTime(t); }}>
-                <MoreTimeIcon fontSize="small" />
+              <IconButton size="small" aria-label={`add-time-${t.id}`} onClick={(e) => {
+                e.stopPropagation();
+                handleAddTime(t);
+              }}>
+                <MoreTimeIcon fontSize="small"/>
               </IconButton>
-              <IconButton size="small" aria-label={`delete-${t.id}`} onClick={(e) => { e.stopPropagation(); handleDelete(t); }}>
-                <DeleteIcon fontSize="small" />
+              <IconButton size="small" aria-label={`delete-${t.id}`} onClick={(e) => {
+                e.stopPropagation();
+                handleDelete(t);
+              }}>
+                <DeleteIcon fontSize="small"/>
               </IconButton>
             </Grid>
           </Grid>
         </Box>
       ))}
       {editing && (
-        <EditTimeEntryModal open={Boolean(editing)} timeEntry={editing} onClose={handleClose} onSubmit={handleSave} />
+        <EditTimeEntryModal open={Boolean(editing)} timeEntry={editing} onClose={handleClose} onSubmit={handleSave}/>
       )}
-      <ConfirmDeleteDialog open={confirmOpen} entry={toDelete} onClose={handleConfirm} />
+      <ConfirmDeleteDialog open={confirmOpen} entry={toDelete} onClose={handleConfirm}/>
     </Box>
   );
 }

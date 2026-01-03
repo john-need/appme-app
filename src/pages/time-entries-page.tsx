@@ -6,8 +6,11 @@ import iso2LocalDateTime from "@/utils/iso-2-local-date-time";
 import useUpdateTimeEntry from "@/hooks/use-update-time-entry";
 import { StopWatchModal } from "@/components/stop-watch-modal/stop-watch-modal";
 import { selectActivities } from "@/features/activities/activities-slice";
+import useAddTimeEntry from "@/hooks/use-add-time-entry";
+import useDeleteTimeEntry from "@/hooks/use-delete-time-entry";
 
 export default function TimeEntriesPage() {
+  const deleteMutation = useDeleteTimeEntry();
   const [showStopWatch, setShowStopWatch] = React.useState(false);
   const [editing, setEditing] = React.useState<TimeEntry | null>(null);
   const timeEntries = useAppSelector((s) => s.timeEntries?.items ?? [])
@@ -48,9 +51,29 @@ export default function TimeEntriesPage() {
 
   const activityName = editing ? activities.find(a => a.id === editing.activityId)?.name ?? editing.activityId : "";
 
+  const addMutation = useAddTimeEntry();
+
+  const deleteTimeEntry = (id: string) => {
+    deleteMutation.mutate(id);
+  };
+
+  const addTimeEntry = (timeEntry: TimeEntry) => {
+    addMutation.mutate({ timeEntry }, {
+      onError() {
+        console.error("Could not add time entry", JSON.stringify(timeEntry));
+      },
+    });
+  };
+
   return (
     <Container sx={{ py: 4 }}>
-      <TimeEntries timeEntries={timeEntries} onAddTime={onAddTime} startStopWatch={startStopWatch} />
+      <TimeEntries
+        timeEntries={timeEntries}
+        onAddTime={onAddTime}
+        startStopWatch={startStopWatch}
+        onDeleteTimeEntry={deleteTimeEntry}
+        onAddTimeEntry={addTimeEntry}
+      />
       {editing && (
         <StopWatchModal
           open={showStopWatch}

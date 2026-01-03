@@ -41,7 +41,7 @@ describe("Header component", () => {
       <Provider store={store}>
         <QueryClientProvider client={queryClient}>
           <ThemeProvider>
-            <MemoryRouter initialEntries={["/"]}>
+            <MemoryRouter initialEntries={["/"]} future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
               <Header />
             </MemoryRouter>
           </ThemeProvider>
@@ -57,7 +57,7 @@ describe("Header component", () => {
       <Provider store={store}>
         <QueryClientProvider client={queryClient}>
           <ThemeProvider>
-            <MemoryRouter initialEntries={["/"]}>
+            <MemoryRouter initialEntries={["/"]} future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
               <Header />
             </MemoryRouter>
           </ThemeProvider>

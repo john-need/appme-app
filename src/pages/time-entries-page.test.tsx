@@ -26,6 +26,16 @@ jest.mock("@/hooks/use-update-time-entry", () => () => ({
   mutate: mockMutate,
 }));
 
+const mockAddMutate = jest.fn();
+jest.mock("@/hooks/use-add-time-entry", () => () => ({
+  mutate: mockAddMutate,
+}));
+
+const mockDeleteMutate = jest.fn();
+jest.mock("@/hooks/use-delete-time-entry", () => () => ({
+  mutate: mockDeleteMutate,
+}));
+
 jest.mock("@/components/time-entries/time-entries", () => {
   const TimeEntriesMock = (props: any) => (
     <div>
@@ -71,7 +81,7 @@ describe("TimeEntriesPage", () => {
   });
 
   it("handles case where activity name is not found", () => {
-    jest.mocked(fireEvent.click); // Not needed but let's just trigger another click
+    jest.mocked(fireEvent.click); // Not needed, but let's just trigger another click
     render(<TimeEntriesPage />);
     // Click on the second entry which has activityId "a2" but "a2" is not in activities mock
     fireEvent.click(screen.getByText("Start StopWatch for t2"));
