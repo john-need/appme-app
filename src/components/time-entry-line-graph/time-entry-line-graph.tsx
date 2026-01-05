@@ -10,7 +10,7 @@ import {
   ResponsiveContainer,
   ReferenceLine,
 } from "recharts";
-import { Typography, Box, Card, CardContent, CardHeader, CardMedia, CardActions } from "@mui/material";
+import { Card, CardContent, CardHeader } from "@mui/material";
 
 interface TimeEntryLineGraphProps {
   activity: Activity;

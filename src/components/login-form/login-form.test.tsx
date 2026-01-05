@@ -1,5 +1,5 @@
 import React from "react";
-import { render, screen } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import LoginForm from "./login-form";
 
@@ -146,8 +146,6 @@ describe("LoginForm", () => {
     // effects happen asynchronously; use waitFor to avoid race
     await (async () => {
       // simple retry loop via RTL's waitFor
-      // eslint-disable-next-line @typescript-eslint/no-var-requires
-      const { waitFor } = require("@testing-library/react");
       await waitFor(() => {
         expect(mockDispatch).toHaveBeenCalledWith(
           expect.objectContaining({ type: "notification/addNotification" })
