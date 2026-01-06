@@ -16,7 +16,7 @@ import CancelIcon from "@mui/icons-material/Cancel";
 
 interface StopWatchModalProps {
   open: boolean;
-  timeEntry: TimeEntry;
+  timeEntry?: TimeEntry | null;
   onClose: () => void;
   onSubmit: (timeEntry: TimeEntry) => void;
   activityName: string;
@@ -24,7 +24,7 @@ interface StopWatchModalProps {
 
 export const StopWatchModal: React.FC<StopWatchModalProps> = ({
                                                                 open,
-                                                                timeEntry,
+                                                                timeEntry = {},
                                                                 onClose,
                                                                 onSubmit,
                                                                 activityName,
@@ -91,12 +91,12 @@ export const StopWatchModal: React.FC<StopWatchModalProps> = ({
   };
 
   const handleSaveClick = () => {
-    if (Number(timeEntry.minutes) > 0) {
+    if (Number(timeEntry?.minutes || 0) > 0) {
       setIsActive(false);
       setShowSavePrompt(true);
       return;
     }
-    onSubmit({ ...timeEntry, minutes: Math.floor(seconds / 60) });
+    onSubmit({ ...(timeEntry || {}), minutes: Math.floor(seconds / 60) } as TimeEntry);
     setShowSavePrompt(false);
     onClose();
   };
@@ -130,7 +130,7 @@ export const StopWatchModal: React.FC<StopWatchModalProps> = ({
         </Stack>
         <DialogContent>
           <Box sx={{ textAlign: "center", my: 2 }}>
-            <Typography variant="h6">Current: {timeEntry.minutes} min</Typography>
+            <Typography variant="h6">Current: {timeEntry?.minutes || 0} min</Typography>
             <Typography variant="h3" sx={{ fontVariantNumeric: "tabular-nums", my: 2 }}>
               {formatTime(seconds)}
             </Typography>
@@ -191,23 +191,23 @@ export const StopWatchModal: React.FC<StopWatchModalProps> = ({
         <DialogTitle>Save Time</DialogTitle>
         <DialogContent>
           <Typography>
-            You have {timeEntry.minutes} minutes recorded. What would you like to do?
+            You have {timeEntry?.minutes || 0} minutes recorded. What would you like to do?
           </Typography>
         </DialogContent>
 
         <DialogActions sx={{ flexDirection: "column", gap: 1, p: 2 }}>
           {
-            timeEntry.minutes > 0 &&
+            timeEntry && (Number(timeEntry?.minutes) > 0) &&
             <Button fullWidth variant="contained"
                     onClick={() => handleSubmit({
-                      ...timeEntry,
-                      minutes: Math.floor(seconds / 60) + timeEntry.minutes
-                    })}>
+                      ...(timeEntry || {}),
+                      minutes: Math.floor(seconds / 60) + (timeEntry?.minutes || 0),
+                    } as TimeEntry)}>
               add to current time
             </Button>
           }
           <Button fullWidth variant="contained"
-                  onClick={() => handleSubmit({ ...timeEntry, minutes: Math.floor(seconds / 60) })}>
+                  onClick={() => handleSubmit({ ...(timeEntry || {}), minutes: Math.floor(seconds / 60) } as TimeEntry)}>
             save
           </Button>
           <Button fullWidth onClick={handleResume}>
