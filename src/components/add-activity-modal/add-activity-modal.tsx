@@ -65,9 +65,8 @@ export default function AddActivityModal({ onClose, onSubmit, open }: AddActivit
 
   const handleSubmit = (e?: React.FormEvent) => {
     e?.preventDefault();
-    // basic validation: require name and goal >= 1
     const goalNumber = goal === "" ? NaN : Number(goal);
-    if (!name || name.trim() === "" || isNaN(goalNumber) || goalNumber < 1) return;
+    if (!name || name.trim() === "" || isNaN(goalNumber) || goalNumber < 0) return;
     const payload: Partial<Activity> = {
       name: name || undefined,
       type: type,
@@ -83,6 +82,16 @@ export default function AddActivityModal({ onClose, onSubmit, open }: AddActivit
       weekends,
     };
     onSubmit(payload);
+  };
+
+  const handleGoalChange = (value: string) => {
+    if (value === "") {
+      setGoal("");
+      return;
+    }
+    const goalValue = Number(value);
+    const isValid = !isNaN(goalValue) && goalValue >= 0;
+    setGoal(isValid ? goalValue : "");
   };
 
   // form validation state
@@ -125,7 +134,7 @@ export default function AddActivityModal({ onClose, onSubmit, open }: AddActivit
             label="Goal"
             type="number"
             value={goal}
-            onChange={(e) => setGoal(e.target.value === "" ? "" : Number(e.target.value))}
+            onChange={(e) => handleGoalChange(e.target.value)}
             fullWidth
           />
 

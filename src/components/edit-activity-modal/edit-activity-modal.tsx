@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import {
   Dialog,
   DialogTitle,
@@ -40,22 +40,6 @@ export default function EditActivityModal({ onClose, onSubmit, activity, open }:
   const [saturday, setSaturday] = useState(!!activity?.saturday);
   const [sunday, setSunday] = useState(!!activity?.sunday);
   const [weekends, setWeekends] = useState(!!activity?.weekends);
-
-  // useEffect(() => {
-  //   // sync local state if activity prop changes
-  //   setName(activity?.name ?? "");
-  //   setType(activity?.type ?? "TASSEI");
-  //   setComment(activity?.comment ?? "");
-  //   setGoal(activity?.goal ?? "");
-  //   setMonday(!!activity?.monday);
-  //   setTuesday(!!activity?.tuesday);
-  //   setWednesday(!!activity?.wednesday);
-  //   setThursday(!!activity?.thursday);
-  //   setFriday(!!activity?.friday);
-  //   setSaturday(!!activity?.saturday);
-  //   setSunday(!!activity?.sunday);
-  //   setWeekends(!!activity?.weekends);
-  // }, [activity]);
 
   // Handlers to keep weekends and saturday/sunday mutually exclusive
   const handleWeekendsChange = (checked: boolean) => {
@@ -103,6 +87,10 @@ export default function EditActivityModal({ onClose, onSubmit, activity, open }:
   };
 
   const handleGoalChange = (value: string) => {
+    if (value === "") {
+      setGoal("");
+      return;
+    }
     const goal = Number(value);
     const isValid = !isNaN(goal) && goal >= 0;
     setGoal(isValid ? goal : "");

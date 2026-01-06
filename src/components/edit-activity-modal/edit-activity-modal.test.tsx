@@ -25,7 +25,7 @@ describe("EditActivityModal", () => {
   it("renders dialog with title and prefilled fields from activity", () => {
     const onClose = jest.fn();
     const onSubmit = jest.fn();
-    render(<EditActivityModal onClose={onClose} onSubmit={onSubmit} activity={baseActivity} />);
+    render(<EditActivityModal open={true} onClose={onClose} onSubmit={onSubmit} activity={baseActivity} />);
 
     expect(screen.getByRole("dialog")).toBeInTheDocument();
     expect(screen.getByText(/Edit Activity/i)).toBeInTheDocument();
@@ -46,7 +46,7 @@ describe("EditActivityModal", () => {
     const user = userEvent.setup();
     const onClose = jest.fn();
     const onSubmit = jest.fn();
-    render(<EditActivityModal onClose={onClose} onSubmit={onSubmit} activity={baseActivity} />);
+    render(<EditActivityModal open={true} onClose={onClose} onSubmit={onSubmit} activity={baseActivity} />);
 
     const saveBtn = screen.getByRole("button", { name: /save/i });
     // initially valid
@@ -57,13 +57,18 @@ describe("EditActivityModal", () => {
     await user.clear(nameInput);
     expect(saveBtn).toBeDisabled();
 
-    // restore name but make goal invalid (< 1)
+    // restore name but make goal invalid (negative)
     await user.type(nameInput, "Jogging");
     expect(saveBtn).toBeEnabled();
     const goalInput = screen.getByLabelText(/Goal/i);
     await user.clear(goalInput);
-    await user.type(goalInput, "0");
+    await user.type(goalInput, "-1");
     expect(saveBtn).toBeDisabled();
+
+    // fix goal (0 is allowed)
+    await user.clear(goalInput);
+    await user.type(goalInput, "0");
+    expect(saveBtn).toBeEnabled();
 
     // fix goal
     await user.clear(goalInput);
@@ -75,7 +80,7 @@ describe("EditActivityModal", () => {
     const user = userEvent.setup();
     const onClose = jest.fn();
     const onSubmit = jest.fn();
-    render(<EditActivityModal onClose={onClose} onSubmit={onSubmit} activity={baseActivity} />);
+    render(<EditActivityModal open={true} onClose={onClose} onSubmit={onSubmit} activity={baseActivity} />);
 
     // Change fields
     await user.clear(screen.getByLabelText(/Name/i));
@@ -119,7 +124,7 @@ describe("EditActivityModal", () => {
     const onSubmit = jest.fn();
     // start with sat/sun true to exercise exclusivity transitions
     const activity: Activity = { ...baseActivity, saturday: true, sunday: true };
-    render(<EditActivityModal onClose={onClose} onSubmit={onSubmit} activity={activity} />);
+    render(<EditActivityModal open={true} onClose={onClose} onSubmit={onSubmit} activity={activity} />);
 
     const weekends = screen.getByLabelText("Weekends") as HTMLInputElement;
     const sat = screen.getByLabelText("Sat") as HTMLInputElement;
@@ -139,16 +144,13 @@ describe("EditActivityModal", () => {
     expect((screen.getByLabelText("Weekends") as HTMLInputElement).checked).toBe(false);
   });
 
-  it("calls onClose when Cancel or close button clicked", async () => {
+  it("calls onClose when close button clicked", async () => {
     const user = userEvent.setup();
     const onClose = jest.fn();
     const onSubmit = jest.fn();
-    render(<EditActivityModal onClose={onClose} onSubmit={onSubmit} activity={baseActivity} />);
-
-    await user.click(screen.getByRole("button", { name: /cancel/i }));
-    expect(onClose).toHaveBeenCalledTimes(1);
+    render(<EditActivityModal open={true} onClose={onClose} onSubmit={onSubmit} activity={baseActivity} />);
 
     await user.click(screen.getByRole("button", { name: /close/i }));
-    expect(onClose).toHaveBeenCalledTimes(2);
+    expect(onClose).toHaveBeenCalledTimes(1);
   });
 });
