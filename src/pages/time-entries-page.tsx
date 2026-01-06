@@ -15,7 +15,7 @@ export default function TimeEntriesPage() {
   const [editing, setEditing] = React.useState<TimeEntry | null>(null);
   const timeEntries = useAppSelector((s) => s.timeEntries?.items ?? [])
     .map(te => ({ ...te, created: iso2LocalDateTime(te.created), updated: iso2LocalDateTime(te.created) }));
-  
+
   const activities = useAppSelector(selectActivities);
   const updateMutation = useUpdateTimeEntry();
 
@@ -74,15 +74,15 @@ export default function TimeEntriesPage() {
         onDeleteTimeEntry={deleteTimeEntry}
         onAddTimeEntry={addTimeEntry}
       />
-      {editing && (
-        <StopWatchModal
-          open={showStopWatch}
-          timeEntry={editing}
-          onClose={handleClose}
-          onSubmit={handleSave}
-          activityName={activityName}
-        />
-      )}
+
+      <StopWatchModal
+        open={showStopWatch}
+        timeEntry={editing}
+        onClose={handleClose}
+        onSubmit={handleSave}
+        activityName={activityName}
+      />
+
     </Container>
   );
 }

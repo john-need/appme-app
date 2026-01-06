@@ -52,13 +52,16 @@ jest.mock("@/components/time-entries/time-entries", () => {
 });
 
 jest.mock("@/components/stop-watch-modal/stop-watch-modal", () => {
-  const StopWatchModalMock = (props: any) => (
-    <div data-testid="stop-watch-modal">
-      <div>StopWatchModal Mock for {props.activityName}</div>
-      <button onClick={props.onClose}>Close Modal</button>
-      <button onClick={() => props.onSubmit(props.timeEntry)}>Save Modal</button>
-    </div>
-  );
+  const StopWatchModalMock = (props: any) => {
+    if (!props.open) return null;
+    return (
+      <div data-testid="stop-watch-modal">
+        <div>StopWatchModal Mock for {props.activityName}</div>
+        <button onClick={props.onClose}>Close Modal</button>
+        <button onClick={() => props.onSubmit(props.timeEntry)}>Save Modal</button>
+      </div>
+    );
+  };
   StopWatchModalMock.displayName = "StopWatchModalMock";
   return {
     StopWatchModal: StopWatchModalMock,
