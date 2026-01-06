@@ -18,7 +18,7 @@ interface ActivitiesParams {
 }
 
 export default function Activities({ activities, updateActivity, deleteActivity, addActivity }: ActivitiesParams) {
-  const [open, setOpen] = useState(false);
+  const [addModalOpen, setAddModalOpen] = useState(false);
   const [editOpen, setEditOpen] = useState(false);
   const [activeActivity, setActiveActivity] = useState<Activity | null>(null);
   const [deleteAlertOpen, setDeleteAlertOpen] = React.useState(false);
@@ -53,8 +53,8 @@ export default function Activities({ activities, updateActivity, deleteActivity,
     });
     return arr;
   }, [activities, sortBy, sortDir]);
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
+  const handleOpen = () => setAddModalOpen(true);
+  const handleClose = () => setAddModalOpen(false);
   const handleSubmit = (activity: Partial<Activity>) => {
     addActivity(activity);
     handleClose();
@@ -69,7 +69,6 @@ export default function Activities({ activities, updateActivity, deleteActivity,
     setActiveActivity(null);
     setEditOpen(false);
   };
-
 
   const handleDeleteAlertOpen = (activity: Activity) => () => {
     if (activity?.id) {
@@ -91,7 +90,6 @@ export default function Activities({ activities, updateActivity, deleteActivity,
       : darken(theme.palette.background.default, 0.1);
   }, [theme]);
 
-
   const headerHoverBgColor: string = useMemo(() => {
     return theme.palette.mode === "dark"
       ? lighten(theme.palette.background.default, 0.05)
@@ -104,13 +102,11 @@ export default function Activities({ activities, updateActivity, deleteActivity,
       : darken(theme.palette.background.default, 0.05);
   }, [theme]);
 
-
   const headerBorderColor = useMemo(() => {
     return theme.palette.mode === "dark"
       ? lighten(theme.palette.background.default, 0.2)
       : darken(theme.palette.background.default, 0.2);
   }, [theme]);
-
 
   return (
     <>
@@ -268,21 +264,19 @@ export default function Activities({ activities, updateActivity, deleteActivity,
         >
           <AddIcon/>
         </Fab>
-
-        {open && <AddActivityModal onClose={handleClose} onSubmit={handleSubmit}/>}
-        {editOpen && activeActivity && (
-          <EditActivityModal
-            onClose={handleEditClose}
-            onSubmit={(partial) => {
-              setEditOpen(false);
-              // ensure id exists then call updateActivity with the full activity
-              if (!partial || !partial.id) return;
-              updateActivity(partial as Activity);
-            }}
-            activity={activeActivity}
-          />
-        )}
       </Box>
+      <AddActivityModal open={addModalOpen} onClose={handleClose} onSubmit={handleSubmit}/>
+      <EditActivityModal
+        open={editOpen}
+        onClose={handleEditClose}
+        onSubmit={(partial) => {
+          setEditOpen(false);
+          // ensure id exists then call updateActivity with the full activity
+          if (!partial || !partial.id) return;
+          updateActivity(partial as Activity);
+        }}
+        activity={activeActivity}
+      />
       <ConfirmActivityDeleteDialog
         open={deleteAlertOpen}
         onClose={handleDeleteResponse}

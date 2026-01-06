@@ -21,10 +21,11 @@ import CloseIcon from "@mui/icons-material/Close";
 
 interface AddActivityModalProps {
   onClose: () => void;
+  open: boolean;
   onSubmit: (activity: Partial<Activity>) => void;
 }
 
-export default function AddActivityModal({ onClose, onSubmit }: AddActivityModalProps) {
+export default function AddActivityModal({ onClose, onSubmit, open }: AddActivityModalProps) {
   const [name, setName] = useState("");
   const [type, setType] = useState<ActivityType>("TASSEI");
   const [comment, setComment] = useState("");
@@ -86,13 +87,12 @@ export default function AddActivityModal({ onClose, onSubmit }: AddActivityModal
 
   // form validation state
   const goalNumber = goal === "" ? NaN : Number(goal);
-  const canSubmit = !!name && name.trim() !== "" && !isNaN(goalNumber) && goalNumber >= 1;
+  const canSubmit = !!name && name.trim() !== "" && !isNaN(goalNumber) && goalNumber >= 0;
 
   return (
-    <Dialog open onClose={onClose} maxWidth="sm" fullWidth>
+    <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
       <DialogTitle sx={{ position: "relative" }}>
         Add Activity
-        {/* FAB styled as small close button in upper-right */}
         <Fab
           size="small"
           color="default"
@@ -158,7 +158,6 @@ export default function AddActivityModal({ onClose, onSubmit }: AddActivityModal
       </DialogContent>
 
       <DialogActions>
-        <Button onClick={onClose}>Cancel</Button>
         <Button onClick={() => handleSubmit()} variant="contained" disabled={!canSubmit}>
           Add
         </Button>
