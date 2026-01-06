@@ -7,7 +7,7 @@ describe("AddActivityModal", () => {
   it("renders dialog with title and core fields", () => {
     const onClose = jest.fn();
     const onSubmit = jest.fn();
-    render(<AddActivityModal onClose={onClose} onSubmit={onSubmit} />);
+    render(<AddActivityModal open={true} onClose={onClose} onSubmit={onSubmit} />);
 
     expect(screen.getByRole("dialog")).toBeInTheDocument();
     expect(screen.getByText(/Add Activity/i)).toBeInTheDocument();
@@ -21,10 +21,10 @@ describe("AddActivityModal", () => {
     });
   });
 
-  it("disables Add until name and goal are valid (>= 1)", async () => {
+  it("disables Add until name and goal are valid (>= 0)", async () => {
     const onClose = jest.fn();
     const onSubmit = jest.fn();
-    render(<AddActivityModal onClose={onClose} onSubmit={onSubmit} />);
+    render(<AddActivityModal open={true} onClose={onClose} onSubmit={onSubmit} />);
     const user = userEvent.setup();
 
     const addBtn = screen.getByRole("button", { name: /add/i });
@@ -35,8 +35,12 @@ describe("AddActivityModal", () => {
     expect(addBtn).toBeDisabled();
 
     await user.clear(screen.getByLabelText(/Goal/i));
-    await user.type(screen.getByLabelText(/Goal/i), "0");
+    await user.type(screen.getByLabelText(/Goal/i), "-1");
     expect(addBtn).toBeDisabled();
+
+    await user.clear(screen.getByLabelText(/Goal/i));
+    await user.type(screen.getByLabelText(/Goal/i), "0");
+    expect(addBtn).toBeEnabled();
 
     await user.clear(screen.getByLabelText(/Goal/i));
     await user.type(screen.getByLabelText(/Goal/i), "15");
@@ -46,7 +50,7 @@ describe("AddActivityModal", () => {
   it("submits payload with defaults and provided values when valid", async () => {
     const onClose = jest.fn();
     const onSubmit = jest.fn();
-    render(<AddActivityModal onClose={onClose} onSubmit={onSubmit} />);
+    render(<AddActivityModal open={true} onClose={onClose} onSubmit={onSubmit} />);
     const user = userEvent.setup();
 
     await user.type(screen.getByLabelText(/Name/i), "Workout");
@@ -86,7 +90,7 @@ describe("AddActivityModal", () => {
   it("keeps Weekends mutually exclusive with Sat/Sun selections", async () => {
     const onClose = jest.fn();
     const onSubmit = jest.fn();
-    render(<AddActivityModal onClose={onClose} onSubmit={onSubmit} />);
+    render(<AddActivityModal open={true} onClose={onClose} onSubmit={onSubmit} />);
     const user = userEvent.setup();
 
     // select Weekends -> Sat/Sun should uncheck
@@ -110,18 +114,14 @@ describe("AddActivityModal", () => {
     expect((screen.getByLabelText("Weekends") as HTMLInputElement).checked).toBe(false);
   });
 
-  it("calls onClose when Cancel or close button clicked", async () => {
+  it("calls onClose when close button clicked", async () => {
     const onClose = jest.fn();
     const onSubmit = jest.fn();
-    render(<AddActivityModal onClose={onClose} onSubmit={onSubmit} />);
+    render(<AddActivityModal open={true} onClose={onClose} onSubmit={onSubmit} />);
     const user = userEvent.setup();
-
-    // Cancel button
-    await user.click(screen.getByRole("button", { name: /cancel/i }));
-    expect(onClose).toHaveBeenCalledTimes(1);
 
     // The small floating close button has aria-label="close"
     await user.click(screen.getByRole("button", { name: /close/i }));
-    expect(onClose).toHaveBeenCalledTimes(2);
+    expect(onClose).toHaveBeenCalledTimes(1);
   });
 });

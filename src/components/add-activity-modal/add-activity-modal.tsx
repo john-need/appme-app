@@ -21,10 +21,11 @@ import CloseIcon from "@mui/icons-material/Close";
 
 interface AddActivityModalProps {
   onClose: () => void;
+  open: boolean;
   onSubmit: (activity: Partial<Activity>) => void;
 }
 
-export default function AddActivityModal({ onClose, onSubmit }: AddActivityModalProps) {
+export default function AddActivityModal({ onClose, onSubmit, open }: AddActivityModalProps) {
   const [name, setName] = useState("");
   const [type, setType] = useState<ActivityType>("TASSEI");
   const [comment, setComment] = useState("");
@@ -64,9 +65,8 @@ export default function AddActivityModal({ onClose, onSubmit }: AddActivityModal
 
   const handleSubmit = (e?: React.FormEvent) => {
     e?.preventDefault();
-    // basic validation: require name and goal >= 1
     const goalNumber = goal === "" ? NaN : Number(goal);
-    if (!name || name.trim() === "" || isNaN(goalNumber) || goalNumber < 1) return;
+    if (!name || name.trim() === "" || isNaN(goalNumber) || goalNumber < 0) return;
     const payload: Partial<Activity> = {
       name: name || undefined,
       type: type,
@@ -84,15 +84,24 @@ export default function AddActivityModal({ onClose, onSubmit }: AddActivityModal
     onSubmit(payload);
   };
 
+  const handleGoalChange = (value: string) => {
+    if (value === "") {
+      setGoal("");
+      return;
+    }
+    const goalValue = Number(value);
+    const isValid = !isNaN(goalValue) && goalValue >= 0;
+    setGoal(isValid ? goalValue : "");
+  };
+
   // form validation state
   const goalNumber = goal === "" ? NaN : Number(goal);
-  const canSubmit = !!name && name.trim() !== "" && !isNaN(goalNumber) && goalNumber >= 1;
+  const canSubmit = !!name && name.trim() !== "" && !isNaN(goalNumber) && goalNumber >= 0;
 
   return (
-    <Dialog open onClose={onClose} maxWidth="sm" fullWidth>
+    <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
       <DialogTitle sx={{ position: "relative" }}>
         Add Activity
-        {/* FAB styled as small close button in upper-right */}
         <Fab
           size="small"
           color="default"
@@ -125,7 +134,7 @@ export default function AddActivityModal({ onClose, onSubmit }: AddActivityModal
             label="Goal"
             type="number"
             value={goal}
-            onChange={(e) => setGoal(e.target.value === "" ? "" : Number(e.target.value))}
+            onChange={(e) => handleGoalChange(e.target.value)}
             fullWidth
           />
 
@@ -158,7 +167,6 @@ export default function AddActivityModal({ onClose, onSubmit }: AddActivityModal
       </DialogContent>
 
       <DialogActions>
-        <Button onClick={onClose}>Cancel</Button>
         <Button onClick={() => handleSubmit()} variant="contained" disabled={!canSubmit}>
           Add
         </Button>
