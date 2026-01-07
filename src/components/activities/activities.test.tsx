@@ -208,11 +208,11 @@ describe("Activities component", () => {
 
     it("clicking Type header toggles ascending then descending", async () => {
       const data: Activity[] = [
-        { ...sampleActivities[0], id: "b1", type: "Wellness" },
-        { ...sampleActivities[0], id: "b2", type: "Fitness" },
-        { ...sampleActivities[0], id: "b3", type: "Social" },
-        { ...sampleActivities[0], id: "b4", type: "Learning" },
-        { ...sampleActivities[0], id: "b5", type: "Work" },
+        { ...sampleActivities[0], id: "b1", type: "MUDA" as ActivityType },
+        { ...sampleActivities[0], id: "b2", type: "TASSEI" as ActivityType },
+        { ...sampleActivities[0], id: "b3", type: "MUDA" as ActivityType },
+        { ...sampleActivities[0], id: "b4", type: "TASSEI" as ActivityType },
+        { ...sampleActivities[0], id: "b5", type: "MUDA" as ActivityType },
       ];
       render(
         React.createElement(Activities, { activities: data, updateActivity: jest.fn(), deleteActivity: jest.fn(), addActivity: jest.fn() })
@@ -220,11 +220,11 @@ describe("Activities component", () => {
       const user = userEvent.setup();
       const typeHeader = screen.getByRole("button", { name: /type/i });
 
-      await user.click(typeHeader); // asc: Fitness, Learning, Social, Wellness, Work
-      expect(getRenderedOrderByEditAria()).toEqual(["b2", "b4", "b3", "b1", "b5"]);
+      await user.click(typeHeader); // asc: MUDA, MUDA, MUDA, TASSEI, TASSEI
+      expect(getRenderedOrderByEditAria()).toEqual(["b1", "b3", "b5", "b2", "b4"]);
 
       await user.click(typeHeader); // desc
-      expect(getRenderedOrderByEditAria()).toEqual(["b5", "b1", "b3", "b4", "b2"]);
+      expect(getRenderedOrderByEditAria()).toEqual(["b2", "b4", "b1", "b3", "b5"]);
     });
 
     it("clicking Goal header sorts numbers and handles null/undefined (asc then desc)", async () => {

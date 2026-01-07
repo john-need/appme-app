@@ -8,13 +8,14 @@ import {
   InputLabel,
   FormControl,
   Grid,
-  Divider, IconButton
+  Divider, Fab, Stack
 } from "@mui/material";
 import { useAppSelector } from "@/hooks";
 import { selectActivities } from "@/features/activities/activities-slice";
 import TimeEntryList from "./time-entry-list";
 import timeEntryFactory from "@/factories/time-entry-factory";
-import { AddCircleOutlined } from "@mui/icons-material";
+import AddIcon from "@mui/icons-material/Add";
+import TimerIcon from "@mui/icons-material/Timer";
 
 interface Props {
   timeEntries: TimeEntry[];
@@ -71,6 +72,7 @@ const TimeEntries = ({ timeEntries, onAddTime, startStopWatch, onDeleteTimeEntry
   const group1 = availableActivities.filter(matchesToday).sort((x, y) => x.name.localeCompare(y.name));
   const group2 = availableActivities.filter((a) => !matchesToday(a)).sort((x, y) => x.name.localeCompare(y.name));
 
+  // TODO: remove this
   // keep selection in sync when available activities change
   React.useEffect(() => {
     const first = group1[0]?.id ?? group2[0]?.id ?? "";
@@ -117,6 +119,34 @@ const TimeEntries = ({ timeEntries, onAddTime, startStopWatch, onDeleteTimeEntry
     setDate(today);
   };
 
+  const handleStartTimer = () => {
+    if (!onAddTimeEntry || !startStopWatch || !activityId) {
+      return;
+    }
+
+    const payload = timeEntryFactory({
+      activityId,
+      minutes: 0,
+    });
+
+    // update exclusion set (pattern from handleSubmit)
+    setExcludedActivityIds((prev) => {
+      const next = new Set(prev);
+      next.add(activityId);
+      return next;
+    });
+
+    // immediately pick a new valid activityId so the Select value is always in the available options
+    const newAvailable = activities.filter((a) => !todayActivityIds.has(a.id) && !excludedActivityIds.has(a.id) && a.id !== activityId);
+    const newGroup1 = newAvailable.filter(matchesToday).sort((x, y) => x.name.localeCompare(y.name));
+    const newGroup2 = newAvailable.filter((a) => !matchesToday(a)).sort((x, y) => x.name.localeCompare(y.name));
+    const newFirst = newGroup1[0]?.id ?? newGroup2[0]?.id ?? "";
+    setActivityId(newFirst);
+
+    onAddTimeEntry(payload);
+    startStopWatch(payload);
+  };
+
   const handleDeleteTimeEntry = (timeEntry: TimeEntry) => {
     if (!onDeleteTimeEntry || !timeEntry) {
       console.error("Failed to delete time entry ", timeEntry);
@@ -136,27 +166,44 @@ const TimeEntries = ({ timeEntries, onAddTime, startStopWatch, onDeleteTimeEntry
     <Box>
       <Box component="form" onSubmit={handleSubmit} sx={{ mb: 3 }}>
         <Grid container spacing={1} alignItems="center">
-          <Grid item xs={6} sm={4}>
-            <FormControl fullWidth>
-              <InputLabel id="activity-select-label">Activity</InputLabel>
-              <Select labelId="activity-select-label" value={activityId} label="Activity"
-                      onChange={(e) => setActivityId(e.target.value as string)}>
-                {group1.map((a) => (
-                  <MenuItem key={a.id} value={a.id}>{a.name}</MenuItem>
-                ))}
-                {group1.length > 0 && group2.length > 0 && <Divider component="li"/>}
-                {group2.map((a) => (
-                  <MenuItem key={a.id} value={a.id}>{a.name}</MenuItem>
-                ))}
-                {group1.length === 0 && group2.length === 0 && (
-                  <MenuItem value="" disabled>
-                    Huzzah! You&#39;ve done all the things.
-                  </MenuItem>
-                )}
-              </Select>
-            </FormControl>
+          <Grid item xs={7} sm={6}>
+            <Stack direction="row" spacing={1} sx={{ alignItems: "center" }}>
+              <Box sx={{ aspectRatio: "1 / 1", width: "40px" }}>
+                <Fab
+                  color="primary"
+                  data-testid="start-timer-button"
+                  size="small"
+                  aria-label="Add"
+
+                  onClick={handleStartTimer}
+                  disabled={!canSubmit}>
+                  <TimerIcon/>
+                </Fab>
+              </Box>
+              <FormControl fullWidth>
+                <InputLabel id="activity-select-label">Activity</InputLabel>
+                <Select labelId="activity-select-label" value={activityId} label="Activity"
+                        data-testid="activity-select"
+
+                        onChange={(e) => setActivityId(e.target.value as string)}>
+                  {group1.map((a) => (
+                    <MenuItem key={a.id} value={a.id}>{a.name}</MenuItem>
+                  ))}
+                  {group1.length > 0 && group2.length > 0 && <Divider component="li"/>}
+                  {group2.map((a) => (
+                    <MenuItem key={a.id} value={a.id}>{a.name}</MenuItem>
+                  ))}
+                  {group1.length === 0 && group2.length === 0 && (
+                    <MenuItem value="" disabled>
+                      Huzzah! You&#39;ve done all the things.
+                    </MenuItem>
+                  )}
+                </Select>
+              </FormControl>
+
+            </Stack>
           </Grid>
-          <Grid item xs={4} sm={2}>
+          <Grid item xs={3} sm={1}>
             <TextField label="Minutes"
                        type="number"
                        fullWidth
@@ -169,10 +216,9 @@ const TimeEntries = ({ timeEntries, onAddTime, startStopWatch, onDeleteTimeEntry
                            setMinutes(Math.round(val));
                          }
                        }}
-
             />
           </Grid>
-          <Grid item xs={12} sm={5} sx={{ display: { xs: "none", sm: "block" } }}>
+          <Grid item xs={12} sm={4} sx={{ display: { xs: "none", sm: "block" } }}>
             <TextField label="Notes"
                        fullWidth
                        multiline
@@ -181,7 +227,6 @@ const TimeEntries = ({ timeEntries, onAddTime, startStopWatch, onDeleteTimeEntry
                        onChange={(e) => setNotes(e.target.value)}/>
           </Grid>
           <Grid item xs={2} sm={1}>
-
             <Button variant="contained"
                     color="primary"
                     type="submit"
@@ -190,15 +235,15 @@ const TimeEntries = ({ timeEntries, onAddTime, startStopWatch, onDeleteTimeEntry
                     fullWidth>
               {"Add"}
             </Button>
-            <IconButton
+            <Fab
               color="primary"
-              size="large"
+              size="small"
               aria-label="Add"
               type="submit"
-              sx={{ display: { xs: "block", sm: "none" } }}
+              sx={{ display: { sm: "none" } }}
               disabled={!canSubmit}>
-              <AddCircleOutlined/>
-            </IconButton>
+              <AddIcon/>
+            </Fab>
           </Grid>
         </Grid>
       </Box>

@@ -2,6 +2,8 @@ import addTimeEntry from "./add-time-entry";
 
 jest.mock("@/utils/get-api-base", () => ({ __esModule: true, default: () => "http://api.test" }));
 
+import timeEntryFactory from "@/factories/time-entry-factory";
+
 describe("add-time-entry", () => {
   const g = global as unknown as { fetch: jest.Mock };
 
@@ -10,9 +12,9 @@ describe("add-time-entry", () => {
   });
 
   it("posts time entry and returns created entity; adds auth header when jwt provided", async () => {
-    const created = { id: "t1", duration: 60 } as TimeEntry;
+    const created = timeEntryFactory({ id: "t1", minutes: 60 });
     g.fetch.mockResolvedValue({ ok: true, status: 201, json: async () => created });
-    const body = { duration: 60 } as Partial<TimeEntry>;
+    const body = { minutes: 60 } as Partial<TimeEntry>;
     const res = await addTimeEntry(body, "jwt-1");
     expect(res).toEqual(created as unknown);
     expect(g.fetch).toHaveBeenCalledWith(
@@ -27,7 +29,7 @@ describe("add-time-entry", () => {
 
   it("throws on non-ok with message", async () => {
     g.fetch.mockResolvedValue({ ok: false, status: 422, text: async () => "bad" });
-    await expect(addTimeEntry({ duration: 1 }, undefined)).rejects.toThrow(
+    await expect(addTimeEntry({ minutes: 1 }, undefined)).rejects.toThrow(
       "Failed to add time entry (422): bad"
     );
   });

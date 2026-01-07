@@ -3,14 +3,16 @@ import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import ConfirmActivityDeleteDialog from "./confirm-activity-delete-dialog";
 
+import activityFactory from "@/factories/activity-factory";
+
 describe("ConfirmActivityDeleteDialog", () => {
-  const activity: Activity = {
+  const activity: Activity = activityFactory({
     id: "a1",
     name: "Daily Run",
     type: "TASSEI",
     created: new Date().toISOString(),
     updated: new Date().toISOString(),
-  };
+  });
 
   it("renders dialog with title and activity name in the message", () => {
     const onClose = jest.fn();

@@ -2,7 +2,7 @@ import React from "react";
 import { Container } from "@mui/material";
 import TimeEntries from "@/components/time-entries/time-entries";
 import { useAppSelector } from "@/hooks";
- import useUpdateTimeEntry from "@/hooks/use-update-time-entry";
+import useUpdateTimeEntry from "@/hooks/use-update-time-entry";
 import { StopWatchModal } from "@/components/stop-watch-modal/stop-watch-modal";
 import { selectActivities } from "@/features/activities/activities-slice";
 import useAddTimeEntry from "@/hooks/use-add-time-entry";
@@ -73,15 +73,15 @@ export default function TimeEntriesPage() {
         onDeleteTimeEntry={deleteTimeEntry}
         onAddTimeEntry={addTimeEntry}
       />
-      {editing && (
-        <StopWatchModal
-          open={showStopWatch}
-          timeEntry={editing}
-          onClose={handleClose}
-          onSubmit={handleSave}
-          activityName={activityName}
-        />
-      )}
+
+      <StopWatchModal
+        open={showStopWatch}
+        timeEntry={editing}
+        onClose={handleClose}
+        onSubmit={handleSave}
+        activityName={activityName}
+      />
+
     </Container>
   );
 }
