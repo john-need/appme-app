@@ -2,6 +2,53 @@ import React from "react";
 import { render, screen, fireEvent, act } from "@testing-library/react";
 import { StopWatchModal } from "./stop-watch-modal";
 
+// Mock Worker
+class WorkerMock {
+  onmessage: ((e: MessageEvent) => void) | null = null;
+  postMessage = jest.fn((data: any) => {
+    if (data.command === "start") {
+      this.startTimer();
+    } else if (data.command === "pause") {
+      this.stopTimer();
+    } else if (data.command === "reset") {
+      this.seconds = 0;
+      this.sendTick();
+    }
+  });
+  terminate = jest.fn(() => {
+    this.stopTimer();
+  });
+
+  private seconds = 0;
+  private timer: NodeJS.Timeout | null = null;
+
+  private startTimer() {
+    if (!this.timer) {
+      this.timer = setInterval(() => {
+        this.seconds++;
+        this.sendTick();
+      }, 1000);
+    }
+  }
+
+  private stopTimer() {
+    if (this.timer) {
+      clearInterval(this.timer);
+      this.timer = null;
+    }
+  }
+
+  private sendTick() {
+    if (this.onmessage) {
+      this.onmessage({ data: { type: "tick", seconds: this.seconds } } as MessageEvent);
+    }
+  }
+}
+
+jest.mock("@/utils/get-worker", () => ({
+  getStopWatchWorker: jest.fn(() => new WorkerMock()),
+}));
+
 const mockTimeEntry: TimeEntry = {
   id: "1",
   activityId: "activity-1",
