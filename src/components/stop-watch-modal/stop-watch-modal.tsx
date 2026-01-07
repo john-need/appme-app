@@ -25,7 +25,7 @@ interface StopWatchModalProps {
 
 export const StopWatchModal: React.FC<StopWatchModalProps> = ({
                                                                 open,
-                                                                timeEntry = {},
+                                                                timeEntry,
                                                                 onClose,
                                                                 onSubmit,
                                                                 activityName,
@@ -61,6 +61,7 @@ export const StopWatchModal: React.FC<StopWatchModalProps> = ({
     }
   }, [isActive]);
 
+  // TODO: remove this useEffect.
   useEffect(() => {
     if (!open) {
       setSeconds(0);
@@ -110,7 +111,7 @@ export const StopWatchModal: React.FC<StopWatchModalProps> = ({
       setShowSavePrompt(true);
       return;
     }
-    onSubmit({ ...(timeEntry || {}), minutes: Math.floor(seconds / 60) } as TimeEntry);
+    onSubmit({ ...(timeEntry || {}), minutes: Math.floor(seconds / 60) } as unknown as TimeEntry);
     setShowSavePrompt(false);
     onClose();
   };
@@ -216,12 +217,12 @@ export const StopWatchModal: React.FC<StopWatchModalProps> = ({
                     onClick={() => handleSubmit({
                       ...(timeEntry || {}),
                       minutes: Math.floor(seconds / 60) + (timeEntry?.minutes || 0),
-                    } as TimeEntry)}>
+                    } as unknown as TimeEntry)}>
               add to current time
             </Button>
           }
           <Button fullWidth variant="contained"
-                  onClick={() => handleSubmit({ ...(timeEntry || {}), minutes: Math.floor(seconds / 60) } as TimeEntry)}>
+                  onClick={() => handleSubmit({ ...(timeEntry || {}), minutes: Math.floor(seconds / 60) } as unknown as TimeEntry)}>
             save
           </Button>
           <Button fullWidth onClick={handleResume}>

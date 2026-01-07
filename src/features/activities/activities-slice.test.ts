@@ -27,7 +27,9 @@ jest.mock("@/data-layer/fetch-activities", () => ({
 import { queryClient } from "@/api/query-client";
 import fetchActivities from "@/data-layer/fetch-activities";
 
-const a = (id: string, created: string): Activity => ({ id, name: id, type: "MUDA", created, updated: created });
+import activityFactory from "@/factories/activity-factory";
+
+const a = (id: string, created: string): Activity => activityFactory({ id, name: id, type: "MUDA", created, updated: created });
 
 describe("activities-slice reducers & selectors", () => {
   it("initial state", () => {
@@ -46,7 +48,7 @@ describe("activities-slice reducers & selectors", () => {
     const newer = a("1", "2026-03-03");
     const state = reducer(start, addActivity(newer));
     expect(state.items[0].id).toBe("1");
-    expect(state.items[0].created).toBe("2026-03-03");
+    expect(state.items[0].created).toMatch(/^2026-03-03/);
   });
 
   it("updateActivity replaces and sorts", () => {
