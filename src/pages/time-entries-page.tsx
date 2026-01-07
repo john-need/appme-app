@@ -2,28 +2,18 @@ import React from "react";
 import { Container } from "@mui/material";
 import TimeEntries from "@/components/time-entries/time-entries";
 import { useAppSelector } from "@/hooks";
-import iso2LocalDateTime from "@/utils/iso-2-local-date-time";
-import useUpdateTimeEntry from "@/hooks/use-update-time-entry";
+ import useUpdateTimeEntry from "@/hooks/use-update-time-entry";
 import { StopWatchModal } from "@/components/stop-watch-modal/stop-watch-modal";
 import { selectActivities } from "@/features/activities/activities-slice";
 import useAddTimeEntry from "@/hooks/use-add-time-entry";
 import useDeleteTimeEntry from "@/hooks/use-delete-time-entry";
-import localDateTime2UTC from "@/utils/local-date-time-2-utc";
-const localTimeEntry2UTC = (timeEntry: TimeEntry): TimeEntry => {
-  return {
-    ...timeEntry,
-    created: localDateTime2UTC(timeEntry.created),
-    updated: localDateTime2UTC(timeEntry.updated)
-  };
-};
-
+import timeEntryFactory from "@/factories/time-entry-factory";
 
 export default function TimeEntriesPage() {
   const deleteMutation = useDeleteTimeEntry();
   const [showStopWatch, setShowStopWatch] = React.useState(false);
   const [editing, setEditing] = React.useState<TimeEntry | null>(null);
-  const timeEntries = useAppSelector((s) => s.timeEntries?.items ?? [])
-    .map(te => ({ ...te, created: iso2LocalDateTime(te.created), updated: iso2LocalDateTime(te.created) }));
+  const timeEntries = useAppSelector((s) => s.timeEntries?.items ?? []);
 
   const activities = useAppSelector(selectActivities);
   const updateMutation = useUpdateTimeEntry();
@@ -40,8 +30,8 @@ export default function TimeEntriesPage() {
     if (additionalMinutes) {
       const mins = parseInt(additionalMinutes, 10);
       if (!isNaN(mins) && mins > 0) {
-        const updatedEntry = { ...entry, minutes: entry.minutes + mins };
-        updateMutation.mutate(localTimeEntry2UTC(updatedEntry));
+        const updatedEntry = timeEntryFactory({ ...entry, minutes: entry.minutes + mins });
+        updateMutation.mutate(updatedEntry);
       } else {
         alert("Please enter a valid number of minutes.");
       }
@@ -54,7 +44,7 @@ export default function TimeEntriesPage() {
   };
 
   const handleSave = (entry: TimeEntry) => {
-    updateMutation.mutate(localTimeEntry2UTC(entry));
+    updateMutation.mutate(timeEntryFactory(entry));
     handleClose();
   };
 
@@ -67,7 +57,7 @@ export default function TimeEntriesPage() {
   };
 
   const addTimeEntry = (timeEntry: TimeEntry) => {
-    addMutation.mutate({ timeEntry: localTimeEntry2UTC(timeEntry) }, {
+    addMutation.mutate({ timeEntry: timeEntryFactory(timeEntry) }, {
       onError() {
         console.error("Could not add time entry", JSON.stringify(timeEntry));
       },
@@ -83,15 +73,15 @@ export default function TimeEntriesPage() {
         onDeleteTimeEntry={deleteTimeEntry}
         onAddTimeEntry={addTimeEntry}
       />
-
-      <StopWatchModal
-        open={showStopWatch}
-        timeEntry={editing}
-        onClose={handleClose}
-        onSubmit={handleSave}
-        activityName={activityName}
-      />
-
+      {editing && (
+        <StopWatchModal
+          open={showStopWatch}
+          timeEntry={editing}
+          onClose={handleClose}
+          onSubmit={handleSave}
+          activityName={activityName}
+        />
+      )}
     </Container>
   );
 }

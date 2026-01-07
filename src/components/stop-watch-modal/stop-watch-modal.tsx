@@ -13,6 +13,7 @@ import StopCircleIcon from "@mui/icons-material/StopCircle";
 import RestoreIcon from "@mui/icons-material/Restore";
 import SaveIcon from "@mui/icons-material/Save";
 import CancelIcon from "@mui/icons-material/Cancel";
+import { getStopWatchWorker } from "@/utils/get-worker";
 
 interface StopWatchModalProps {
   open: boolean;
@@ -34,19 +35,30 @@ export const StopWatchModal: React.FC<StopWatchModalProps> = ({
   const [showResetConfirm, setShowResetConfirm] = useState(false);
   const [showCancelConfirm, setShowCancelConfirm] = useState(false);
   const [showSavePrompt, setShowSavePrompt] = useState(false);
-  const timerRef = useRef<NodeJS.Timeout | null>(null);
+  const workerRef = useRef<Worker | null>(null);
+
+  useEffect(() => {
+    workerRef.current = getStopWatchWorker();
+
+    if (workerRef.current) {
+      workerRef.current.onmessage = (e) => {
+        if (e.data.type === "tick") {
+          setSeconds(e.data.seconds);
+        }
+      };
+    }
+
+    return () => {
+      workerRef.current?.terminate();
+    };
+  }, []);
 
   useEffect(() => {
     if (isActive) {
-      timerRef.current = setInterval(() => {
-        setSeconds((prev) => prev + 1);
-      }, 1000);
-    } else if (timerRef.current) {
-      clearInterval(timerRef.current);
+      workerRef.current?.postMessage({ command: "start" });
+    } else {
+      workerRef.current?.postMessage({ command: "pause" });
     }
-    return () => {
-      if (timerRef.current) clearInterval(timerRef.current);
-    };
   }, [isActive]);
 
   useEffect(() => {
@@ -56,6 +68,7 @@ export const StopWatchModal: React.FC<StopWatchModalProps> = ({
       setShowResetConfirm(false);
       setShowCancelConfirm(false);
       setShowSavePrompt(false);
+      workerRef.current?.postMessage({ command: "reset" });
     }
   }, [open]);
 
@@ -76,6 +89,7 @@ export const StopWatchModal: React.FC<StopWatchModalProps> = ({
     setSeconds(0);
     setIsActive(false);
     setShowResetConfirm(false);
+    workerRef.current?.postMessage({ command: "reset" });
   };
 
   const handleCancelClick = () => {
