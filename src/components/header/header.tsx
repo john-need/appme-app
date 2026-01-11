@@ -27,8 +27,8 @@ export default function Header() {
           {isAuthenticated && (
             <>
               {location.pathname === "/" && (
-                <Button color="inherit" component={RouterLink} to="/dashboard">
-                  Dashboard
+                <Button color="inherit" component={RouterLink} to="/pomodoro">
+                  Pomodoro
                 </Button>
               )}
               {location.pathname !== "/" && (
