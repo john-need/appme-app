@@ -6,6 +6,7 @@ import LoginForm from "@/components/login-form/login-form";
 import { useIsAuthenticated } from "@/hooks";
 import PreferencesPage from "@/pages/preferences-page";
 import DashboardPage from "@/pages/dashboard-page";
+import PomodoroPage from "@/pages/pomodoro-page";
 
 export default function AppRouter() {
   const isAuthenticated = useIsAuthenticated();
@@ -13,6 +14,7 @@ export default function AppRouter() {
   return (
     <Routes>
       <Route path="/" element={<TimeEntriesPage />} />
+      <Route path="/pomodoro" element={<PomodoroPage />} />
       <Route path="/dashboard" element={<DashboardPage />} />
       <Route path="/activities" element={<ActivitiesPage />} />
       <Route path="/preferences" element={<PreferencesPage />} />

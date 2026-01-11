@@ -51,6 +51,9 @@ export default function LeftNavDrawer({ open, onOpen, onClose }: LeftNavDrawerPr
           <ListItemButton component={RouterLink} to="/dashboard" onClick={onClose}>
             <ListItemText primary="Dashboard" />
           </ListItemButton>
+          <ListItemButton component={RouterLink} to="/pomodoro" onClick={onClose}>
+            <ListItemText primary="Pomodoro" />
+          </ListItemButton>
           <ListItemButton component={RouterLink} to="/activities" onClick={onClose}>
             <ListItemText primary="Activities" />
           </ListItemButton>
