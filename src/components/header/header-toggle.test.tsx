@@ -15,7 +15,7 @@ jest.mock("@/utils/jwt", () => ({
 
 const queryClient = new QueryClient();
 
-test("Header shows Dashboard on / and Entries on /dashboard", async () => {
+test("Header shows Pomodoro on / and Entries on /pomodoro", async () => {
   // ensure the store has authenticated user for this test so Header is shown
   store.dispatch(
     setCredentials({ jwt: "test-jwt", user: { id: "user-1", name: "Test User", email: "test@example.com" } })
@@ -33,17 +33,17 @@ test("Header shows Dashboard on / and Entries on /dashboard", async () => {
     </Provider>
   );
 
-  // On root, the Dashboard link should be visible, Entries should be hidden
-  expect(screen.getByRole("link", { name: /dashboard/i })).toBeInTheDocument();
+  // On root, the Pomodoro link should be visible, Entries should be hidden
+  expect(screen.getByRole("link", { name: /pomodoro/i })).toBeInTheDocument();
   expect(screen.queryByRole("link", { name: /entries/i })).toBeNull();
 
-  // Simulate navigation to /dashboard by clicking the Dashboard link
-  const dashboardLink = screen.getByRole("link", { name: /dashboard/i });
-  await userEvent.click(dashboardLink);
+  // Simulate navigation to /pomodoro by clicking the Pomodoro link
+  const pomodoroLink = screen.getByRole("link", { name: /pomodoro/i });
+  await userEvent.click(pomodoroLink);
 
-  // Wait for Entries to appear and Dashboard to disappear
+  // Wait for Entries to appear and Pomodoro to disappear
   await waitFor(() => {
     expect(screen.getByRole("link", { name: /entries/i })).toBeInTheDocument();
-    expect(screen.queryByRole("link", { name: /dashboard/i })).toBeNull();
+    expect(screen.queryByRole("link", { name: /pomodoro/i })).toBeNull();
   });
 });
