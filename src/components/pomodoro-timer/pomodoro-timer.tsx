@@ -8,9 +8,17 @@ interface PomodoroTimerProps {
   onStart: (minutes: number) => void;
   onPause: (minutes: number) => void;
   onStop: (minutes: number) => void;
+  entryType: PomodoroEntryType;
 }
 
-const PomodoroTimer = ({ timePeriod, onStart, onPause, onStop }: PomodoroTimerProps) => {
+const pomodoroTimerEntryTypeMap: Record<PomodoroEntryType, string> = {
+  WORK_INTERVAL: "Work Interval",
+  SHORT_BREAK: "Short Break",
+  LONG_BREAK: "Long Break",
+} as const;
+
+
+const PomodoroTimer = ({ timePeriod, onStart, onPause, onStop, entryType }: PomodoroTimerProps) => {
   const [remainingSeconds, setRemainingSeconds] = useState(timePeriod * 60);
   const [isRunning, setIsRunning] = useState(false);
   const workerRef = useRef<Worker | null>(null);
@@ -108,8 +116,11 @@ const PomodoroTimer = ({ timePeriod, onStart, onPause, onStop }: PomodoroTimerPr
 
   return (
     <Box sx={{ textAlign: "center", py: 4 }}>
-      <Typography variant="h1" component="div" sx={{ fontWeight: "bold", mb: 2 }}>
+      <Typography variant="h1" component="div" sx={{ fontWeight: "bold", mb: 0, pb: 0, fontSize: "3rem"  }}>
         {formatTime(remainingSeconds)}
+      </Typography>
+      <Typography>
+        {pomodoroTimerEntryTypeMap[entryType]}
       </Typography>
       <PomodoroControls
         startPomodoro={startTimer}

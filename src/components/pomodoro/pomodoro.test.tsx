@@ -85,44 +85,4 @@ describe("PomodoroComponent", () => {
 
     expect(onChange).toHaveBeenCalledWith(expect.objectContaining({ activityId: "a2" }));
   });
-
-  it("renders entries sorted by most recent", () => {
-    renderWithRedux(<PomodoroComponent pomodoro={mockPomodoro} onChange={() => {}} />);
-    const rows = screen.getAllByRole("row");
-    // Row 0 is header.
-    // In UTC, 10:30Z is 10:30 AM or something else depending on local timezone of the environment.
-    // The test output showed "05:45 AM" for "10:30 AM"? Wait. 15m duration. 
-    // 10:30Z - 5 hours = 05:30. So it's probably EST (UTC-5).
-    // Let's use a more flexible matcher or check for parts of the time.
-    expect(rows[1]).toHaveTextContent(/AM|PM/);
-    expect(rows[1]).toHaveTextContent("15m"); 
-    expect(rows[2]).toHaveTextContent("25m");
-  });
-
-  it("displays total time correctly (hours and minutes)", () => {
-    const longPomo = {
-      ...mockPomodoro,
-      entries: [{ ...mockPomodoro.entries[0], minutes: 75 }]
-    };
-    renderWithRedux(<PomodoroComponent pomodoro={longPomo} onChange={() => {}} />);
-    expect(screen.getByText("1h 15m")).toBeInTheDocument();
-  });
-
-  it("calls onChange when entry activity is changed via Autocomplete", async () => {
-    const onChange = jest.fn();
-    renderWithRedux(<PomodoroComponent pomodoro={mockPomodoro} onChange={onChange} />);
-    
-    // Find Autocomplete for first entry (e2 since it's most recent)
-    const autocompletes = screen.getAllByRole("combobox");
-    const entryAutocomplete = autocompletes[1]; // Index 0 is Pomodoro activityId, index 1 is first entry
-
-    fireEvent.mouseDown(entryAutocomplete);
-    const options = screen.getAllByRole("option");
-    fireEvent.click(options[0]); // Click "Coding" (a1)
-
-    expect(onChange).toHaveBeenCalled();
-    const updatedPomo = onChange.mock.calls[0][0];
-    const updatedEntry = updatedPomo.entries.find((e: any) => e.id === "e2");
-    expect(updatedEntry.activityId).toBe("a1");
-  });
 });

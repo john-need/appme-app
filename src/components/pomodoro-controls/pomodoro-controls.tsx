@@ -12,7 +12,7 @@ interface PomodoroControlsProps {
 
 const PomodoroControls = ({ startPomodoro, pausePomodoro, stopPomodoro }: PomodoroControlsProps) => {
   return (
-    <Box sx={{ position: "fixed", bottom: 0, left: 0, width: "100%", padding: "10px" }} bgcolor="rgba(255,255,255,0.4)">
+    <Box>
       <Stack direction="row" spacing={2} justifyContent="center" alignItems="center" sx={{ px: 2 }}>
         <IconButton aria-label="start" onClick={startPomodoro}><PlayArrowIcon/></IconButton>
         <IconButton aria-label="pause" onClick={pausePomodoro}><PauseIcon/></IconButton>

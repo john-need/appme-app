@@ -68,5 +68,4 @@ declare global {
     updated: string;
     activityId: string;
   }
-
 }
