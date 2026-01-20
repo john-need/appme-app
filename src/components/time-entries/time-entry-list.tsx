@@ -33,11 +33,26 @@ export default function TimeEntryList({ timeEntries, onDelete, onAddTime, onStar
     return `${y}-${m}-${day}`;
   };
 
+  // Helper function to check if a date is today in UTC
+  // This handles the case where a time entry is created late in the day in UTC
+  // but might appear as yesterday in local time
+  const isToday = (dateStr?: string) => {
+    if (!dateStr) return false;
+
+    // Get today's date in UTC (YYYY-MM-DD)
+    const todayUTC = new Date().toISOString().slice(0, 10);
+
+    // Get the entry's date in UTC (YYYY-MM-DD)
+    const entryUTC = new Date(dateStr).toISOString().slice(0, 10);
+
+    return todayUTC === entryUTC;
+  };
+
   // compute today's local date without going through ISO/UTC conversion
   const todayLocal = toLocalYMD(new Date());
 
   const [showAll, setShowAll] = React.useState(false);
-  const displayed = showAll ? timeEntries : timeEntries.filter((t) => toLocalYMD(t.created) === todayLocal);
+  const displayed = showAll ? timeEntries : timeEntries.filter((t) => t.created && isToday(t.created));
 
   const [editing, setEditing] = React.useState<TimeEntry | null>(null);
   const [confirmOpen, setConfirmOpen] = React.useState(false);
