@@ -27,7 +27,24 @@ interface Props {
 
 const TimeEntries = ({ timeEntries, onAddTime, startStopWatch, onDeleteTimeEntry, onAddTimeEntry }: Props) => {
   const activities = useAppSelector(selectActivities);
-  const today = new Date().toISOString().slice(0, 10);
+
+  // Helper function to check if a date is today in UTC
+  // This handles the case where a time entry is created late in the day in UTC
+  // but might appear as yesterday in local time
+  const isToday = (dateStr?: string) => {
+    if (!dateStr) return false;
+
+    // Get today's date in UTC (YYYY-MM-DD)
+    const todayUTC = new Date().toISOString().slice(0, 10);
+
+    // Get the entry's date in UTC (YYYY-MM-DD)
+    const entryUTC = new Date(dateStr).toISOString().slice(0, 10);
+
+    return todayUTC === entryUTC;
+  };
+
+  // Get today's date in local time (YYYY-MM-DD format)
+  const today = new Date().toLocaleDateString("en-CA"); // en-CA gives YYYY-MM-DD format
   const [date, setDate] = useState<string>(today);
   const [activityId, setActivityId] = useState<string>("");
   const [minutes, setMinutes] = useState<number | string>("");
@@ -35,19 +52,11 @@ const TimeEntries = ({ timeEntries, onAddTime, startStopWatch, onDeleteTimeEntry
   // optimistically excluded activity ids (hide immediately after submission)
   const [excludedActivityIds, setExcludedActivityIds] = React.useState<Set<string>>(new Set());
 
-  // Compute activities already logged for today (normalize entry dates to YYYY-MM-DD)
+  // Compute activities already logged for today (using UTC date comparison)
   const todayActivityIds = new Set(
     timeEntries
-      .map((t) => {
-        try {
-          return t.created ? new Date(t.created).toISOString().slice(0, 10) : undefined;
-        } catch (e) {
-          return undefined;
-        }
-      })
-      .map((d, i) => ({ d, id: timeEntries[i].activityId }))
-      .filter((x) => x.d === today)
-      .map((x) => x.id)
+      .filter(t => t.created && isToday(t.created))
+      .map(t => t.activityId)
   );
 
   // Determine today's weekday
