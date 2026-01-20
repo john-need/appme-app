@@ -9,6 +9,7 @@ import IconButton from "@mui/material/IconButton";
 import MoreTimeIcon from "@mui/icons-material/MoreTime";
 import TimerIcon from "@mui/icons-material/Timer";
 import ConfirmDeleteDialog from "./confirm-delete-dialog";
+import toLocalYMD from "@/utils/to-local-ymd";
 
 interface Props {
   timeEntries: TimeEntry[];
@@ -22,16 +23,6 @@ export default function TimeEntryList({ timeEntries, onDelete, onAddTime, onStar
   const updateMutation = useUpdateTimeEntry();
 
   const getActivityName = (id: string) => activities.find((a) => a.id === id)?.name ?? id;
-
-  // helper: local YYYY-MM-DD for a Date or ISO string
-  const toLocalYMD = (v?: string | Date) => {
-    if (!v) return "";
-    const d = v instanceof Date ? v : new Date(v);
-    const y = d.getFullYear();
-    const m = String(d.getMonth() + 1).padStart(2, "0");
-    const day = String(d.getDate()).padStart(2, "0");
-    return `${y}-${m}-${day}`;
-  };
 
   // Helper function to check if a date is today in UTC
   // This handles the case where a time entry is created late in the day in UTC
@@ -47,9 +38,6 @@ export default function TimeEntryList({ timeEntries, onDelete, onAddTime, onStar
 
     return todayUTC === entryUTC;
   };
-
-  // compute today's local date without going through ISO/UTC conversion
-  const todayLocal = toLocalYMD(new Date());
 
   const [showAll, setShowAll] = React.useState(false);
   const displayed = showAll ? timeEntries : timeEntries.filter((t) => t.created && isToday(t.created));
@@ -123,7 +111,9 @@ export default function TimeEntryList({ timeEntries, onDelete, onAddTime, onStar
           <Grid container spacing={1} alignItems="center">
             <Grid item xs={5} sm={3}><Typography>{getActivityName(t.activityId)}</Typography></Grid>
             <Grid item xs={3} sm={2}><Typography>{t.minutes} min</Typography></Grid>
-            <Grid item xs={12} sm={4}
+            <Grid item xs={12} sm={2}
+                  sx={{ display: { xs: "none", sm: "block" } }}><Typography>{toLocalYMD(new Date(t.created))}</Typography></Grid>
+            <Grid item xs={12} sm={2}
                   sx={{ display: { xs: "none", sm: "block" } }}>
               <Typography>{t.notes ?? ""}</Typography></Grid>
             <Grid item xs={4} sm={3} sx={{ textAlign: "right" }}>
