@@ -1,6 +1,10 @@
 function getApiBase(): string {
 
-  return "http://192.168.40.100:3000";
+  // PROD
+  // return "http://192.168.40.100:3000";
+
+  //DEV
+  return "http://192.168.40.247:3001";
 
   // TODO: fix this so it pulls from env vars
   // try {

@@ -44,4 +44,28 @@ declare global {
         roles?: Role[]
     }
 
+
+  type PomodoroEntryType = "SHORT_BREAK" | "LONG_BREAK" | "WORK_INTERVAL";
+
+  interface PomodoroEntry {
+    id: string;
+    activityId: string;
+    pomodoroId: string;
+    minutes: number;
+    created: string;
+    updated: string;
+    notes?: string;
+    entryType: PomodoroEntryType
+  }
+
+  interface Pomodoro {
+    id: string;
+    notes: string;
+    name: string;
+    userId: string;
+    entries: PomodoroEntry[];
+    created: string;
+    updated: string;
+    activityId: string;
+  }
 }

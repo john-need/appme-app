@@ -2,6 +2,8 @@ tmp
 out-tsc
 coverage
 .env
+.env.prod
+.env.dev
 dist
 
 /node_modules
