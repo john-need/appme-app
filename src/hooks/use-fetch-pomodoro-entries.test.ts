@@ -1,4 +1,4 @@
-import { renderHook, waitFor } from "@testing-library/react";
+import { renderHook } from "@testing-library/react";
 import { useFetchPomodoroEntries } from "./use-fetch-pomodoro-entries";
 import { useQuery } from "@tanstack/react-query";
 import { useAppDispatch } from "@/hooks";

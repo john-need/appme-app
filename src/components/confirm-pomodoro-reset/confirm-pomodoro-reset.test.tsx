@@ -6,7 +6,7 @@ describe("ConfirmPomodoroReset", () => {
   const defaultProps = {
     showModal: true,
     onSave: jest.fn(),
-    onReset: jest.fn(),
+    onDiscard: jest.fn(),
     onClose: jest.fn(),
   };
 
@@ -32,10 +32,10 @@ describe("ConfirmPomodoroReset", () => {
     expect(defaultProps.onSave).toHaveBeenCalledTimes(1);
   });
 
-  it("calls onReset when Discard button is clicked", () => {
+  it("calls onDiscard when Discard button is clicked", () => {
     render(<ConfirmPomodoroReset {...defaultProps} />);
     fireEvent.click(screen.getByRole("button", { name: /discard/i }));
-    expect(defaultProps.onReset).toHaveBeenCalledTimes(1);
+    expect(defaultProps.onDiscard).toHaveBeenCalledTimes(1);
   });
 
   it("calls onClose when Close button is clicked", () => {

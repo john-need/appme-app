@@ -54,7 +54,6 @@ jest.mock("@/data-layer/patch-pomodoro", () => ({
 import { queryClient } from "@/api/query-client";
 import { fetchPomodoros } from "@/data-layer/fetch-pomodoros";
 import { addPomodoro as addPomodoroApi } from "@/data-layer/add-pomodoro";
-import { fetchPomodoroEntries } from "@/data-layer/fetch-pomodoro-entries";
 import { updatePomodoroEntry as updatePomodoroEntryApi } from "@/data-layer/update-pomodoro-entry";
 import { patchPomodoro as patchPomodoroApi } from "@/data-layer/patch-pomodoro";
 

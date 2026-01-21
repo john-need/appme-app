@@ -64,6 +64,7 @@ describe("PomodoroComponent", () => {
   it("calls onChange when name is changed", async () => {
     const onChange = jest.fn();
     renderWithRedux(<PomodoroComponent pomodoro={mockPomodoro} onChange={onChange} activities={mockActivities} />);
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const user = userEvent.setup();
 
     const nameInput = screen.getByLabelText(/Name/i);

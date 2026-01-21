@@ -5,6 +5,7 @@ let lastOptions: any = undefined;
 jest.mock("@tanstack/react-query", () => ({
   useMutation: (_fn: any, options: any) => {
     lastOptions = options;
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     return { mutate: (_: any) => void 0 } as any;
   },
 }));
@@ -20,6 +21,7 @@ jest.mock("@/store/root-store", () => ({
 
 // Mock normalization and data layer
 jest.mock("@/factories/pomodoro-factory", () => ({ __esModule: true, default: (p: any) => ({ id: "p1", ...p }) }));
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const addQuery = jest.fn(async (pomodoro: any, jwt: string) => ({ id: "p1", ...pomodoro }));
 jest.mock("@/data-layer/add-pomodoro", () => ({
   addPomodoro: (p: any, jwt: string) => addQuery(p, jwt),

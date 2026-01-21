@@ -1,6 +1,11 @@
 import React from "react";
 import { Box, Button, Collapse, Divider, Stack, Typography } from "@mui/material";
-import { useAppDispatch, useAppSelector, useCurrentUser, useUpdatePomodoroEntry } from "@/hooks";
+import {
+  useAppDispatch,
+  useAppSelector,
+  // useUpdatePomodoroEntry,
+  useCurrentUser
+} from "@/hooks";
 import { selectActivities } from "@/features/activities/activities-slice";
 import {
   addActivePomodoroEntry,
@@ -9,10 +14,10 @@ import {
   patchActivePomodoroEntry,
   saveActivePomodoroThunk,
   selectActivePomodoro,
-  selectPomodoros,
+  // selectPomodoros,
   setActivePomodoro
 } from "@/features/pomodoros/pomodoros-slice";
-import iso2LocalDateTime from "@/utils/iso-2-local-date-time";
+// import iso2LocalDateTime from "@/utils/iso-2-local-date-time";
 import PomodoroTimer from "@/components/pomodoro-timer/pomodoro-timer";
 import pomodoroFactory from "@/factories/pomodoro-factory";
 import Pomodoro from "@/components/pomodoro/pomodoro";
@@ -40,20 +45,20 @@ const getInterval = (workInterval: number, shortBreakInterval: number, longBreak
 };
 
 
-const collectEntries = (activityId: string, entries: TimeEntry[]): TimeEntry[] => {
-  return entries
-    .filter(entry => entry.activityId === activityId)
-    .toSorted((a, b) => b.created.localeCompare(a.created));
-};
+// const collectEntries = (activityId: string, entries: TimeEntry[]): TimeEntry[] => {
+//   return entries
+//     .filter(entry => entry.activityId === activityId)
+//     .toSorted((a, b) => b.created.localeCompare(a.created));
+// };
 
 const PomodoroPage = () => {
   const dispatch = useAppDispatch();
   const currentUser = useCurrentUser();
   const activities = useAppSelector(selectActivities);
-  const pomodoros = useAppSelector(selectPomodoros);
+  // const pomodoros = useAppSelector(selectPomodoros);
   const activePomodoro = useAppSelector(selectActivePomodoro);
   console.log("ACTIVE POMODORO", activePomodoro);
-  const updatePomoEntry = useUpdatePomodoroEntry();
+  // const updatePomoEntry = useUpdatePomodoroEntry();
 
   const createNewPomodoro = (p: Pomodoro | Partial<Pomodoro>) => {
     if (currentUser?.id) {
@@ -78,37 +83,44 @@ const PomodoroPage = () => {
   const updateActivePomodoroEntry = (p: Partial<PomodoroEntry> & { id: string }) => {
     dispatch(patchActivePomodoroEntry(p));
   };
-  const timeEntries = useAppSelector((s) => s.timeEntries?.items ?? [])
-    .map(te => ({ ...te, created: iso2LocalDateTime(te.created), updated: iso2LocalDateTime(te.created) }));
+  // const timeEntries = useAppSelector((s) => s.timeEntries?.items ?? [])
+  //   .map(te => ({ ...te, created: iso2LocalDateTime(te.created), updated: iso2LocalDateTime(te.created) }));
 
 
-  const muda: Activity[] = activities.filter(a => a.type === "MUDA").toSorted((a, b) => a.name.localeCompare(b.name));
+  // const muda: Activity[] = activities.filter(a => a.type === "MUDA").toSorted((a, b) => a.name.localeCompare(b.name));
   const tassei: Activity[] = activities.filter(a => a.type === "TASSEI").toSorted((a, b) => a.name.localeCompare(b.name));
 
 
-  const tasseiEntries: Record<string, TimeEntry[]> = tassei.reduce(
-    (acc, activity) => {
-      return { ...acc, [activity.id]: collectEntries(activity.id, timeEntries) };
-    },
-    {}
-  );
+  // const tasseiEntries: Record<string, TimeEntry[]> = tassei.reduce(
+  //   (acc, activity) => {
+  //     return { ...acc, [activity.id]: collectEntries(activity.id, timeEntries) };
+  //   },
+  //   {}
+  // );
+  //
+  // const mudaEntries: Record<string, TimeEntry[]> = muda.reduce(
+  //   (acc, activity) => {
+  //     return { ...acc, [activity.id]: collectEntries(activity.id, timeEntries) };
+  //   },
+  //   {}
+  // );
 
-  const mudaEntries: Record<string, TimeEntry[]> = muda.reduce(
-    (acc, activity) => {
-      return { ...acc, [activity.id]: collectEntries(activity.id, timeEntries) };
-    },
-    {}
-  );
-
-  const [shortBreak, setShortBreak] = React.useState<number>(0.6); // in minutes
-  const [longBreak, setLongBreak] = React.useState<number>(1); // in minutes
-  const [workInterval, setWorkInterval] = React.useState<number>(0.75); // in minutes
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [shortBreak, setShortBreak] = React.useState<number>(5); // in minutes
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [longBreak, setLongBreak] = React.useState<number>(20); // in minutes
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [workInterval, setWorkInterval] = React.useState<number>(60); // in minutes
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [pomoRunning, setPomoRunning] = React.useState<boolean>(false);
   const [showConfirmResetModal, setShowConfirmResetModal] = React.useState<boolean>(false);
   const onPausePomodoro = (minutes: number) => {
     console.log("pausing pomodoro at:", minutes);
     setPomoRunning(false);
   };
+
+
+
 
   const onStartPomodoro = (minutes: number) => {
     console.log("starting pomodoro from:", minutes);

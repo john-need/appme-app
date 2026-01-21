@@ -19,7 +19,7 @@ export default function useUpdatePomodoroEntry(
       const { pomodoroId, entry } = vars;
       
       // Normalize the entry before sending
-      const normalizedEntry = pomodoroEntryFactory(entry as any);
+      const normalizedEntry = pomodoroEntryFactory(entry as unknown as Record<string, unknown>);
       
       // Dispatch the thunk which handles the API call and Redux state update
       return await store.dispatch(updatePomodoroEntryThunk(pomodoroId, normalizedEntry));

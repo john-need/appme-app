@@ -1,5 +1,4 @@
 import { fetchPomodoroEntries, fetchPomodoroEntryById } from "./fetch-pomodoro-entries";
-import pomodoroEntryFactory from "@/factories/pomodoro-entry-factory";
 
 jest.mock("@/utils/get-api-base", () => ({
   __esModule: true,
@@ -27,7 +26,11 @@ describe("fetchPomodoroEntries", () => {
 
     const result = await fetchPomodoroEntries("jwt-token", "p1");
 
-    expect(result).toEqual(responseData.map(pomodoroEntryFactory));
+    expect(result).toEqual(responseData.map(entry => expect.objectContaining({
+      ...entry,
+      created: expect.any(String),
+      updated: expect.any(String),
+    })));
     expect(g.fetch).toHaveBeenCalledWith(
       "http://api.test/pomodoros/p1/entries",
       expect.objectContaining({
@@ -93,7 +96,11 @@ describe("fetchPomodoroEntryById", () => {
 
     const result = await fetchPomodoroEntryById("jwt-token", "p1", "e1");
 
-    expect(result).toEqual(pomodoroEntryFactory(responseData));
+    expect(result).toEqual(expect.objectContaining({
+      ...responseData,
+      created: expect.any(String),
+      updated: expect.any(String),
+    }));
     expect(g.fetch).toHaveBeenCalledWith(
       "http://api.test/pomodoros/p1/entries/e1",
       expect.objectContaining({

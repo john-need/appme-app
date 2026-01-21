@@ -1,6 +1,6 @@
 import { renderHook, act } from "@testing-library/react";
 import useUpdatePomodoroEntry from "./use-update-pomodoro-entry";
-
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 let lastOptions: any = undefined;
 jest.mock("@tanstack/react-query", () => ({
   useMutation: (fn: any, options: any) => {
