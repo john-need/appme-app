@@ -5,8 +5,6 @@ import {
   Typography,
   Autocomplete,
 } from "@mui/material";
-import { useAppSelector } from "@/hooks";
-import { selectActivities } from "@/features/activities/activities-slice";
 import iso2LocalDateTime from "@/utils/iso-2-local-date-time";
 
 interface PomodoroProps {
@@ -32,8 +30,8 @@ const PomodoroComponent = ({ pomodoro, onChange, activities }: PomodoroProps) =>
   const activeActivity = activities.find((a) => a.id === pomodoro.activityId);
 
   return (
-    <Box sx={{ p: 2 }}>
-      <Box sx={{ display: "flex", flexDirection: "column", gap: 2, mb: 4 }}>
+    <Box>
+      <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
         <TextField
           label="Name"
           value={pomodoro.name}
@@ -50,7 +48,7 @@ const PomodoroComponent = ({ pomodoro, onChange, activities }: PomodoroProps) =>
             }
           }}
           renderInput={(params) => (
-            <TextField {...params} label="Activity" fullWidth />
+            <TextField {...params} label="Activity" fullWidth/>
           )}
           fullWidth
         />

@@ -1,7 +1,6 @@
 import fetchUser from "./fetch-user";
 import getApiBase from "@/utils/get-api-base";
 
-
 const API_BASE = getApiBase();
 
 function parseJwtPayload(token: string): Record<string, unknown> | null {

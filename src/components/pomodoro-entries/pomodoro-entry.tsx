@@ -8,6 +8,13 @@ interface PomodoroEntryProps {
   activities: Activity[];
 }
 
+const pomodoroTimerEntryTypeMap: Record<PomodoroEntryType, string> = {
+  WORK_INTERVAL: "Work Interval",
+  SHORT_BREAK: "Short Break",
+  LONG_BREAK: "Long Break",
+} as const;
+
+
 
 const PomodoroEntry = ({ entry, onEntryActivityChange, activities }: PomodoroEntryProps) => {
   const startDate = new Date(entry.created);
@@ -34,7 +41,10 @@ const PomodoroEntry = ({ entry, onEntryActivityChange, activities }: PomodoroEnt
         </Typography>
         {calculateDuration(entry.minutes)}
       </Grid>
-      <Grid item xs={12} sm={6}>
+      <Grid item xs={2}>
+        {pomodoroTimerEntryTypeMap[entry.entryType]}
+      </Grid>
+      <Grid item xs={12} sm={4}>
         <Autocomplete
           options={activities}
           getOptionLabel={(option) => option.name}

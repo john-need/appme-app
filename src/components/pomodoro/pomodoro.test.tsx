@@ -55,15 +55,15 @@ const renderWithRedux = (component: React.ReactElement) => {
 
 describe("PomodoroComponent", () => {
   it("renders pomodoro details correctly", () => {
-    renderWithRedux(<PomodoroComponent pomodoro={mockPomodoro} onChange={() => {}} />);
+    renderWithRedux(<PomodoroComponent pomodoro={mockPomodoro} onChange={() => {}} activities={mockActivities} />);
 
     expect(screen.getByLabelText(/Name/i)).toHaveValue("Task 1");
-    expect(screen.getByText(/Created:/i)).toBeInTheDocument();
+    expect(screen.getByText(/2023-01-01/i)).toBeInTheDocument();
   });
 
   it("calls onChange when name is changed", async () => {
     const onChange = jest.fn();
-    renderWithRedux(<PomodoroComponent pomodoro={mockPomodoro} onChange={onChange} />);
+    renderWithRedux(<PomodoroComponent pomodoro={mockPomodoro} onChange={onChange} activities={mockActivities} />);
     const user = userEvent.setup();
 
     const nameInput = screen.getByLabelText(/Name/i);
@@ -75,7 +75,7 @@ describe("PomodoroComponent", () => {
 
   it("calls onChange when activity is changed", async () => {
     const onChange = jest.fn();
-    renderWithRedux(<PomodoroComponent pomodoro={mockPomodoro} onChange={onChange} />);
+    renderWithRedux(<PomodoroComponent pomodoro={mockPomodoro} onChange={onChange} activities={mockActivities} />);
 
     const activityInput = screen.getAllByRole("combobox")[0]; // The first one is for Pomodoro activityId
     
