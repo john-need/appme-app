@@ -16,6 +16,7 @@ import TimeEntryList from "./time-entry-list";
 import timeEntryFactory from "@/factories/time-entry-factory";
 import AddIcon from "@mui/icons-material/Add";
 import TimerIcon from "@mui/icons-material/Timer";
+import isToday from "@/utils/is-today";
 
 interface Props {
   timeEntries: TimeEntry[];
@@ -28,20 +29,6 @@ interface Props {
 const TimeEntries = ({ timeEntries, onAddTime, startStopWatch, onDeleteTimeEntry, onAddTimeEntry }: Props) => {
   const activities = useAppSelector(selectActivities);
 
-  // Helper function to check if a date is today in UTC
-  // This handles the case where a time entry is created late in the day in UTC
-  // but might appear as yesterday in local time
-  const isToday = (dateStr?: string) => {
-    if (!dateStr) return false;
-
-    // Get today's date in UTC (YYYY-MM-DD)
-    const todayUTC = new Date().toISOString().slice(0, 10);
-
-    // Get the entry's date in UTC (YYYY-MM-DD)
-    const entryUTC = new Date(dateStr).toISOString().slice(0, 10);
-
-    return todayUTC === entryUTC;
-  };
 
   // Get today's date in local time (YYYY-MM-DD format)
   const today = new Date().toLocaleDateString("en-CA"); // en-CA gives YYYY-MM-DD format
