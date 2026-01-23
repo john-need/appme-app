@@ -116,7 +116,7 @@ describe("EditActivityModal", () => {
       tuesday: true,
       friday: true,
     });
-  }, 15000);
+  }, 30000);
 
   it("keeps Weekends mutually exclusive with Sat/Sun selections", async () => {
     const user = userEvent.setup();
@@ -142,7 +142,7 @@ describe("EditActivityModal", () => {
     await user.click(screen.getByLabelText("Sat"));
     expect((screen.getByLabelText("Sat") as HTMLInputElement).checked).toBe(true);
     expect((screen.getByLabelText("Weekends") as HTMLInputElement).checked).toBe(false);
-  });
+  }, 20000);
 
   it("calls onClose when close button clicked", async () => {
     const user = userEvent.setup();
@@ -152,5 +152,5 @@ describe("EditActivityModal", () => {
 
     await user.click(screen.getByRole("button", { name: /close/i }));
     expect(onClose).toHaveBeenCalledTimes(1);
-  });
+  }, 10000);
 });

@@ -85,13 +85,14 @@ export default function AddActivityModal({ onClose, onSubmit, open }: AddActivit
   };
 
   const handleGoalChange = (value: string) => {
-    if (value === "") {
+    if (value === "" || value === "-") {
       setGoal("");
       return;
     }
     const goalValue = Number(value);
-    const isValid = !isNaN(goalValue) && goalValue >= 0;
-    setGoal(isValid ? goalValue : "");
+    if (!isNaN(goalValue)) {
+      setGoal(goalValue);
+    }
   };
 
   // form validation state

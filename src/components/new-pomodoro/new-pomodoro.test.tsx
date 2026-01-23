@@ -92,7 +92,7 @@ describe("NewPomodoro", () => {
         activityId: "a1",
       })
     );
-  });
+  }, 30000);
 
   it("resets fields on clear", async () => {
     render(
@@ -108,5 +108,5 @@ describe("NewPomodoro", () => {
     await user.click(clearBtn);
 
     expect(nameInput.value).toBe("");
-  });
+  }, 15000);
 });

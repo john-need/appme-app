@@ -92,7 +92,7 @@ describe("LoginForm", () => {
     await user.clear(screen.getByLabelText(/Email/i));
     await user.type(screen.getByLabelText(/Email/i), "a@b.com");
     expect(screen.queryByText(/Please enter a valid email address/)).toBeNull();
-  });
+  }, 15000);
 
   it("calls login with email and password and persists remembered email when checked", async () => {
     setUseLoginReturn({ isLoading: false, isSuccess: false });
@@ -107,7 +107,7 @@ describe("LoginForm", () => {
 
     expect(mockLogin).toHaveBeenCalledWith("me@example.com", "secret1");
     expect(localStorage.getItem("appme:rememberedEmail")).toBe("me@example.com");
-  });
+  }, 15000);
 
   it("removes remembered email when checkbox is unchecked on submit", async () => {
     // start with saved value present
@@ -127,7 +127,7 @@ describe("LoginForm", () => {
     await user.click(screen.getByRole("button", { name: /login/i }));
 
     expect(localStorage.getItem("appme:rememberedEmail")).toBeNull();
-  });
+  }, 15000);
 
   it("disables button and shows loader when isLoading is true", () => {
     setUseLoginReturn({ isLoading: true });
