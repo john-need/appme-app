@@ -77,7 +77,7 @@ export default function PreferencesPage() {
     if (!currentUser) return;
     setName(currentUser.name ?? "");
     setStartOfWeek(currentUser.startOfWeek ?? "MONDAY");
-    setDefaultView(currentUser.defaultView ?? "WEEK");
+    setDefaultView(currentUser.defaultView ?? "DAY");
     setError(null);
     setSuccess(false);
   };

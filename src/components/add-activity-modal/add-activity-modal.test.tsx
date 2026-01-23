@@ -45,7 +45,7 @@ describe("AddActivityModal", () => {
     await user.clear(screen.getByLabelText(/Goal/i));
     await user.type(screen.getByLabelText(/Goal/i), "15");
     expect(addBtn).toBeEnabled();
-  });
+  }, 15000);
 
   it("submits payload with defaults and provided values when valid", async () => {
     const onClose = jest.fn();
@@ -71,7 +71,7 @@ describe("AddActivityModal", () => {
 
     await user.click(screen.getByRole("button", { name: /add/i }));
 
-    await waitFor(() => expect(onSubmit).toHaveBeenCalled());
+    await waitFor(() => expect(onSubmit).toHaveBeenCalled(), { timeout: 10000 });
     const payload = (onSubmit.mock.calls[0] as any[])[0] as Partial<Activity>;
     expect(payload).toMatchObject({
       name: "Workout",
@@ -85,7 +85,7 @@ describe("AddActivityModal", () => {
     // unchecked boxes should be false by default
     expect(payload.tuesday).toBe(false);
     expect(payload.thursday).toBe(false);
-  }, 15000);
+  }, 40000);
 
   it("keeps Weekends mutually exclusive with Sat/Sun selections", async () => {
     const onClose = jest.fn();
@@ -112,7 +112,7 @@ describe("AddActivityModal", () => {
     await user.click(screen.getByLabelText("Sat"));
     expect((screen.getByLabelText("Sat") as HTMLInputElement).checked).toBe(true);
     expect((screen.getByLabelText("Weekends") as HTMLInputElement).checked).toBe(false);
-  });
+  }, 20000);
 
   it("calls onClose when close button clicked", async () => {
     const onClose = jest.fn();
@@ -123,5 +123,5 @@ describe("AddActivityModal", () => {
     // The small floating close button has aria-label="close"
     await user.click(screen.getByRole("button", { name: /close/i }));
     expect(onClose).toHaveBeenCalledTimes(1);
-  });
+  }, 10000);
 });

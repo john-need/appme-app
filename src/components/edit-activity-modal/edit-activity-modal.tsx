@@ -87,13 +87,14 @@ export default function EditActivityModal({ onClose, onSubmit, activity, open }:
   };
 
   const handleGoalChange = (value: string) => {
-    if (value === "") {
+    if (value === "" || value === "-") {
       setGoal("");
       return;
     }
-    const goal = Number(value);
-    const isValid = !isNaN(goal) && goal >= 0;
-    setGoal(isValid ? goal : "");
+    const goalVal = Number(value);
+    if (!isNaN(goalVal)) {
+      setGoal(goalVal);
+    }
   };
 
   const goalNumber = goal === "" ? NaN : Number(goal);
