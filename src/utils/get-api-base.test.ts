@@ -29,9 +29,9 @@ describe("getApiBase", () => {
   // Note: implementation prefers process.env before checking globalThis fallbacks.
   // Since process.env is always present in Node/Jest, the globalThis branches are not reachable here.
 
-  it("returns default http://localhost:3000 when nothing set", () => {
+  it("returns default http://192.168.40.100:3000 when nothing set", () => {
     delete process.env.REACT_APP_API_BASE_URL;
     delete process.env.API_BASE_URL;
-    expect(getApiBase()).toBe("http://localhost:3000");
+    expect(getApiBase()).toBe("http://192.168.40.100:3000");
   });
 });
