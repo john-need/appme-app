@@ -245,10 +245,10 @@ export default function Activities({ activities, updateActivity, deleteActivity,
               <Typography>{a.goal ?? ""}</Typography>
             </Grid>
             <Grid item xs={2} className={styles["activities_row-cell"]}>
-              <IconButton aria-label={`edit-${a.id}`} size="small" onClick={() => handleEditOpen(a)}>
+              <IconButton data-testid={`edit-icon-button-${a.id}`} aria-label={`edit-${a.id}`} size="small" onClick={() => handleEditOpen(a)}>
                 <EditIcon fontSize="small"/>
               </IconButton>
-              <IconButton aria-label={`delete-${a.id}`} size="small" onClick={handleDeleteAlertOpen(a)}>
+              <IconButton data-testid={`delete-icon-button-${a.id}`}  aria-label={`delete-${a.id}`} size="small" onClick={handleDeleteAlertOpen(a)}>
                 <DeleteIcon fontSize="small"/>
               </IconButton>
             </Grid>

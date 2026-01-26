@@ -13,6 +13,7 @@ import {
 import { useAppSelector } from "@/hooks";
 import { selectActivities } from "@/features/activities/activities-slice";
 import TimeEntryList from "./time-entry-list";
+import { TimeEntry as TimeEntryControl } from "../time-entry/time-entry";
 import timeEntryFactory from "@/factories/time-entry-factory";
 import AddIcon from "@mui/icons-material/Add";
 import TimerIcon from "@mui/icons-material/Timer";
@@ -34,7 +35,7 @@ const TimeEntries = ({ timeEntries, onAddTime, startStopWatch, onDeleteTimeEntry
   const today = new Date().toLocaleDateString("en-CA"); // en-CA gives YYYY-MM-DD format
   const [date, setDate] = useState<string>(today);
   const [activityId, setActivityId] = useState<string>("");
-  const [minutes, setMinutes] = useState<number | string>("");
+  const [minutes, setMinutes] = useState<number | undefined>(0);
   const [notes, setNotes] = useState<string>("");
   // optimistically excluded activity ids (hide immediately after submission)
   const [excludedActivityIds, setExcludedActivityIds] = React.useState<Set<string>>(new Set());
@@ -78,7 +79,7 @@ const TimeEntries = ({ timeEntries, onAddTime, startStopWatch, onDeleteTimeEntry
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [availableActivities.length, group1.length, group2.length, excludedActivityIds.size, timeEntries.length]);
 
-  const canSubmit = activityId && activityId !== "" && Number(minutes) >= 0 && date !== "";
+  const canSubmit = activityId && activityId !== "" && minutes !== undefined && minutes >= 0 && date !== "";
 
   const handleSubmit = (e?: React.FormEvent) => {
     e?.preventDefault();
@@ -89,7 +90,7 @@ const TimeEntries = ({ timeEntries, onAddTime, startStopWatch, onDeleteTimeEntry
 
     const payload = timeEntryFactory({
       activityId,
-      minutes: Number(minutes),
+      minutes: minutes ?? 0,
       notes: notes || undefined,
     });
 
@@ -110,7 +111,7 @@ const TimeEntries = ({ timeEntries, onAddTime, startStopWatch, onDeleteTimeEntry
     onAddTimeEntry(payload);
 
     // reset form
-    setMinutes("");
+    setMinutes(0);
     setNotes("");
     setDate(today);
   };
@@ -199,19 +200,10 @@ const TimeEntries = ({ timeEntries, onAddTime, startStopWatch, onDeleteTimeEntry
 
             </Stack>
           </Grid>
-          <Grid item xs={3} sm={1}>
-            <TextField label="Minutes"
-                       type="number"
-                       fullWidth
-                       value={minutes}
-                       onChange={(e) => {
-                         const val = Number(e.target.value);
-                         if (isNaN(val) || val < 0) {
-                           setMinutes(0);
-                         } else {
-                           setMinutes(Math.round(val));
-                         }
-                       }}
+          <Grid item xs={3} sm={2}>
+            <TimeEntryControl
+              value={minutes}
+              onChange={(e) => setMinutes(e.target.value)}
             />
           </Grid>
           <Grid item xs={12} sm={4} sx={{ display: { xs: "none", sm: "block" } }}>

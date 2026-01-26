@@ -1,5 +1,5 @@
 import React from "react";
-import { render, screen  } from "@testing-library/react";
+import { render, screen, fireEvent  } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import EditActivityModal from "./edit-activity-modal";
 
@@ -31,11 +31,13 @@ describe("EditActivityModal", () => {
     expect(screen.getByText(/Edit Activity/i)).toBeInTheDocument();
 
     const nameInput = screen.getByLabelText(/Name/i) as HTMLInputElement;
-    const goalInput = screen.getByLabelText(/Goal/i) as HTMLInputElement;
+    const hoursInput = screen.getByLabelText(/hours/i) as HTMLInputElement;
+    const minutesInput = screen.getByLabelText(/minutes/i) as HTMLInputElement;
     const commentInput = screen.getByLabelText(/Comment/i) as HTMLInputElement;
 
     expect(nameInput.value).toBe("Daily Run");
-    expect(goalInput.value).toBe("30");
+    expect(hoursInput.value).toBe("0");
+    expect(minutesInput.value).toBe("30");
     expect(commentInput.value).toBe("morning");
 
     // Type select should reflect the initial type
@@ -43,7 +45,6 @@ describe("EditActivityModal", () => {
   });
 
   it("disables Save when invalid and enables when fixed", async () => {
-    const user = userEvent.setup();
     const onClose = jest.fn();
     const onSubmit = jest.fn();
     render(<EditActivityModal open={true} onClose={onClose} onSubmit={onSubmit} activity={baseActivity} />);
@@ -54,27 +55,24 @@ describe("EditActivityModal", () => {
 
     // make invalid: clear name
     const nameInput = screen.getByLabelText(/Name/i);
-    await user.clear(nameInput);
+    fireEvent.change(nameInput, { target: { value: "" } });
     expect(saveBtn).toBeDisabled();
 
-    // restore name but make goal invalid (negative)
-    await user.type(nameInput, "Jogging");
+    // restore name but make goal invalid (empty)
+    fireEvent.change(nameInput, { target: { value: "Jogging" } });
     expect(saveBtn).toBeEnabled();
-    const goalInput = screen.getByLabelText(/Goal/i);
-    await user.clear(goalInput);
-    await user.type(goalInput, "-1");
-    expect(saveBtn).toBeDisabled();
+    
+    const hoursInput = screen.getByLabelText(/hours/i);
+    
+    // Clear hours to make it undefined (invalid)
+    fireEvent.change(hoursInput, { target: { value: "" } });
+    expect(screen.getByRole("button", { name: /save/i })).toBeDisabled();
 
     // fix goal (0 is allowed)
-    await user.clear(goalInput);
-    await user.type(goalInput, "0");
-    expect(saveBtn).toBeEnabled();
-
-    // fix goal
-    await user.clear(goalInput);
-    await user.type(goalInput, "45");
-    expect(saveBtn).toBeEnabled();
-  }, 15000);
+    fireEvent.change(screen.getByLabelText(/hours/i), { target: { value: "0" } });
+    fireEvent.change(screen.getByLabelText(/minutes/i), { target: { value: "30" } });
+    expect(screen.getByRole("button", { name: /save/i })).toBeEnabled();
+  });
 
   it("submits payload with id and updated values when Save clicked", async () => {
     const user = userEvent.setup();
@@ -92,8 +90,13 @@ describe("EditActivityModal", () => {
     const mudaOption = await screen.findByRole("option", { name: "MUDA" });
     await user.click(mudaOption);
 
-    await user.clear(screen.getByLabelText(/Goal/i));
-    await user.type(screen.getByLabelText(/Goal/i), "60");
+    const hoursInput = screen.getByLabelText(/hours/i);
+    const minutesInput = screen.getByLabelText(/minutes/i);
+    
+    // Use fireEvent to ensure state updates correctly without intermediate character-by-character issues in test
+    fireEvent.change(hoursInput, { target: { value: "1" } });
+    fireEvent.change(minutesInput, { target: { value: "0" } });
+
     await user.clear(screen.getByLabelText(/Comment/i));
     await user.type(screen.getByLabelText(/Comment/i), "evening session");
 
@@ -153,4 +156,24 @@ describe("EditActivityModal", () => {
     await user.click(screen.getByRole("button", { name: /close/i }));
     expect(onClose).toHaveBeenCalledTimes(1);
   }, 10000);
+
+  it("updates state when activity prop changes while open", async () => {
+    const { rerender } = render(
+      <EditActivityModal open={true} onClose={() => {}} onSubmit={() => {}} activity={baseActivity} />
+    );
+
+    expect(screen.getByLabelText(/Name/i)).toHaveValue("Daily Run");
+
+    const anotherActivity: Activity = {
+      ...baseActivity,
+      id: "a2",
+      name: "Yoga",
+    };
+
+    rerender(
+      <EditActivityModal open={true} onClose={() => {}} onSubmit={() => {}} activity={anotherActivity} />
+    );
+
+    expect(screen.getByLabelText(/Name/i)).toHaveValue("Yoga");
+  });
 });
