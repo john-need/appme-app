@@ -20,7 +20,7 @@ function getApiBase(): string {
       return (
         (process.env.REACT_APP_API_BASE_URL as string) ||
         (process.env.API_BASE_URL as string) ||
-        "http://localhost:3000"
+        "http://192.168.40.100:3000"
       );
     }
   } catch (e) {
@@ -36,7 +36,7 @@ function getApiBase(): string {
     // ignore
   }
 
-  return "http://localhost:3000";
+  return "http://192.168.40.100:3000";
 }
 
 export default getApiBase;

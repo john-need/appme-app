@@ -18,6 +18,7 @@ import {
   Fab,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
+import { TimeEntry } from "../time-entry/time-entry";
 
 interface EditActivityModalProps {
   open: boolean;
@@ -30,7 +31,7 @@ export default function EditActivityModal({ onClose, onSubmit, activity, open }:
   const [name, setName] = useState(activity?.name ?? "");
   const [type, setType] = useState<ActivityType>(activity?.type ?? "TASSEI");
   const [comment, setComment] = useState(activity?.comment ?? "");
-  const [goal, setGoal] = useState<number | "">(activity?.goal ?? "");
+  const [goal, setGoal] = useState<number | undefined>(activity?.goal);
 
   const [monday, setMonday] = useState(!!activity?.monday);
   const [tuesday, setTuesday] = useState(!!activity?.tuesday);
@@ -40,6 +41,27 @@ export default function EditActivityModal({ onClose, onSubmit, activity, open }:
   const [saturday, setSaturday] = useState(!!activity?.saturday);
   const [sunday, setSunday] = useState(!!activity?.sunday);
   const [weekends, setWeekends] = useState(!!activity?.weekends);
+
+  React.useEffect(() => {
+    if (activity && open) {
+      setName(activity.name ?? "");
+      setType(activity.type ?? "TASSEI");
+      setComment(activity.comment ?? "");
+      setGoal(activity.goal);
+      setMonday(!!activity.monday);
+      setTuesday(!!activity.tuesday);
+      setWednesday(!!activity.wednesday);
+      setThursday(!!activity.thursday);
+      setFriday(!!activity.friday);
+      setSaturday(!!activity.saturday);
+      setSunday(!!activity.sunday);
+      setWeekends(!!activity.weekends);
+    }
+  }, [activity, open]);
+
+  const handleGoalChange = (value: number | undefined) => {
+    setGoal(value);
+  };
 
   // Handlers to keep weekends and saturday/sunday mutually exclusive
   const handleWeekendsChange = (checked: boolean) => {
@@ -66,14 +88,13 @@ export default function EditActivityModal({ onClose, onSubmit, activity, open }:
 
   const handleSubmit = (e?: React.FormEvent) => {
     e?.preventDefault();
-    const goalNumber = goal === "" ? NaN : Number(goal);
-    if (!name || name.trim() === "" || isNaN(goalNumber) || goalNumber < 0) return;
+    if (!name || name.trim() === "" || goal === undefined || goal < 0) return;
     const payload: Partial<Activity> = {
       id: activity?.id,
       name: name || undefined,
       type: type,
       comment: comment || undefined,
-      goal: goal === "" ? undefined : (Number(goal) as number),
+      goal: goal,
       monday,
       tuesday,
       wednesday,
@@ -86,19 +107,7 @@ export default function EditActivityModal({ onClose, onSubmit, activity, open }:
     onSubmit(payload);
   };
 
-  const handleGoalChange = (value: string) => {
-    if (value === "" || value === "-") {
-      setGoal("");
-      return;
-    }
-    const goalVal = Number(value);
-    if (!isNaN(goalVal)) {
-      setGoal(goalVal);
-    }
-  };
-
-  const goalNumber = goal === "" ? NaN : Number(goal);
-  const canSubmit = !!name && name.trim() !== "" && !isNaN(goalNumber) && goalNumber >= 0;
+  const canSubmit = !!name && name.trim() !== "" && goal !== undefined && goal >= 0;
 
   return (
     <Dialog open={Boolean(open && activity)} onClose={onClose} maxWidth="sm" fullWidth>
@@ -132,12 +141,10 @@ export default function EditActivityModal({ onClose, onSubmit, activity, open }:
             </Select>
           </FormControl>
 
-          <TextField
+          <TimeEntry
             label="Goal"
-            type="number"
             value={goal}
             onChange={(e) => handleGoalChange(e.target.value)}
-            fullWidth
           />
 
           <TextField
