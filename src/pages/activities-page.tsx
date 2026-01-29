@@ -1,30 +1,25 @@
 import React, { useCallback } from "react";
 import { Container } from "@mui/material";
-import { selectActivities } from "@/features/activities/activities-slice";
+import { selectActivities, addActivityThunk, deleteActivityThunk, updateActivityThunk } from "@/features/activities/activities-slice";
 import { useSelector } from "react-redux";
 import Activities from "@/components/activities/activities";
-import useAddActivity from "@/hooks/use-add-activity";
-import useDeleteActivity from "@/hooks/use-delete-activity";
-import useUpdateActivity from "@/hooks/use-update-activity";
+import { useAppDispatch } from "@/hooks";
 
 export default function ActivitiesPage() {
   const activities = useSelector(selectActivities);
-
-  const addMutation = useAddActivity();
-  const updateMutation = useUpdateActivity();
-  const deleteMutation = useDeleteActivity();
+  const dispatch = useAppDispatch();
 
   const addActivity = useCallback((activity: Partial<Activity>) => {
-    addMutation.mutate({ activity: activity as Activity });
-  }, [addMutation]);
+    dispatch(addActivityThunk(activity));
+  }, [dispatch]);
 
   const updateActivity = useCallback((activity: Activity) => {
-    updateMutation.mutate(activity);
-  }, [updateMutation]);
+    dispatch(updateActivityThunk(activity));
+  }, [dispatch]);
 
   const deleteActivity = useCallback((id: string) => {
-    deleteMutation.mutate(id);
-  }, [deleteMutation]);
+    dispatch(deleteActivityThunk(id));
+  }, [dispatch]);
 
   return (
     <Container>

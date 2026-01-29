@@ -3,18 +3,27 @@ import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import ActivitiesPage from "./activities-page";
 
-// Mock redux selector used in the page
+// Mock redux hooks and thunk
+const mockDispatch = jest.fn();
 jest.mock("react-redux", () => ({
   useSelector: (fn: any) => fn({ activities: { items: [{ id: "a1", name: "Run", type: "CARDIO" }] } }),
+  useDispatch: () => mockDispatch,
 }));
 
-// Mock hooks that return mutations
-const addMutate = jest.fn();
-const updateMutate = jest.fn();
-const deleteMutate = jest.fn();
-jest.mock("@/hooks/use-add-activity", () => () => ({ mutate: addMutate }));
-jest.mock("@/hooks/use-update-activity", () => () => ({ mutate: updateMutate }));
-jest.mock("@/hooks/use-delete-activity", () => () => ({ mutate: deleteMutate }));
+jest.mock("@/hooks", () => ({
+  useAppDispatch: () => mockDispatch,
+}));
+
+const mockAddActivityThunk = jest.fn();
+const mockDeleteActivityThunk = jest.fn();
+const mockUpdateActivityThunk = jest.fn();
+jest.mock("@/features/activities/activities-slice", () => ({
+  selectActivities: (state: any) => state.activities.items,
+  addActivityThunk: (activity: any) => mockAddActivityThunk(activity),
+  deleteActivityThunk: (id: string) => mockDeleteActivityThunk(id),
+  updateActivityThunk: (activity: any) => mockUpdateActivityThunk(activity),
+}));
+
 
 // Mock child component to capture props
 // eslint-disable-next-line react/display-name
@@ -42,8 +51,9 @@ describe("ActivitiesPage", () => {
     await user.click(screen.getByText("update"));
     await user.click(screen.getByText("delete"));
 
-    expect(addMutate).toHaveBeenCalledWith({ activity: { name: "Swim", type: "CARDIO" } });
-    expect(updateMutate).toHaveBeenCalledWith({ id: "a1", name: "Run+", type: "CARDIO" });
-    expect(deleteMutate).toHaveBeenCalledWith("a1");
+    expect(mockAddActivityThunk).toHaveBeenCalledWith({ name: "Swim", type: "CARDIO" });
+    expect(mockDeleteActivityThunk).toHaveBeenCalledWith("a1");
+    expect(mockUpdateActivityThunk).toHaveBeenCalledWith({ id: "a1", name: "Run+", type: "CARDIO" });
+    expect(mockDispatch).toHaveBeenCalled();
   });
 });

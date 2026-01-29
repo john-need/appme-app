@@ -2,6 +2,9 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import type { AppDispatch, RootState } from "@/store/root-store";
 import { queryClient } from "@/api/query-client";
 import fetchTimeEntries from "@/data-layer/fetch-time-entries";
+import addTimeEntryQuery from "@/data-layer/add-time-entry";
+import patchTimeEntryQuery from "@/data-layer/patch-time-entry";
+import deleteTimeEntryQuery from "@/data-layer/delete-time-entry";
 import { addNotification } from "@/features/notification/notification-slice";
 import { sortMostRecentFirst } from "@/utils/sort-by-created";
 import timeEntryFactory from "@/factories/time-entry-factory";
@@ -66,6 +69,45 @@ export const fetchTimeEntriesThunk = () => async (dispatch: AppDispatch, getStat
     return timeEntries;
   } catch (err) {
     const message = (err as Error)?.message ?? "Failed to load time entries";
+    dispatch(addNotification({ id: String(Date.now()), message, severity: "error" }));
+    throw err;
+  }
+};
+
+export const addTimeEntryThunk = (timeEntry: Partial<TimeEntry>) => async (dispatch: AppDispatch, getState: () => RootState) => {
+  try {
+    const jwt = getState().auth?.jwt ?? undefined;
+    const normalized = timeEntryFactory(timeEntry);
+    const data = await addTimeEntryQuery(normalized, jwt);
+    dispatch(addTimeEntry(data));
+    return data;
+  } catch (err) {
+    const message = (err as Error)?.message ?? "Failed to add time entry";
+    dispatch(addNotification({ id: String(Date.now()), message, severity: "error" }));
+    throw err;
+  }
+};
+
+export const updateTimeEntryThunk = (timeEntry: Partial<TimeEntry> & { id: string }) => async (dispatch: AppDispatch, getState: () => RootState) => {
+  try {
+    const jwt = getState().auth?.jwt ?? undefined;
+    const data = await patchTimeEntryQuery(timeEntry, jwt);
+    dispatch(updateTimeEntry(data));
+    return data;
+  } catch (err) {
+    const message = (err as Error)?.message ?? "Failed to update time entry";
+    dispatch(addNotification({ id: String(Date.now()), message, severity: "error" }));
+    throw err;
+  }
+};
+
+export const deleteTimeEntryThunk = (id: string) => async (dispatch: AppDispatch, getState: () => RootState) => {
+  try {
+    const jwt = getState().auth?.jwt ?? undefined;
+    await deleteTimeEntryQuery(id, jwt);
+    dispatch(deleteTimeEntry(id));
+  } catch (err) {
+    const message = (err as Error)?.message ?? "Failed to delete time entry";
     dispatch(addNotification({ id: String(Date.now()), message, severity: "error" }));
     throw err;
   }

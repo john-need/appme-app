@@ -3,13 +3,14 @@ import { Box, Grid, Typography, Button } from "@mui/material";
 import { useAppSelector } from "@/hooks";
 import { selectActivities } from "@/features/activities/activities-slice";
 import EditTimeEntryModal from "./edit-time-entry-modal";
-import useUpdateTimeEntry from "@/hooks/use-update-time-entry";
+import { updateTimeEntryThunk } from "@/features/time-entries/time-entries-slice";
 import DeleteIcon from "@mui/icons-material/Delete";
 import IconButton from "@mui/material/IconButton";
 import MoreTimeIcon from "@mui/icons-material/MoreTime";
 import TimerIcon from "@mui/icons-material/Timer";
 import ConfirmDeleteDialog from "./confirm-delete-dialog";
 import toLocalYMD from "@/utils/to-local-ymd";
+import { useAppDispatch } from "@/hooks";
 
 interface Props {
   timeEntries: TimeEntry[];
@@ -20,7 +21,7 @@ interface Props {
 
 export default function TimeEntryList({ timeEntries, onDelete, onAddTime, onStartStopWatch }: Props) {
   const activities = useAppSelector(selectActivities);
-  const updateMutation = useUpdateTimeEntry();
+  const dispatch = useAppDispatch();
 
   const getActivityName = (id: string) => activities.find((a) => a.id === id)?.name ?? id;
 
@@ -49,7 +50,7 @@ export default function TimeEntryList({ timeEntries, onDelete, onAddTime, onStar
   const handleOpen = (t: TimeEntry) => setEditing(t);
   const handleClose = () => setEditing(null);
   const handleSave = (entry: TimeEntry) => {
-    updateMutation.mutate(entry);
+    dispatch(updateTimeEntryThunk(entry));
     handleClose();
   };
 

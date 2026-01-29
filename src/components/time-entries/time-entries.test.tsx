@@ -9,9 +9,6 @@ jest.mock("@/hooks", () => ({
   useAppDispatch: jest.fn(() => jest.fn()),
 }));
 
-jest.mock("@/hooks/use-update-time-entry", () => () => ({ mutate: jest.fn() }));
-jest.mock("@/hooks/use-add-time-entry", () => () => ({ mutate: jest.fn() }));
-jest.mock("@/hooks/use-delete-time-entry", () => () => ({ mutate: jest.fn() }));
 
 const mockActivities = [
   activityFactory({ id: "a1", name: "Activity 1", monday: true, tuesday: true, wednesday: true, thursday: true, friday: true, saturday: true, sunday: true }),
