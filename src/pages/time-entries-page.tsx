@@ -12,7 +12,7 @@ import {
 } from "@/features/time-entries/time-entries-slice";
 import timeEntryFactory from "@/factories/time-entry-factory";
 import { useAppDispatch } from "@/hooks";
-import todayTimeEntries from "../utils/today-time-entries";
+import todayTimeEntries from "@/utils/today-time-entries";
 import isToday from "@/utils/is-today";
 
 export default function TimeEntriesPage() {
