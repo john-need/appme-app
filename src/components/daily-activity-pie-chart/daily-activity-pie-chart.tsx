@@ -97,13 +97,19 @@ const DailyActivityPieChart: React.FC<DailyActivityPieChartProps> = ({ activitie
                         outerRadius={80}
                         fill="#8884d8"
                         dataKey="value"
-                        label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                        label={({ name, percent }) => `${name} ${((percent || 0) * 100).toFixed(0)}%`}
                       >
                         {data.map((entry, index) => (
                           <Cell key={`cell-${index}`} fill={entry.name === "Other" ? "#e0e0e0" : COLORS[index % COLORS.length]} />
                         ))}
                       </Pie>
-                      <Tooltip formatter={(value: number, name: string, props: any) => [props.payload.formattedValue, name]} />
+                      <Tooltip
+                        formatter={(
+                          _value: number | undefined,
+                          name: string | undefined,
+                          item: { payload?: { formattedValue?: string } }
+                        ) => [item.payload?.formattedValue || "", name as string]}
+                      />
                       <Legend />
                     </PieChart>
                   </ResponsiveContainer>
