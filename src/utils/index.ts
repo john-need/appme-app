@@ -10,6 +10,7 @@ import { sortMostRecentFirst } from "@/utils/sort-by-created";
 import toIso from "@/utils/to-iso";
 import { loadFromLocalStorage, saveToLocalStorage } from "@/utils/local-storage";
 import { decodeJwt, isJwtValid, isJwtExpired } from "@/utils/jwt";
+import todayTimeEntries from "@/utils/today-time-entries";
 
 export {
   calculateDuration,
@@ -26,7 +27,8 @@ export {
   localDateTime2UTC,
   saveToLocalStorage,
   sortMostRecentFirst,
-  toIso
+  toIso,
+  todayTimeEntries
 };
 
 

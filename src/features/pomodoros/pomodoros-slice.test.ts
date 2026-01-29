@@ -20,6 +20,8 @@ import reducer, {
   updatePomodoroEntryThunk,
   fetchPomodorosThunk,
   saveActivePomodoroThunk,
+  addPomodoroThunk,
+  addPomodoroEntryThunk,
 } from "./pomodoros-slice";
 
 // Mocks
@@ -39,6 +41,10 @@ jest.mock("@/data-layer/add-pomodoro", () => ({
   addPomodoro: jest.fn(),
 }));
 
+jest.mock("@/data-layer/add-pomodoro-entry", () => ({
+  addPomodoroEntry: jest.fn(),
+}));
+
 jest.mock("@/data-layer/fetch-pomodoro-entries", () => ({
   fetchPomodoroEntries: jest.fn(),
 }));
@@ -54,6 +60,7 @@ jest.mock("@/data-layer/patch-pomodoro", () => ({
 import { queryClient } from "@/api/query-client";
 import { fetchPomodoros } from "@/data-layer/fetch-pomodoros";
 import { addPomodoro as addPomodoroApi } from "@/data-layer/add-pomodoro";
+import { addPomodoroEntry as addPomodoroEntryApi } from "@/data-layer/add-pomodoro-entry";
 import { updatePomodoroEntry as updatePomodoroEntryApi } from "@/data-layer/update-pomodoro-entry";
 import { patchPomodoro as patchPomodoroApi } from "@/data-layer/patch-pomodoro";
 
@@ -488,6 +495,66 @@ describe("saveActivePomodoroThunk", () => {
 
     const thunk = saveActivePomodoroThunk();
     await expect((thunk as any)(dispatch, getState)).rejects.toThrow("api error");
+    expect(dispatch).toHaveBeenCalledWith(expect.objectContaining({ type: "notification/addNotification" }));
+  });
+});
+
+describe("addPomodoroThunk", () => {
+  const dispatch = jest.fn();
+  const mockPomodoro = { name: "New Pomodoro" } as Partial<Pomodoro>;
+  const mockResponse = { id: "p1", ...mockPomodoro } as Pomodoro;
+  const getState = () => ({ auth: { jwt: "jwt" } }) as any;
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  it("dispatches addPomodoro on success", async () => {
+    (addPomodoroApi as jest.Mock).mockResolvedValue(mockResponse);
+
+    const thunk = addPomodoroThunk(mockPomodoro);
+    const result = await (thunk as any)(dispatch, getState);
+
+    expect(addPomodoroApi).toHaveBeenCalledWith(expect.objectContaining({ name: "New Pomodoro" }), "jwt");
+    expect(dispatch).toHaveBeenCalledWith(addPomodoro(mockResponse));
+    expect(result).toEqual(mockResponse);
+  });
+
+  it("dispatches error notification and rethrows on failure", async () => {
+    (addPomodoroApi as jest.Mock).mockRejectedValue(new Error("boom"));
+
+    const thunk = addPomodoroThunk(mockPomodoro);
+    await expect((thunk as any)(dispatch, getState)).rejects.toThrow("boom");
+    expect(dispatch).toHaveBeenCalledWith(expect.objectContaining({ type: "notification/addNotification" }));
+  });
+});
+
+describe("addPomodoroEntryThunk", () => {
+  const dispatch = jest.fn();
+  const mockEntry = { minutes: 25 } as Partial<PomodoroEntry>;
+  const mockResponse = { id: "e1", pomodoroId: "p1", ...mockEntry } as PomodoroEntry;
+  const getState = () => ({ auth: { jwt: "jwt" } }) as any;
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  it("dispatches addPomodoroEntry on success", async () => {
+    (addPomodoroEntryApi as jest.Mock).mockResolvedValue(mockResponse);
+
+    const thunk = addPomodoroEntryThunk("p1", mockEntry);
+    const result = await (thunk as any)(dispatch, getState);
+
+    expect(addPomodoroEntryApi).toHaveBeenCalledWith("p1", expect.objectContaining({ minutes: 25 }), "jwt");
+    expect(dispatch).toHaveBeenCalledWith(addPomodoroEntry(mockResponse));
+    expect(result).toEqual(mockResponse);
+  });
+
+  it("dispatches error notification and rethrows on failure", async () => {
+    (addPomodoroEntryApi as jest.Mock).mockRejectedValue(new Error("boom"));
+
+    const thunk = addPomodoroEntryThunk("p1", mockEntry);
+    await expect((thunk as any)(dispatch, getState)).rejects.toThrow("boom");
     expect(dispatch).toHaveBeenCalledWith(expect.objectContaining({ type: "notification/addNotification" }));
   });
 });

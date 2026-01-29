@@ -2,6 +2,10 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import type { AppDispatch, RootState } from "@/store/root-store";
 import { queryClient } from "@/api/query-client";
 import fetchActivities from "@/data-layer/fetch-activities";
+import addActivityQuery from "@/data-layer/add-activity";
+import deleteActivityQuery from "@/data-layer/delete-activity";
+import patchActivityQuery from "@/data-layer/patch-activity";
+import activityFactory from "@/factories/activity-factory";
 import { addNotification } from "@/features/notification/notification-slice";
 import { sortMostRecentFirst } from "@/utils/sort-by-created";
 
@@ -78,4 +82,43 @@ export const fetchActivitiesThunk = () => async (dispatch: AppDispatch, getState
      dispatch(addNotification({ id: String(Date.now()), message, severity: "error" }));
      throw err;
    }
+};
+
+export const addActivityThunk = (activity: Partial<Activity>) => async (dispatch: AppDispatch, getState: () => RootState) => {
+  try {
+    const jwt = getState().auth?.jwt ?? undefined;
+    const normalized = activityFactory(activity);
+    const data = await addActivityQuery(normalized, jwt);
+    dispatch(addActivity(data));
+    return data;
+  } catch (err) {
+    const message = (err as Error)?.message ?? "Failed to add activity";
+    dispatch(addNotification({ id: String(Date.now()), message, severity: "error" }));
+    throw err;
+  }
+};
+
+export const deleteActivityThunk = (id: string) => async (dispatch: AppDispatch, getState: () => RootState) => {
+  try {
+    const jwt = getState().auth?.jwt ?? undefined;
+    await deleteActivityQuery(id, jwt);
+    dispatch(removeActivity(id));
+  } catch (err) {
+    const message = (err as Error)?.message ?? "Failed to delete activity";
+    dispatch(addNotification({ id: String(Date.now()), message, severity: "error" }));
+    throw err;
+  }
+};
+
+export const updateActivityThunk = (activity: Partial<Activity> & { id: string }) => async (dispatch: AppDispatch, getState: () => RootState) => {
+  try {
+    const jwt = getState().auth?.jwt ?? undefined;
+    const data = await patchActivityQuery(activity, jwt);
+    dispatch(updateActivity(data));
+    return data;
+  } catch (err) {
+    const message = (err as Error)?.message ?? "Failed to update activity";
+    dispatch(addNotification({ id: String(Date.now()), message, severity: "error" }));
+    throw err;
+  }
 };

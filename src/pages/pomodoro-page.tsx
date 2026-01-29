@@ -3,7 +3,6 @@ import { Box, Button, Collapse, Divider, Stack, Typography } from "@mui/material
 import {
   useAppDispatch,
   useAppSelector,
-  // useUpdatePomodoroEntry,
   useCurrentUser
 } from "@/hooks";
 import { selectActivities } from "@/features/activities/activities-slice";
@@ -58,7 +57,6 @@ const PomodoroPage = () => {
   // const pomodoros = useAppSelector(selectPomodoros);
   const activePomodoro = useAppSelector(selectActivePomodoro);
   console.log("ACTIVE POMODORO", activePomodoro);
-  // const updatePomoEntry = useUpdatePomodoroEntry();
 
   const createNewPomodoro = (p: Pomodoro | Partial<Pomodoro>) => {
     if (currentUser?.id) {

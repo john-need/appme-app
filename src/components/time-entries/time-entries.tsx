@@ -10,16 +10,16 @@ import {
   Grid,
   Divider, Fab, Stack
 } from "@mui/material";
-import { useAppSelector } from "@/hooks";
-import { selectActivities } from "@/features/activities/activities-slice";
 import TimeEntryList from "./time-entry-list";
 import { TimeEntry as TimeEntryControl } from "../time-entry/time-entry";
 import timeEntryFactory from "@/factories/time-entry-factory";
 import AddIcon from "@mui/icons-material/Add";
 import TimerIcon from "@mui/icons-material/Timer";
-import isToday from "@/utils/is-today";
 
 interface Props {
+  todayActivities: Activity[];
+  otherActivities: Activity[];
+  activities: Activity[];
   timeEntries: TimeEntry[];
   onAddTime: (entry: TimeEntry) => void;
   startStopWatch?: (entry: TimeEntry) => void;
@@ -27,9 +27,7 @@ interface Props {
   onAddTimeEntry?: (entry: TimeEntry) => void;
 }
 
-const TimeEntries = ({ timeEntries, onAddTime, startStopWatch, onDeleteTimeEntry, onAddTimeEntry }: Props) => {
-  const activities = useAppSelector(selectActivities);
-
+const TimeEntries = ({todayActivities, otherActivities, timeEntries, onAddTime, startStopWatch, onDeleteTimeEntry, onAddTimeEntry }: Props) => {
 
   // Get today's date in local time (YYYY-MM-DD format)
   const today = new Date().toLocaleDateString("en-CA"); // en-CA gives YYYY-MM-DD format
@@ -37,47 +35,7 @@ const TimeEntries = ({ timeEntries, onAddTime, startStopWatch, onDeleteTimeEntry
   const [activityId, setActivityId] = useState<string>("");
   const [minutes, setMinutes] = useState<number | undefined>(0);
   const [notes, setNotes] = useState<string>("");
-  // optimistically excluded activity ids (hide immediately after submission)
-  const [excludedActivityIds, setExcludedActivityIds] = React.useState<Set<string>>(new Set());
 
-  // Compute activities already logged for today (using UTC date comparison)
-  const todayActivityIds = new Set(
-    timeEntries
-      .filter(t => t.created && isToday(t.created))
-      .map(t => t.activityId)
-  );
-
-  // Determine today's weekday
-  const dayIndex = new Date().getDay(); // 0=Sun .. 6=Sat
-
-  const matchesToday = (a: Activity) => {
-    const days = [
-      Boolean(a.sunday) || Boolean(a.weekends),
-      Boolean(a.monday),
-      Boolean(a.tuesday),
-      Boolean(a.wednesday),
-      Boolean(a.thursday),
-      Boolean(a.friday),
-      Boolean(a.saturday) || Boolean(a.weekends)
-    ];
-    return days[dayIndex];
-  };
-
-  // Filter out activities that already have a time entry today or were optimistically excluded
-  const availableActivities = activities.filter((a) => !todayActivityIds.has(a.id) && !excludedActivityIds.has(a.id));
-
-  const group1 = availableActivities.filter(matchesToday).sort((x, y) => x.name.localeCompare(y.name));
-  const group2 = availableActivities.filter((a) => !matchesToday(a)).sort((x, y) => x.name.localeCompare(y.name));
-
-  // TODO: remove this
-  // keep selection in sync when available activities change
-  React.useEffect(() => {
-    const first = group1[0]?.id ?? group2[0]?.id ?? "";
-    // if the current selection is missing or no longer available, pick the first
-    const currentValid = activityId && availableActivities.some((a) => a.id === activityId);
-    if (!currentValid) setActivityId(first);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [availableActivities.length, group1.length, group2.length, excludedActivityIds.size, timeEntries.length]);
 
   const canSubmit = activityId && activityId !== "" && minutes !== undefined && minutes >= 0 && date !== "";
 
@@ -95,18 +53,13 @@ const TimeEntries = ({ timeEntries, onAddTime, startStopWatch, onDeleteTimeEntry
     });
 
     // update exclusion set
-    setExcludedActivityIds((prev) => {
-      const next = new Set(prev);
-      next.add(activityId);
-      return next;
-    });
+    // setExcludedActivityIds((prev) => {
+    //   const next = new Set(prev);
+    //   next.add(activityId);
+    //   return next;
+    // });
 
-    // immediately pick a new valid activityId so the Select value is always in the available options
-    // compute available activities after the optimistic exclusion
-    const newAvailable = activities.filter((a) => !todayActivityIds.has(a.id) && !excludedActivityIds.has(a.id) && a.id !== activityId);
-    const newGroup1 = newAvailable.filter(matchesToday).sort((x, y) => x.name.localeCompare(y.name));
-    const newGroup2 = newAvailable.filter((a) => !matchesToday(a)).sort((x, y) => x.name.localeCompare(y.name));
-    const newFirst = newGroup1[0]?.id ?? newGroup2[0]?.id ?? "";
+    const newFirst = todayActivities[0]?.id ?? otherActivities[0]?.id ?? "";
     setActivityId(newFirst);
     onAddTimeEntry(payload);
 
@@ -127,18 +80,14 @@ const TimeEntries = ({ timeEntries, onAddTime, startStopWatch, onDeleteTimeEntry
     });
 
     // update exclusion set (pattern from handleSubmit)
-    setExcludedActivityIds((prev) => {
-      const next = new Set(prev);
-      next.add(activityId);
-      return next;
-    });
+    // setExcludedActivityIds((prev) => {
+    //   const next = new Set(prev);
+    //   next.add(activityId);
+    //   return next;
+    // });
 
-    // immediately pick a new valid activityId so the Select value is always in the available options
-    const newAvailable = activities.filter((a) => !todayActivityIds.has(a.id) && !excludedActivityIds.has(a.id) && a.id !== activityId);
-    const newGroup1 = newAvailable.filter(matchesToday).sort((x, y) => x.name.localeCompare(y.name));
-    const newGroup2 = newAvailable.filter((a) => !matchesToday(a)).sort((x, y) => x.name.localeCompare(y.name));
-    const newFirst = newGroup1[0]?.id ?? newGroup2[0]?.id ?? "";
-    setActivityId(newFirst);
+    const newFirst = todayActivities[0]?.id ?? otherActivities[0]?.id ?? "";
+     setActivityId(newFirst);
 
     onAddTimeEntry(payload);
     startStopWatch(payload);
@@ -152,18 +101,18 @@ const TimeEntries = ({ timeEntries, onAddTime, startStopWatch, onDeleteTimeEntry
 
     onDeleteTimeEntry(timeEntry.id);
 
-    setExcludedActivityIds((prev) => {
-      const n = new Set(prev);
-      n.delete(timeEntry.activityId);
-      return n;
-    });
+    // setExcludedActivityIds((prev) => {
+    //   const n = new Set(prev);
+    //   n.delete(timeEntry.activityId);
+    //   return n;
+    // });
   };
 
   return (
     <Box>
       <Box component="form" onSubmit={handleSubmit} sx={{ mb: 3 }}>
         <Grid container spacing={1} alignItems="center">
-          <Grid item xs={7} sm={6}>
+          <Grid item xs={12} sm={5}>
             <Stack direction="row" spacing={1} sx={{ alignItems: "center" }}>
               <Box sx={{ aspectRatio: "1 / 1", width: "40px" }}>
                 <Fab
@@ -183,14 +132,14 @@ const TimeEntries = ({ timeEntries, onAddTime, startStopWatch, onDeleteTimeEntry
                         data-testid="activity-select"
 
                         onChange={(e) => setActivityId(e.target.value as string)}>
-                  {group1.map((a) => (
+                  {todayActivities.map((a) => (
                     <MenuItem key={a.id} value={a.id}>{a.name}</MenuItem>
                   ))}
-                  {group1.length > 0 && group2.length > 0 && <Divider component="li"/>}
-                  {group2.map((a) => (
+                  {todayActivities.length > 0 && otherActivities.length > 0 && <Divider component="li"/>}
+                  {otherActivities.map((a) => (
                     <MenuItem key={a.id} value={a.id}>{a.name}</MenuItem>
                   ))}
-                  {group1.length === 0 && group2.length === 0 && (
+                  {todayActivities.length === 0 && otherActivities.length === 0 && (
                     <MenuItem value="" disabled>
                       Huzzah! You&#39;ve done all the things.
                     </MenuItem>
@@ -200,13 +149,13 @@ const TimeEntries = ({ timeEntries, onAddTime, startStopWatch, onDeleteTimeEntry
 
             </Stack>
           </Grid>
-          <Grid item xs={3} sm={2}>
+          <Grid item xs={10} sm={3}>
             <TimeEntryControl
               value={minutes}
               onChange={(e) => setMinutes(e.target.value)}
             />
           </Grid>
-          <Grid item xs={12} sm={4} sx={{ display: { xs: "none", sm: "block" } }}>
+          <Grid item xs={12} sm={3} sx={{ display: { xs: "none", sm: "block" } }}>
             <TextField label="Notes"
                        fullWidth
                        multiline

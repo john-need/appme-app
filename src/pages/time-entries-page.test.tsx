@@ -3,6 +3,7 @@ import { render, screen, fireEvent } from "@testing-library/react";
 import TimeEntriesPage from "./time-entries-page";
 
 // Mock selector hook and child component
+const mockDispatch = jest.fn();
 jest.mock("@/hooks", () => ({
   useAppSelector: (fn: any) =>
     fn({
@@ -18,23 +19,19 @@ jest.mock("@/hooks", () => ({
         ],
       },
     }),
-  useAppDispatch: () => jest.fn(),
+  useAppDispatch: () => mockDispatch,
 }));
 
-const mockMutate = jest.fn();
-jest.mock("@/hooks/use-update-time-entry", () => () => ({
-  mutate: mockMutate,
+const mockAddTimeEntryThunk = jest.fn();
+const mockUpdateTimeEntryThunk = jest.fn();
+const mockDeleteTimeEntryThunk = jest.fn();
+jest.mock("@/features/time-entries/time-entries-slice", () => ({
+  ...jest.requireActual("@/features/time-entries/time-entries-slice"),
+  addTimeEntryThunk: (timeEntry: any) => mockAddTimeEntryThunk(timeEntry),
+  updateTimeEntryThunk: (timeEntry: any) => mockUpdateTimeEntryThunk(timeEntry),
+  deleteTimeEntryThunk: (id: string) => mockDeleteTimeEntryThunk(id),
 }));
 
-const mockAddMutate = jest.fn();
-jest.mock("@/hooks/use-add-time-entry", () => () => ({
-  mutate: mockAddMutate,
-}));
-
-const mockDeleteMutate = jest.fn();
-jest.mock("@/hooks/use-delete-time-entry", () => () => ({
-  mutate: mockDeleteMutate,
-}));
 
 jest.mock("@/components/time-entries/time-entries", () => {
   const TimeEntriesMock = (props: any) => (
@@ -65,6 +62,23 @@ jest.mock("@/components/stop-watch-modal/stop-watch-modal", () => {
   StopWatchModalMock.displayName = "StopWatchModalMock";
   return {
     StopWatchModal: StopWatchModalMock,
+  };
+});
+
+jest.mock("@/components/time-entries/add-time-modal", () => {
+  const AddTimeModalMock = (props: any) => {
+    if (!props.open) return null;
+    return (
+      <div data-testid="add-time-modal">
+        <div>AddTimeModal Mock</div>
+        <button onClick={props.onClose}>Close Add Modal</button>
+        <button onClick={() => props.onSubmit(15)}>Submit Add Modal</button>
+      </div>
+    );
+  };
+  AddTimeModalMock.displayName = "AddTimeModalMock";
+  return {
+    AddTimeModal: AddTimeModalMock,
   };
 });
 
@@ -102,22 +116,28 @@ describe("TimeEntriesPage", () => {
     expect(screen.queryByTestId("stop-watch-modal")).not.toBeInTheDocument();
   });
 
-  it("calls mutate and closes modal when onSubmit is called", () => {
+  it("calls updateTimeEntryThunk and closes modal when onSubmit is called", () => {
     render(<TimeEntriesPage />);
     fireEvent.click(screen.getByText("Start StopWatch"));
 
     fireEvent.click(screen.getByText("Save Modal"));
-    expect(mockMutate).toHaveBeenCalled();
+    expect(mockUpdateTimeEntryThunk).toHaveBeenCalled();
     expect(screen.queryByTestId("stop-watch-modal")).not.toBeInTheDocument();
   });
 
   describe("onAddTime", () => {
-    it("calls mutate with added minutes when valid input is provided", () => {
-      window.prompt = jest.fn().mockReturnValue("15");
+    it("opens AddTimeModal when onAddTime is called", () => {
       render(<TimeEntriesPage />);
       fireEvent.click(screen.getByText("Add Time"));
+      expect(screen.getByTestId("add-time-modal")).toBeInTheDocument();
+    });
 
-      expect(mockMutate).toHaveBeenCalledWith(
+    it("calls updateTimeEntryThunk with added minutes when AddTimeModal is submitted", () => {
+      render(<TimeEntriesPage />);
+      fireEvent.click(screen.getByText("Add Time"));
+      fireEvent.click(screen.getByText("Submit Add Modal"));
+
+      expect(mockUpdateTimeEntryThunk).toHaveBeenCalledWith(
         expect.objectContaining({
           id: "t1",
           minutes: 25, // 10 + 15
@@ -125,44 +145,33 @@ describe("TimeEntriesPage", () => {
       );
     });
 
-    it("shows alert when invalid input is provided", () => {
-      window.prompt = jest.fn().mockReturnValue("invalid");
-      window.alert = jest.fn();
+    it("closes AddTimeModal when onClose is called", () => {
       render(<TimeEntriesPage />);
       fireEvent.click(screen.getByText("Add Time"));
+      expect(screen.getByTestId("add-time-modal")).toBeInTheDocument();
 
-      expect(window.alert).toHaveBeenCalledWith("Please enter a valid number of minutes.");
-      expect(mockMutate).not.toHaveBeenCalled();
-    });
-
-    it("does nothing when prompt is cancelled", () => {
-      window.prompt = jest.fn().mockReturnValue(null);
-      render(<TimeEntriesPage />);
-      fireEvent.click(screen.getByText("Add Time"));
-
-      expect(mockMutate).not.toHaveBeenCalled();
+      fireEvent.click(screen.getByText("Close Add Modal"));
+      expect(screen.queryByTestId("add-time-modal")).not.toBeInTheDocument();
     });
   });
 
-  it("calls addMutation.mutate when onAddTimeEntry is called", () => {
+  it("calls addTimeEntryThunk when onAddTimeEntry is called", () => {
     render(<TimeEntriesPage />);
     fireEvent.click(screen.getByText("Add New Entry"));
 
-    expect(mockAddMutate).toHaveBeenCalledWith(
+    expect(mockAddTimeEntryThunk).toHaveBeenCalledWith(
       expect.objectContaining({
-        timeEntry: expect.objectContaining({
-          activityId: "a1",
-          minutes: 30,
-        }),
-      }),
-      expect.any(Object)
+        activityId: "a1",
+        minutes: 30,
+      })
     );
   });
 
-  it("calls deleteMutation.mutate when onDeleteTimeEntry is called", () => {
+  it("calls deleteTimeEntryThunk when onDeleteTimeEntry is called", () => {
     render(<TimeEntriesPage />);
     fireEvent.click(screen.getByText("Delete Entry"));
 
-    expect(mockDeleteMutate).toHaveBeenCalledWith("t1");
+    expect(mockDeleteTimeEntryThunk).toHaveBeenCalledWith("t1");
+    expect(mockDispatch).toHaveBeenCalled();
   });
 });

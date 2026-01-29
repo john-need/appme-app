@@ -4,11 +4,13 @@ import { queryClient } from "@/api/query-client";
 import { fetchPomodoros } from "@/data-layer/fetch-pomodoros";
 import { addPomodoro as addPomodoroApi } from "@/data-layer/add-pomodoro";
 import { fetchPomodoroEntries } from "@/data-layer/fetch-pomodoro-entries";
+import { addPomodoroEntry as addPomodoroEntryQuery } from "@/data-layer/add-pomodoro-entry";
 import { updatePomodoroEntry as updatePomodoroEntryApi } from "@/data-layer/update-pomodoro-entry";
 import { patchPomodoro as patchPomodoroApi } from "@/data-layer/patch-pomodoro";
 import { addNotification } from "@/features/notification/notification-slice";
 import { sortMostRecentFirst } from "@/utils/sort-by-created";
 import pomodoroFactory from "@/factories/pomodoro-factory";
+import pomodoroEntryFactory from "@/factories/pomodoro-entry-factory";
 import userFactory from "@/factories/user-factory";
 
 interface PomodorosState {
@@ -216,6 +218,34 @@ console.log("adding new pomodoro");
     return newPomodoro;
   } catch (err) {
     const message = (err as Error)?.message ?? "Failed to save pomodoro";
+    dispatch(addNotification({ id: String(Date.now()), message, severity: "error" }));
+    throw err;
+  }
+};
+
+export const addPomodoroThunk = (pomodoro: Partial<Pomodoro>) => async (dispatch: AppDispatch, getState: () => RootState) => {
+  try {
+    const jwt = getState().auth?.jwt ?? "";
+    const normalized = pomodoroFactory(pomodoro);
+    const data = await addPomodoroApi(normalized, jwt);
+    dispatch(addPomodoro(data));
+    return data;
+  } catch (err) {
+    const message = (err as Error)?.message ?? "Failed to add pomodoro";
+    dispatch(addNotification({ id: String(Date.now()), message, severity: "error" }));
+    throw err;
+  }
+};
+
+export const addPomodoroEntryThunk = (pomodoroId: string, entry: Partial<PomodoroEntry>) => async (dispatch: AppDispatch, getState: () => RootState) => {
+  try {
+    const jwt = getState().auth?.jwt ?? "";
+    const normalized = pomodoroEntryFactory(entry);
+    const data = await addPomodoroEntryQuery(pomodoroId, normalized, jwt);
+    dispatch(addPomodoroEntry(data));
+    return data;
+  } catch (err) {
+    const message = (err as Error)?.message ?? "Failed to add pomodoro entry";
     dispatch(addNotification({ id: String(Date.now()), message, severity: "error" }));
     throw err;
   }
