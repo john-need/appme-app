@@ -2,16 +2,22 @@ import React from "react";
 import { render, screen } from "@testing-library/react";
 import DashboardPage from "./dashboard-page";
 import { useAppSelector } from "@/hooks";
-import TimeEntryLineGraph from "@/components/time-entry-line-graph/time-entry-line-graph";
+import TimeEntryLineGraphs from "@/components/time-entry-line-graphs/time-entry-line-graphs";
+import TimeEntryPieCharts from "@/components/time-entry-pie-charts/time-entry-pie-charts";
 
 // Mock the hooks
 jest.mock("@/hooks", () => ({
   useAppSelector: jest.fn(),
 }));
 
-// Mock the TimeEntryLineGraph component
-jest.mock("@/components/time-entry-line-graph/time-entry-line-graph", () => {
-  return jest.fn(() => <div data-testid="time-entry-line-graph" />);
+// Mock the TimeEntryLineGraphs component
+jest.mock("@/components/time-entry-line-graphs/time-entry-line-graphs", () => {
+  return jest.fn(() => <div data-testid="time-entry-line-graphs" />);
+});
+
+// Mock the TimeEntryPieCharts component
+jest.mock("@/components/time-entry-pie-charts/time-entry-pie-charts", () => {
+  return jest.fn(() => <div data-testid="time-entry-pie-charts" />);
 });
 
 // Mock iso2LocalDateTime
@@ -77,36 +83,30 @@ describe("DashboardPage", () => {
     });
   });
 
-  it("renders Tassei and Muda headers", () => {
+  it("renders Tassei and Muda through TimeEntryLineGraphs", () => {
     render(<DashboardPage />);
-    expect(screen.getByText("Tassei")).toBeInTheDocument();
-    expect(screen.getByText("Muda")).toBeInTheDocument();
+    expect(screen.getByTestId("time-entry-line-graphs")).toBeInTheDocument();
   });
 
-  it("renders TimeEntryLineGraph for each activity with correct props", () => {
+  it("renders TimeEntryPieCharts with correct props", () => {
     render(<DashboardPage />);
-    
-    // Verify Tassei activity graph
-    expect(TimeEntryLineGraph).toHaveBeenCalledWith(
+    expect(TimeEntryPieCharts).toHaveBeenCalledWith(
       expect.objectContaining({
-        activity: mockActivities[0],
-        timeEntries: expect.arrayContaining([
-          expect.objectContaining({ id: "te1", activityId: "1" })
-        ])
+        activities: mockActivities,
+        dataByPeriod: "day"
       }),
       undefined
     );
+  });
 
-    // Verify Muda activity graph
-    expect(TimeEntryLineGraph).toHaveBeenCalledWith(
+  it("renders TimeEntryLineGraphs with correct props", () => {
+    render(<DashboardPage />);
+    expect(TimeEntryLineGraphs).toHaveBeenCalledWith(
       expect.objectContaining({
-        activity: mockActivities[1],
-        timeEntries: []
+        activities: mockActivities,
+        period: "last week"
       }),
       undefined
     );
-    
-    const graphs = screen.getAllByTestId("time-entry-line-graph");
-    expect(graphs).toHaveLength(2);
   });
 });
