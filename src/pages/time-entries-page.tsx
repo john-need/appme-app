@@ -25,8 +25,6 @@ export default function TimeEntriesPage() {
 
   const activities = useAppSelector(selectActivities);
 
-  // Compute activities already logged for today (using UTC date comparison)
-
   const todaysTimeEntries = todayTimeEntries(timeEntries);
   const doneActivityIds = new Set(todaysTimeEntries.map(t => t.activityId));
   const availableActivities = activities.filter(a => !doneActivityIds.has(a.id));

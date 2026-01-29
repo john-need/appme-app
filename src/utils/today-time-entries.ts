@@ -5,8 +5,7 @@ import isToday from "./is-today";
  * @param timeEntries - Array of time entries to filter
 
  * @returns Array of time entries where the created date is today in local time,
- *          or from the current weekend if applicable
- *
+
  */
 const todayTimeEntries = (
   timeEntries: TimeEntry[]
