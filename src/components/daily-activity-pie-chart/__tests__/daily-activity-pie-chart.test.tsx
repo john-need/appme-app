@@ -1,7 +1,6 @@
 import React from "react";
 import { render, screen } from "@testing-library/react";
-import DailyActivityPieChart from "../daily-activity-pie-chart";
-import activityFactory from "@/factories/activity-factory";
+import DailyActivityPieChart, { DailyPieChartData } from "../daily-activity-pie-chart";
 
 // Mock ResizeObserver which is needed for recharts
 global.ResizeObserver = class ResizeObserver {
@@ -11,45 +10,35 @@ global.ResizeObserver = class ResizeObserver {
 };
 
 describe("DailyActivityPieChart", () => {
-  const activities = [
-    activityFactory({ id: "1", name: "Work" }),
-    activityFactory({ id: "2", name: "Sleep" }),
-  ];
-
-  const timeEntries: TimeEntry[] = [
+  const dailyData: DailyPieChartData[] = [
     {
-      id: "e1",
-      activityId: "1",
-      minutes: 60,
-      created: "2026-01-28T10:00:00.000Z", // In EST this is 2026-01-28 05:00:00
-      updated: "2026-01-28T10:00:00.000Z",
+      date: "2026-01-28",
+      totalSpentFormatted: "9h 0m",
+      data: [
+        { name: "Work", value: 60, formattedValue: "1h 0m" },
+        { name: "Sleep", value: 480, formattedValue: "8h 0m" },
+        { name: "Other", value: 900, formattedValue: "15h 0m" },
+      ],
     },
-    {
-      id: "e2",
-      activityId: "2",
-      minutes: 480,
-      created: "2026-01-28T15:00:00.000Z",
-      updated: "2026-01-28T15:00:00.000Z",
-    }
   ];
 
   it("renders a pie chart for each day", () => {
-    render(<DailyActivityPieChart activities={activities} timeEntries={timeEntries} />);
+    render(<DailyActivityPieChart dailyData={dailyData} />);
     
     // Check if the date header exists
     expect(screen.getByText("2026-01-28")).toBeInTheDocument();
     
-    // Check if the total spent subheader is correct (60 + 480 = 540 minutes = 9h 0m)
+    // Check if the total spent subheader is correct
     expect(screen.getByText(/Total Spent: 9h 0m/)).toBeInTheDocument();
   });
 
-  it("shows 'Daily Activity Breakdown' title", () => {
-    render(<DailyActivityPieChart activities={activities} timeEntries={timeEntries} />);
-    expect(screen.getByText("Daily Activity Breakdown")).toBeInTheDocument();
+  it("shows 'Activity Breakdown' title", () => {
+    render(<DailyActivityPieChart dailyData={dailyData} />);
+    expect(screen.getByText("Activity Breakdown")).toBeInTheDocument();
   });
 
   it("shows empty state message when no entries provided", () => {
-    render(<DailyActivityPieChart activities={activities} timeEntries={[]} />);
+    render(<DailyActivityPieChart dailyData={[]} />);
     expect(screen.getByText("No activity found for this period.")).toBeInTheDocument();
   });
 });

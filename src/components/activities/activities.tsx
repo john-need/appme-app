@@ -114,8 +114,7 @@ export default function Activities({ activities, updateActivity, deleteActivity,
         {/* Header row (sticky) */}
         <Grid container spacing={2}>
           <Grid
-            item
-            xs={4}
+            size={{ xs: 4 }}
             sx={{
               backgroundColor: headerBgColor,
               "&:hover": {
@@ -146,8 +145,7 @@ export default function Activities({ activities, updateActivity, deleteActivity,
             </Typography>
           </Grid>
           <Grid
-            item
-            xs={4}
+            size={{ xs: 4 }}
             sx={{
               backgroundColor: headerBgColor,
               "&:hover": {
@@ -178,8 +176,7 @@ export default function Activities({ activities, updateActivity, deleteActivity,
             </Typography>
           </Grid>
           <Grid
-            item
-            xs={2}
+            size={{ xs: 2 }}
             sx={{
               backgroundColor: headerBgColor,
               "&:hover": {
@@ -210,8 +207,7 @@ export default function Activities({ activities, updateActivity, deleteActivity,
             </Typography>
           </Grid>
           <Grid
-            item
-            xs={2}
+            size={{ xs: 2 }}
             sx={{
               backgroundColor: headerBgColor
             }}
@@ -235,16 +231,16 @@ export default function Activities({ activities, updateActivity, deleteActivity,
               "&:nth-of-type(2)": { borderTopColor: headerBorderColor }
             }}
           >
-            <Grid item xs={4} className={styles["activities_row-cell"]}>
+            <Grid size={{ xs: 4 }} className={styles["activities_row-cell"]}>
               <Typography>{a.name}</Typography>
             </Grid>
-            <Grid item xs={4} className={styles["activities_row-cell"]}>
+            <Grid size={{ xs: 4 }} className={styles["activities_row-cell"]}>
               <Typography>{a.type}</Typography>
             </Grid>
-            <Grid item xs={2} className={styles["activities_row-cell"]}>
+            <Grid size={{ xs: 2 }} className={styles["activities_row-cell"]}>
               <Typography>{a.goal ?? ""}</Typography>
             </Grid>
-            <Grid item xs={2} className={styles["activities_row-cell"]}>
+            <Grid size={{ xs: 2 }} className={styles["activities_row-cell"]}>
               <IconButton data-testid={`edit-icon-button-${a.id}`} aria-label={`edit-${a.id}`} size="small" onClick={() => handleEditOpen(a)}>
                 <EditIcon fontSize="small"/>
               </IconButton>

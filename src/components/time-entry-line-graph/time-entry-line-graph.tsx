@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from "react";
 import {
   BarChart,
   Bar,
@@ -18,33 +18,35 @@ interface TimeEntryLineGraphProps {
 }
 
 const TimeEntryLineGraph: React.FC<TimeEntryLineGraphProps> = ({ activity, timeEntries }) => {
-  const currentYear = new Date().getFullYear();
-  const startDate = new Date(currentYear, 0, 1);
-  const today = new Date();
-  today.setHours(23, 59, 59, 999);
+  const data = useMemo(() => {
+    const currentYear = new Date().getFullYear();
+    const startDate = new Date(currentYear, 0, 1);
+    const today = new Date();
+    today.setHours(23, 59, 59, 999);
 
-  // Generate all dates from Jan 1 to today
-  const dateMap: Record<string, number> = {};
-  for (let d = new Date(startDate); d <= today; d.setDate(d.getDate() + 1)) {
-    const dateStr = d.toISOString().split("T")[0];
-    dateMap[dateStr] = 0;
-  }
-
-  // Populate dateMap with minutes from timeEntries
-  timeEntries.forEach((entry) => {
-    const entryDate = new Date(entry.created).toISOString().split("T")[0];
-    if (dateMap[entryDate] !== undefined) {
-      dateMap[entryDate] += entry.minutes;
+    // Generate all dates from Jan 1 to today
+    const dateMap: Record<string, number> = {};
+    for (let d = new Date(startDate); d <= today; d.setDate(d.getDate() + 1)) {
+      const dateStr = d.toISOString().split("T")[0];
+      dateMap[dateStr] = 0;
     }
-  });
 
-  const data = Object.keys(dateMap).sort().map((date) => ({
-    date,
-    minutes: dateMap[date],
-  }));
+    // Populate dateMap with minutes from timeEntries
+    timeEntries.forEach((entry) => {
+      const entryDate = new Date(entry.created).toISOString().split("T")[0];
+      if (dateMap[entryDate] !== undefined) {
+        dateMap[entryDate] += entry.minutes;
+      }
+    });
+
+    return Object.keys(dateMap).sort().map((date) => ({
+      date,
+      minutes: dateMap[date],
+    }));
+  }, [timeEntries]);
 
   return (
-    <Card sx={{ width: "100%", height: 400, mb: 4 }}>
+    <Card sx={{ width: "100%", height: 400 }}>
       <CardHeader
         title={activity.name}
       />
