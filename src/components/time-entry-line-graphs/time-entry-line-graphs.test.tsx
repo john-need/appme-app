@@ -1,6 +1,6 @@
 import React from "react";
 import { render, screen } from "@testing-library/react";
-import TimeEntryLineGraphs from "../time-entry-line-graphs";
+import TimeEntryLineGraphs from "./time-entry-line-graphs";
 import activityFactory from "@/factories/activity-factory";
 
 // Mock Recharts and MUI components to avoid rendering complexity in unit tests
