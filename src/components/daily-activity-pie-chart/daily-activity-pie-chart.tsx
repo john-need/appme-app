@@ -41,7 +41,7 @@ const DailyActivityPieChart: React.FC<DailyActivityPieChartProps> = ({ dailyData
       ) : (
         <Grid container spacing={3}>
           {dailyData.map((day) => (
-            <Grid item xs={12} md={6} lg={4} key={day.date}>
+            <Grid size={{ xs: 12, md: 6, lg: 4 }} key={day.date}>
               <Card sx={{ height: "100%" }}>
                 <CardHeader title={day.date} subheader={`Total Spent: ${day.totalSpentFormatted}`} />
                 <CardContent sx={{ height: 350 }}>

@@ -112,7 +112,7 @@ const TimeEntries = ({todayActivities, otherActivities, timeEntries, onAddTime, 
     <Box>
       <Box component="form" onSubmit={handleSubmit} sx={{ mb: 3 }}>
         <Grid container spacing={1} alignItems="center">
-          <Grid item xs={12} sm={5}>
+          <Grid size={{ xs: 12, sm: 5 }}>
             <Stack direction="row" spacing={1} sx={{ alignItems: "center" }}>
               <Box sx={{ aspectRatio: "1 / 1", width: "40px" }}>
                 <Fab
@@ -149,13 +149,13 @@ const TimeEntries = ({todayActivities, otherActivities, timeEntries, onAddTime, 
 
             </Stack>
           </Grid>
-          <Grid item xs={10} sm={3}>
+          <Grid size={{ xs: 10, sm: 3 }}>
             <TimeEntryControl
               value={minutes}
               onChange={(e) => setMinutes(e.target.value)}
             />
           </Grid>
-          <Grid item xs={12} sm={3} sx={{ display: { xs: "none", sm: "block" } }}>
+          <Grid size={{ xs: 12, sm: 3 }} sx={{ display: { xs: "none", sm: "block" } }}>
             <TextField label="Notes"
                        fullWidth
                        multiline
@@ -163,7 +163,7 @@ const TimeEntries = ({todayActivities, otherActivities, timeEntries, onAddTime, 
                        value={notes}
                        onChange={(e) => setNotes(e.target.value)}/>
           </Grid>
-          <Grid item xs={2} sm={1}>
+          <Grid size={{ xs: 2, sm: 1 }}>
             <Button variant="contained"
                     color="primary"
                     type="submit"

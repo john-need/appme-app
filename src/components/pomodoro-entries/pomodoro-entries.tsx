@@ -23,19 +23,19 @@ const PomodoroEntries = ({ entries, onEntryActivityChange, activities }: Pomodor
       </Typography>
 
         <Grid container spacing={2} sx={{ fontWeight: "bold" }}>
-          <Grid item xs={2}>
+          <Grid size={{ xs: 2 }}>
             Start Time
           </Grid>
-          <Grid item xs={2}>
+          <Grid size={{ xs: 2 }}>
             End Time
           </Grid>
-          <Grid item xs={2}>
+          <Grid size={{ xs: 2 }}>
             Total Time
           </Grid>
-          <Grid item xs={2}>
+          <Grid size={{ xs: 2 }}>
             Type
           </Grid>
-          <Grid item xs={4}>
+          <Grid size={{ xs: 4 }}>
             Activity
           </Grid>
         </Grid>

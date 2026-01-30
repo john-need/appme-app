@@ -110,14 +110,14 @@ export default function TimeEntryList({ timeEntries, onDelete, onAddTime, onStar
           onClick={() => handleOpen(t)}
         >
           <Grid container spacing={1} alignItems="center">
-            <Grid item xs={5} sm={3}><Typography>{getActivityName(t.activityId)}</Typography></Grid>
-            <Grid item xs={3} sm={2}><Typography>{t.minutes} min</Typography></Grid>
-            <Grid item xs={12} sm={2}
+            <Grid size={{ xs: 5, sm: 3 }}><Typography>{getActivityName(t.activityId)}</Typography></Grid>
+            <Grid size={{ xs: 3, sm: 2 }}><Typography>{t.minutes} min</Typography></Grid>
+            <Grid size={{ xs: 12, sm: 2 }}
                   sx={{ display: { xs: "none", sm: "block" } }}><Typography>{toLocalYMD(new Date(t.created))}</Typography></Grid>
-            <Grid item xs={12} sm={2}
+            <Grid size={{ xs: 12, sm: 2 }}
                   sx={{ display: { xs: "none", sm: "block" } }}>
               <Typography>{t.notes ?? ""}</Typography></Grid>
-            <Grid item xs={4} sm={3} sx={{ textAlign: "right" }}>
+            <Grid size={{ xs: 4, sm: 3 }} sx={{ textAlign: "right" }}>
               <IconButton size="small" aria-label={`timer-${t.id}`} onClick={(e) => {
                 e.stopPropagation();
                 handleStartStopWatch(t);

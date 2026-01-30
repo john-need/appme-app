@@ -46,7 +46,7 @@ const TimeEntryLineGraph: React.FC<TimeEntryLineGraphProps> = ({ activity, timeE
   }, [timeEntries]);
 
   return (
-    <Card sx={{ width: "100%", height: 400, mb: 4 }}>
+    <Card sx={{ width: "100%", height: 400 }}>
       <CardHeader
         title={activity.name}
       />

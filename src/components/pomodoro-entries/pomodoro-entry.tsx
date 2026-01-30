@@ -23,28 +23,28 @@ const PomodoroEntry = ({ entry, onEntryActivityChange, activities }: PomodoroEnt
 
   return (
     <Grid container spacing={2} alignItems="center">
-      <Grid item xs={6} sm={2}>
+      <Grid size={{ xs: 6, sm: 2 }}>
         <Typography variant="caption" sx={{ display: { sm: "none" } }} color="textSecondary">
           Start:{" "}
         </Typography>
         {formatTime(entry.created)}
       </Grid>
-      <Grid item xs={6} sm={2}>
+      <Grid size={{ xs: 6, sm: 2 }}>
         <Typography variant="caption" sx={{ display: { sm: "none" } }} color="textSecondary">
           End:{" "}
         </Typography>
         {formatTime(endDate.toISOString())}
       </Grid>
-      <Grid item xs={6} sm={2}>
+      <Grid size={{ xs: 6, sm: 2 }}>
         <Typography variant="caption" sx={{ display: { sm: "none" } }} color="textSecondary">
           Total:{" "}
         </Typography>
         {calculateDuration(entry.minutes)}
       </Grid>
-      <Grid item xs={2}>
+      <Grid size={{ xs: 2 }}>
         {pomodoroTimerEntryTypeMap[entry.entryType]}
       </Grid>
-      <Grid item xs={12} sm={4}>
+      <Grid size={{ xs: 12, sm: 4 }}>
         <Autocomplete
           options={activities}
           getOptionLabel={(option) => option.name}
