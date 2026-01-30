@@ -1,7 +1,7 @@
 import getApiBase from "@/utils/get-api-base";
 
 // network query that POSTs a TimeEntry and returns the created TimeEntry
-const query = async (timeEntry: Partial<TimeEntry>, jwt?: string): Promise<TimeEntry> => {
+const addTimeEntry = async (timeEntry: Partial<TimeEntry>, jwt?: string): Promise<TimeEntry> => {
   const API_BASE = getApiBase();
   const url = `${API_BASE.replace(/\/$/, "")}/time-entries`;
 
@@ -22,4 +22,4 @@ const query = async (timeEntry: Partial<TimeEntry>, jwt?: string): Promise<TimeE
   const json = await res.json();
   return json as TimeEntry;
 };
-export default query;
+export default addTimeEntry;

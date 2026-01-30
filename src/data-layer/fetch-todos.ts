@@ -1,8 +1,9 @@
 import getApiBase from "@/utils/get-api-base";
+import todoFactory from "@/factories/todo-factory";
 
-const fetchTimeEntries = async (jwt: string): Promise<TimeEntry[]> => {
+const fetchTodos = async (jwt: string): Promise<ToDo[]> => {
   const API_BASE = getApiBase();
-  const url = `${API_BASE.replace(/\/$/, "")}/time-entries`;
+  const url = `${API_BASE.replace(/\/$/, "")}/todos`;
 
   const headers: Record<string, string> = { "Content-Type": "application/json" };
   if (jwt) headers.Authorization = `Bearer ${jwt}`;
@@ -12,14 +13,13 @@ const fetchTimeEntries = async (jwt: string): Promise<TimeEntry[]> => {
   if (res.status === 404) return [];
   if (!res.ok) {
     const body = await res.text();
-    throw new Error(`Failed to fetch time entries (${res.status}): ${body}`);
+    throw new Error(`Failed to fetch todos (${res.status}): ${body}`);
   }
 
   const json = await res.json();
 
-  if (!Array.isArray(json)) throw new Error("Invalid time entries response: expected an array");
-  return json as TimeEntry[];
+  if (!Array.isArray(json)) throw new Error("Invalid todos response: expected an array");
+  return json.map((item) => todoFactory(item));
 };
 
-export default fetchTimeEntries;
-
+export default fetchTodos;
