@@ -41,6 +41,10 @@ const todo2Dates = (todo: ToDo) => {
    if (isNaN(endDate.getTime())) {
      return days;
    }
+
+   // Normalize to midnight UTC for date-only comparisons (fixes timezone issues)
+   const startDateOnly = new Date(Date.UTC(startDate.getUTCFullYear(), startDate.getUTCMonth(), startDate.getUTCDate()));
+   const endDateOnly = new Date(Date.UTC(endDate.getUTCFullYear(), endDate.getUTCMonth(), endDate.getUTCDate()));
    // Handle specific dates (YYYY-MM-DD format)
    const specificDates = todo.occurrences.filter(isSpecificDate);
    specificDates.forEach((dateStr) => {
@@ -71,15 +75,15 @@ const todo2Dates = (todo: ToDo) => {
        }
      });
      targetDays.forEach((targetDay) => {
-       const date = new Date(startDate);
-       const currentDay = date.getDay();
+       const date = new Date(startDateOnly);
+       const currentDay = date.getUTCDay();
        const daysUntilTarget = (targetDay - currentDay + 7) % 7;
        if (daysUntilTarget > 0) {
-         date.setDate(date.getDate() + daysUntilTarget);
+         date.setUTCDate(date.getUTCDate() + daysUntilTarget);
        }
-       while (date <= endDate) {
+       while (date <= endDateOnly) {
          days.push(date.toISOString().split("T")[0]);
-         date.setDate(date.getDate() + 7);
+         date.setUTCDate(date.getUTCDate() + 7);
        }
      });
    }
@@ -92,33 +96,33 @@ const todo2Dates = (todo: ToDo) => {
        }
        const position = parts[1];
        const targetDay = dayOfWeekMap[parts[2]];
-       let currentDate = new Date(startDate);
-       while (currentDate <= endDate) {
-         const year = currentDate.getFullYear();
-         const month = currentDate.getMonth();
+       let currentDate = new Date(startDateOnly);
+       while (currentDate <= endDateOnly) {
+         const year = currentDate.getUTCFullYear();
+         const month = currentDate.getUTCMonth();
          let occurrence: Date | null = null;
          if (position === "LAST") {
-           const lastDayOfMonth = new Date(year, month + 1, 0);
-           const lastDayOfWeek = lastDayOfMonth.getDay();
+           const lastDayOfMonth = new Date(Date.UTC(year, month + 1, 0));
+           const lastDayOfWeek = lastDayOfMonth.getUTCDay();
            const daysBack = (lastDayOfWeek - targetDay + 7) % 7;
-           occurrence = new Date(year, month + 1, 0 - daysBack);
+           occurrence = new Date(Date.UTC(year, month + 1, -daysBack));
          } else {
            const nthMap: Record<string, number> = { "1ST": 1, "2ND": 2, "3RD": 3 };
            const nth = nthMap[position];
            if (nth) {
-             const firstOfMonth = new Date(year, month, 1);
-             const firstDayOfWeek = firstOfMonth.getDay();
+             const firstOfMonth = new Date(Date.UTC(year, month, 1));
+             const firstDayOfWeek = firstOfMonth.getUTCDay();
              const daysUntilTarget = (targetDay - firstDayOfWeek + 7) % 7;
-             occurrence = new Date(year, month, 1 + daysUntilTarget + (nth - 1) * 7);
-             if (occurrence.getMonth() !== month) {
+             occurrence = new Date(Date.UTC(year, month, 1 + daysUntilTarget + (nth - 1) * 7));
+             if (occurrence.getUTCMonth() !== month) {
                occurrence = null;
              }
            }
          }
-         if (occurrence && occurrence >= startDate && occurrence <= endDate) {
+         if (occurrence && occurrence >= startDateOnly && occurrence <= endDateOnly) {
            days.push(occurrence.toISOString().split("T")[0]);
          }
-         currentDate = new Date(year, month + 1, 1);
+         currentDate = new Date(Date.UTC(year, month + 1, 1));
        }
      });
    }
