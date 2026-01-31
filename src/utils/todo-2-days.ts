@@ -3,7 +3,7 @@
  * @param todo - ToDo object with startsOn, endsOn, and occurrences
  * @returns Array of date strings in YYYY-MM-DD format
  */
-export const todo2Days = (todo: ToDo): string[] => {
+export const todo2Days = (todo: Pick<ToDo, "startsOn" | "endsOn" | "occurrences">): string[] => {
   const result: string[] = [];
   
   if (!todo.occurrences || todo.occurrences.length === 0) {
@@ -15,6 +15,7 @@ export const todo2Days = (todo: ToDo): string[] => {
   const endDate = todo.endsOn ? new Date(todo.endsOn) : startDate;
   
   // Map occurrence strings to day numbers (0 = Sunday, 1 = Monday, etc.)
+  // Supports both simple day names and MONTHLY_ prefixed versions for flexibility
   const dayMap: Record<string, number> = {
     "SUNDAY": 0,
     "MONDAY": 1,
@@ -34,7 +35,7 @@ export const todo2Days = (todo: ToDo): string[] => {
   
   const targetDays = todo.occurrences
     .map(occ => dayMap[occ])
-    .filter(day => day !== undefined);
+    .filter((day): day is number => typeof day === "number");
   
   if (targetDays.length === 0) {
     return result;

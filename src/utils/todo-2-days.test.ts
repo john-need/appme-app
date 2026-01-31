@@ -1,8 +1,9 @@
 import todo2Days from "./todo-2-days";
+import todoFactory from "@/factories/todo-factory";
 
 describe("todo2Days", () => {
   it("should return an array of date strings for every Sunday and Thursday from Feb 1 2026 to Dec 31 2026", () => {
-    const sampleTodo: ToDo = {
+    const sampleTodo = todoFactory({
       id: "test-id",
       text: "Test todo",
       userId: "test-user",
@@ -10,9 +11,8 @@ describe("todo2Days", () => {
       updated: "2026-01-01T00:00:00.000Z",
       startsOn: "2026-02-01T05:00:00.000Z",
       endsOn: "2026-12-31T05:00:00.000Z",
-      occurrences: ["MONTHLY_SUNDAY", "MONTHLY_THURSDAY"],
-      completions: []
-    };
+      occurrences: ["MONTHLY_SUNDAY", "MONTHLY_THURSDAY"]
+    });
 
     const answer = todo2Days(sampleTodo);
 
@@ -40,7 +40,7 @@ describe("todo2Days", () => {
     // Verify the result matches expected dates
     expect(answer).toEqual(expectedDates);
     
-    // Verify total count (96 dates: ~52 Sundays + ~44 Thursdays in 334 days)
+    // Verify total count (96 dates: 52 Sundays + 44 Thursdays from Feb 1 to Dec 31, 2026)
     expect(answer.length).toBe(96);
   });
 });
