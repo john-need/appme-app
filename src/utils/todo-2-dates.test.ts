@@ -1,4 +1,4 @@
-import todo2Days from "./todo-2-days";
+import todo2Dates from "./todo-2-dates";
 // import isToday from "./is-today";
 
 // jest.mock("./is-today");
@@ -23,7 +23,7 @@ const sampleTodo: ToDo = {
 };
 
 
-describe("todo2Days", () => {
+describe("todo2Dates", () => {
   // const mockIsToday = isToday as jest.MockedFunction<typeof isToday>;
 
   beforeEach(() => {
@@ -31,65 +31,65 @@ describe("todo2Days", () => {
   });
 
   it("should return a single date correctly", () => {
-    const result = todo2Days(sampleTodo);
+    const result = todo2Dates(sampleTodo);
     expect(result).toEqual(["2026-02-01"]);
   });
 
   it("should return a WEEKLY_MONDAY repetition correctly", () => {
     const weeklyMondayTodo = { ...sampleTodo, occurrences: ["WEEKLY_MONDAY"] };
-    const result = todo2Days(weeklyMondayTodo);
+    const result = todo2Dates(weeklyMondayTodo);
     expect(result).toEqual(["2026-02-02", "2026-02-09", "2026-02-16", "2026-02-23"]);
   });
 
   it("should return a WEEKLY_TUESDAY repetition correctly", () => {
     const weeklyTuesdayTodo = { ...sampleTodo, occurrences: ["WEEKLY_TUESDAY"] };
-    const result = todo2Days(weeklyTuesdayTodo);
+    const result = todo2Dates(weeklyTuesdayTodo);
     expect(result).toEqual(["2026-02-03", "2026-02-10", "2026-02-17", "2026-02-24"]);
   });
 
   it("should return a WEEKLY_WEDNESDAY repetition correctly", () => {
     const weeklyWednesdayTodo = { ...sampleTodo, occurrences: ["WEEKLY_WEDNESDAY"] };
-    const result = todo2Days(weeklyWednesdayTodo);
+    const result = todo2Dates(weeklyWednesdayTodo);
     expect(result).toEqual(["2026-02-04", "2026-02-11", "2026-02-18", "2026-02-25"]);
   });
 
 
   it("should return a WEEKLY_THURSDAY repetition correctly", () => {
     const weeklyThursdayTodo = { ...sampleTodo, occurrences: ["WEEKLY_THURSDAY"] };
-    const result = todo2Days(weeklyThursdayTodo);
+    const result = todo2Dates(weeklyThursdayTodo);
     expect(result).toEqual(["2026-02-05", "2026-02-12", "2026-02-19", "2026-02-26"]);
   });
 
 
   it("should return a WEEKLY_FRIDAY repetition correctly", () => {
     const weeklyFridayTodo = { ...sampleTodo, occurrences: ["WEEKLY_FRIDAY"] };
-    const result = todo2Days(weeklyFridayTodo);
+    const result = todo2Dates(weeklyFridayTodo);
     expect(result).toEqual(["2026-02-06", "2026-02-13", "2026-02-20", "2026-02-27"]);
   });
 
 
   it("should return a WEEKLY_SATURDAY repetition correctly", () => {
     const weeklySaturdayTodo = { ...sampleTodo, occurrences: ["WEEKLY_SATURDAY"] };
-    const result = todo2Days(weeklySaturdayTodo);
+    const result = todo2Dates(weeklySaturdayTodo);
     expect(result).toEqual(["2026-02-07", "2026-02-14", "2026-02-21", "2026-02-28"]);
   });
 
 
   it("should return a WEEKLY_SUNDAY repetition correctly", () => {
     const weeklySundayTodo = { ...sampleTodo, occurrences: ["WEEKLY_SUNDAY"] };
-    const result = todo2Days(weeklySundayTodo);
+    const result = todo2Dates(weeklySundayTodo);
     expect(result).toEqual(["2026-02-01", "2026-02-08", "2026-02-15", "2026-02-22"]);
   });
 
   it("should return a WEEKLY_SATURDAY and WEEKLY_SUNDAY repetition correctly", () => {
     const weeklySundayTodo = { ...sampleTodo, occurrences: ["WEEKLY_SATURDAY", "WEEKLY_SUNDAY"] };
-    const result = todo2Days(weeklySundayTodo);
+    const result = todo2Dates(weeklySundayTodo);
     expect(result).toEqual(["2026-02-01", "2026-02-07", "2026-02-08", "2026-02-14", "2026-02-15", "2026-02-21", "2026-02-22", "2026-02-28"]);
   });
 
   it("should return a 3 day weekly repetition correctly", () => {
     const weeklySundayTodo = { ...sampleTodo, occurrences: ["WEEKLY_MONDAY", "WEEKLY_WEDNESDAY", "WEEKLY_FRIDAY"] };
-    const result = todo2Days(weeklySundayTodo);
+    const result = todo2Dates(weeklySundayTodo);
     const answer = [
       "2026-02-02",
       "2026-02-04",
@@ -110,7 +110,7 @@ describe("todo2Days", () => {
 
   it("should return a MONTHLY_1ST_MONDAY repetition correctly", () => {
     const weeklyMondayTodo = { ...sampleTodo,   "endsOn": "2026-12-31T05:00:00.000Z", occurrences: ["MONTHLY_1ST_MONDAY"] };
-    const result = todo2Days(weeklyMondayTodo);
+    const result = todo2Dates(weeklyMondayTodo);
     const answer = [
       "2026-02-02",
       "2026-03-02",
@@ -129,7 +129,7 @@ describe("todo2Days", () => {
 
   it("should return a MONTHLY_1ST_TUESDAY repetition correctly", () => {
     const monthlyTuesdayTodo = { ...sampleTodo, "endsOn": "2026-12-31T05:00:00.000Z", occurrences: ["MONTHLY_1ST_TUESDAY"] };
-    const result = todo2Days(monthlyTuesdayTodo);
+    const result = todo2Dates(monthlyTuesdayTodo);
     const answer = [
       "2026-02-03",
       "2026-03-03",
@@ -148,7 +148,7 @@ describe("todo2Days", () => {
 
   it("should return a MONTHLY_1ST_WEDNESDAY repetition correctly", () => {
     const monthlyWednesdayTodo = { ...sampleTodo, "endsOn": "2026-12-31T05:00:00.000Z", occurrences: ["MONTHLY_1ST_WEDNESDAY"] };
-    const result = todo2Days(monthlyWednesdayTodo);
+    const result = todo2Dates(monthlyWednesdayTodo);
     const answer = [
       "2026-02-04",
       "2026-03-04",
@@ -167,7 +167,7 @@ describe("todo2Days", () => {
 
   it("should return a MONTHLY_1ST_THURSDAY repetition correctly", () => {
     const monthlyThursdayTodo = { ...sampleTodo, "endsOn": "2026-12-31T05:00:00.000Z", occurrences: ["MONTHLY_1ST_THURSDAY"] };
-    const result = todo2Days(monthlyThursdayTodo);
+    const result = todo2Dates(monthlyThursdayTodo);
     const answer = [
       "2026-02-05",
       "2026-03-05",
@@ -186,7 +186,7 @@ describe("todo2Days", () => {
 
   it("should return a MONTHLY_1ST_FRIDAY repetition correctly", () => {
     const monthlyFridayTodo = { ...sampleTodo, "endsOn": "2026-12-31T05:00:00.000Z", occurrences: ["MONTHLY_1ST_FRIDAY"] };
-    const result = todo2Days(monthlyFridayTodo);
+    const result = todo2Dates(monthlyFridayTodo);
     const answer = [
       "2026-02-06",
       "2026-03-06",
@@ -205,7 +205,7 @@ describe("todo2Days", () => {
 
   it("should return a MONTHLY_1ST_SATURDAY repetition correctly", () => {
     const monthlySaturdayTodo = { ...sampleTodo, "endsOn": "2026-12-31T05:00:00.000Z", occurrences: ["MONTHLY_1ST_SATURDAY"] };
-    const result = todo2Days(monthlySaturdayTodo);
+    const result = todo2Dates(monthlySaturdayTodo);
     const answer = [
       "2026-02-07",
       "2026-03-07",
@@ -224,7 +224,7 @@ describe("todo2Days", () => {
 
   it("should return a MONTHLY_1ST_SUNDAY repetition correctly", () => {
     const monthlySundayTodo = { ...sampleTodo, "endsOn": "2026-12-31T05:00:00.000Z", occurrences: ["MONTHLY_1ST_SUNDAY"] };
-    const result = todo2Days(monthlySundayTodo);
+    const result = todo2Dates(monthlySundayTodo);
     const answer = [
       "2026-02-01",
       "2026-03-01",
@@ -243,7 +243,7 @@ describe("todo2Days", () => {
 
   it("should return a MONTHLY_LAST_SUNDAY repetition correctly", () => {
     const monthlyLastSundayTodo = { ...sampleTodo, "endsOn": "2026-12-31T05:00:00.000Z", occurrences: ["MONTHLY_LAST_SUNDAY"] };
-    const result = todo2Days(monthlyLastSundayTodo);
+    const result = todo2Dates(monthlyLastSundayTodo);
     const answer = [
       "2026-02-22",
       "2026-03-29",
@@ -262,7 +262,7 @@ describe("todo2Days", () => {
 
   it("should return a MONTHLY_LAST_MONDAY repetition correctly", () => {
     const monthlyLastMondayTodo = { ...sampleTodo, "endsOn": "2026-12-31T05:00:00.000Z", occurrences: ["MONTHLY_LAST_MONDAY"] };
-    const result = todo2Days(monthlyLastMondayTodo);
+    const result = todo2Dates(monthlyLastMondayTodo);
     const answer = [
       "2026-02-23",
       "2026-03-30",
@@ -281,7 +281,7 @@ describe("todo2Days", () => {
 
   it("should return a MONTHLY_LAST_TUESDAY repetition correctly", () => {
     const monthlyLastTuesdayTodo = { ...sampleTodo, "endsOn": "2026-12-31T05:00:00.000Z", occurrences: ["MONTHLY_LAST_TUESDAY"] };
-    const result = todo2Days(monthlyLastTuesdayTodo);
+    const result = todo2Dates(monthlyLastTuesdayTodo);
     const answer = [
       "2026-02-24",
       "2026-03-31",
@@ -300,7 +300,7 @@ describe("todo2Days", () => {
 
   it("should return a MONTHLY_LAST_WEDNESDAY repetition correctly", () => {
     const monthlyLastWednesdayTodo = { ...sampleTodo, "endsOn": "2026-12-31T05:00:00.000Z", occurrences: ["MONTHLY_LAST_WEDNESDAY"] };
-    const result = todo2Days(monthlyLastWednesdayTodo);
+    const result = todo2Dates(monthlyLastWednesdayTodo);
     const answer = [
       "2026-02-25",
       "2026-03-25",
@@ -319,7 +319,7 @@ describe("todo2Days", () => {
 
   it("should return a MONTHLY_LAST_THURSDAY repetition correctly", () => {
     const monthlyLastThursdayTodo = { ...sampleTodo, "endsOn": "2026-12-31T05:00:00.000Z", occurrences: ["MONTHLY_LAST_THURSDAY"] };
-    const result = todo2Days(monthlyLastThursdayTodo);
+    const result = todo2Dates(monthlyLastThursdayTodo);
     const answer = [
       "2026-02-26",
       "2026-03-26",
@@ -338,7 +338,7 @@ describe("todo2Days", () => {
 
   it("should return a MONTHLY_LAST_FRIDAY repetition correctly", () => {
     const monthlyLastFridayTodo = { ...sampleTodo, "endsOn": "2026-12-31T05:00:00.000Z", occurrences: ["MONTHLY_LAST_FRIDAY"] };
-    const result = todo2Days(monthlyLastFridayTodo);
+    const result = todo2Dates(monthlyLastFridayTodo);
     const answer = [
       "2026-02-27",
       "2026-03-27",
@@ -357,7 +357,7 @@ describe("todo2Days", () => {
 
   it("should return a MONTHLY_LAST_SATURDAY repetition correctly", () => {
     const monthlyLastSaturdayTodo = { ...sampleTodo, "endsOn": "2026-12-31T05:00:00.000Z", occurrences: ["MONTHLY_LAST_SATURDAY"] };
-    const result = todo2Days(monthlyLastSaturdayTodo);
+    const result = todo2Dates(monthlyLastSaturdayTodo);
     const answer = [
       "2026-02-28",
       "2026-03-28",
@@ -376,7 +376,7 @@ describe("todo2Days", () => {
 
   it("should return a MONTHLY_2ND_SUNDAY repetition correctly", () => {
     const monthly2ndSundayTodo = { ...sampleTodo, "endsOn": "2026-12-31T05:00:00.000Z", occurrences: ["MONTHLY_2ND_SUNDAY"] };
-    const result = todo2Days(monthly2ndSundayTodo);
+    const result = todo2Dates(monthly2ndSundayTodo);
     const answer = [
       "2026-02-08",
       "2026-03-08",
@@ -395,7 +395,7 @@ describe("todo2Days", () => {
 
   it("should return a MONTHLY_2ND_MONDAY repetition correctly", () => {
     const monthly2ndMondayTodo = { ...sampleTodo, "endsOn": "2026-12-31T05:00:00.000Z", occurrences: ["MONTHLY_2ND_MONDAY"] };
-    const result = todo2Days(monthly2ndMondayTodo);
+    const result = todo2Dates(monthly2ndMondayTodo);
     const answer = [
       "2026-02-09",
       "2026-03-09",
@@ -414,7 +414,7 @@ describe("todo2Days", () => {
 
   it("should return a MONTHLY_2ND_TUESDAY repetition correctly", () => {
     const monthly2ndTuesdayTodo = { ...sampleTodo, "endsOn": "2026-12-31T05:00:00.000Z", occurrences: ["MONTHLY_2ND_TUESDAY"] };
-    const result = todo2Days(monthly2ndTuesdayTodo);
+    const result = todo2Dates(monthly2ndTuesdayTodo);
     const answer = [
       "2026-02-10",
       "2026-03-10",
@@ -433,7 +433,7 @@ describe("todo2Days", () => {
 
   it("should return a MONTHLY_2ND_WEDNESDAY repetition correctly", () => {
     const monthly2ndWednesdayTodo = { ...sampleTodo, "endsOn": "2026-12-31T05:00:00.000Z", occurrences: ["MONTHLY_2ND_WEDNESDAY"] };
-    const result = todo2Days(monthly2ndWednesdayTodo);
+    const result = todo2Dates(monthly2ndWednesdayTodo);
     const answer = [
       "2026-02-11",
       "2026-03-11",
@@ -452,7 +452,7 @@ describe("todo2Days", () => {
 
   it("should return a MONTHLY_2ND_THURSDAY repetition correctly", () => {
     const monthly2ndThursdayTodo = { ...sampleTodo, "endsOn": "2026-12-31T05:00:00.000Z", occurrences: ["MONTHLY_2ND_THURSDAY"] };
-    const result = todo2Days(monthly2ndThursdayTodo);
+    const result = todo2Dates(monthly2ndThursdayTodo);
     const answer = [
       "2026-02-12",
       "2026-03-12",
@@ -471,7 +471,7 @@ describe("todo2Days", () => {
 
   it("should return a MONTHLY_2ND_FRIDAY repetition correctly", () => {
     const monthly2ndFridayTodo = { ...sampleTodo, "endsOn": "2026-12-31T05:00:00.000Z", occurrences: ["MONTHLY_2ND_FRIDAY"] };
-    const result = todo2Days(monthly2ndFridayTodo);
+    const result = todo2Dates(monthly2ndFridayTodo);
     const answer = [
       "2026-02-13",
       "2026-03-13",
@@ -490,7 +490,7 @@ describe("todo2Days", () => {
 
   it("should return a MONTHLY_2ND_SATURDAY repetition correctly", () => {
     const monthly2ndSaturdayTodo = { ...sampleTodo, "endsOn": "2026-12-31T05:00:00.000Z", occurrences: ["MONTHLY_2ND_SATURDAY"] };
-    const result = todo2Days(monthly2ndSaturdayTodo);
+    const result = todo2Dates(monthly2ndSaturdayTodo);
     const answer = [
       "2026-02-14",
       "2026-03-14",
@@ -509,7 +509,7 @@ describe("todo2Days", () => {
 
   it("should return a MONTHLY_3RD_SUNDAY repetition correctly", () => {
     const monthly3rdSundayTodo = { ...sampleTodo, "endsOn": "2026-12-31T05:00:00.000Z", occurrences: ["MONTHLY_3RD_SUNDAY"] };
-    const result = todo2Days(monthly3rdSundayTodo);
+    const result = todo2Dates(monthly3rdSundayTodo);
     const answer = [
       "2026-02-15",
       "2026-03-15",
@@ -528,7 +528,7 @@ describe("todo2Days", () => {
 
   it("should return a MONTHLY_3RD_MONDAY repetition correctly", () => {
     const monthly3rdMondayTodo = { ...sampleTodo, "endsOn": "2026-12-31T05:00:00.000Z", occurrences: ["MONTHLY_3RD_MONDAY"] };
-    const result = todo2Days(monthly3rdMondayTodo);
+    const result = todo2Dates(monthly3rdMondayTodo);
     const answer = [
       "2026-02-16",
       "2026-03-16",
@@ -547,7 +547,7 @@ describe("todo2Days", () => {
 
   it("should return a MONTHLY_3RD_TUESDAY repetition correctly", () => {
     const monthly3rdTuesdayTodo = { ...sampleTodo, "endsOn": "2026-12-31T05:00:00.000Z", occurrences: ["MONTHLY_3RD_TUESDAY"] };
-    const result = todo2Days(monthly3rdTuesdayTodo);
+    const result = todo2Dates(monthly3rdTuesdayTodo);
     const answer = [
       "2026-02-17",
       "2026-03-17",
@@ -566,7 +566,7 @@ describe("todo2Days", () => {
 
   it("should return a MONTHLY_3RD_WEDNESDAY repetition correctly", () => {
     const monthly3rdWednesdayTodo = { ...sampleTodo, "endsOn": "2026-12-31T05:00:00.000Z", occurrences: ["MONTHLY_3RD_WEDNESDAY"] };
-    const result = todo2Days(monthly3rdWednesdayTodo);
+    const result = todo2Dates(monthly3rdWednesdayTodo);
     const answer = [
       "2026-02-18",
       "2026-03-18",
@@ -585,7 +585,7 @@ describe("todo2Days", () => {
 
   it("should return a MONTHLY_3RD_THURSDAY repetition correctly", () => {
     const monthly3rdThursdayTodo = { ...sampleTodo, "endsOn": "2026-12-31T05:00:00.000Z", occurrences: ["MONTHLY_3RD_THURSDAY"] };
-    const result = todo2Days(monthly3rdThursdayTodo);
+    const result = todo2Dates(monthly3rdThursdayTodo);
     const answer = [
       "2026-02-19",
       "2026-03-19",
@@ -604,7 +604,7 @@ describe("todo2Days", () => {
 
   it("should return a MONTHLY_3RD_FRIDAY repetition correctly", () => {
     const monthly3rdFridayTodo = { ...sampleTodo, "endsOn": "2026-12-31T05:00:00.000Z", occurrences: ["MONTHLY_3RD_FRIDAY"] };
-    const result = todo2Days(monthly3rdFridayTodo);
+    const result = todo2Dates(monthly3rdFridayTodo);
     const answer = [
       "2026-02-20",
       "2026-03-20",
@@ -623,7 +623,7 @@ describe("todo2Days", () => {
 
   it("should return a MONTHLY_3RD_SATURDAY repetition correctly", () => {
     const monthly3rdSaturdayTodo = { ...sampleTodo, "endsOn": "2026-12-31T05:00:00.000Z", occurrences: ["MONTHLY_3RD_SATURDAY"] };
-    const result = todo2Days(monthly3rdSaturdayTodo);
+    const result = todo2Dates(monthly3rdSaturdayTodo);
     const answer = [
       "2026-02-21",
       "2026-03-21",
@@ -642,7 +642,7 @@ describe("todo2Days", () => {
 
   it("should return a twice monthly repetition correctly", () => {
     const twiceMonthlyTodo = { ...sampleTodo, "endsOn": "2026-12-31T05:00:00.000Z", occurrences: ["MONTHLY_1ST_MONDAY", "MONTHLY_3RD_MONDAY"] };
-    const result = todo2Days(twiceMonthlyTodo);
+    const result = todo2Dates(twiceMonthlyTodo);
     const answer = [
       "2026-02-02",
       "2026-02-16",
@@ -672,29 +672,57 @@ describe("todo2Days", () => {
 
   it("should return specific dates correctly", () => {
     const specificDatesTodo = { ...sampleTodo, occurrences: ["2026-03-01", "2026-12-12"] };
-    const result = todo2Days(specificDatesTodo);
+    const result = todo2Dates(specificDatesTodo);
     const answer = ["2026-03-01", "2026-12-12"];
     expect(result).toEqual(answer);
   });
 
   it("should return mixed occurrence types correctly", () => {
     const mixedTodo = { ...sampleTodo, occurrences: ["WEEKLY_MONDAY", "2026-02-01", "MONTHLY_LAST_TUESDAY"] };
-    const result = todo2Days(mixedTodo);
+    const result = todo2Dates(mixedTodo);
     const answer = ["2026-02-01", "2026-02-02", "2026-02-09", "2026-02-16", "2026-02-23", "2026-02-24"];
     expect(result).toEqual(answer);
   });
 
   it("handles todos with no occurrences", () => {
     const noOccurrencesTodo = { ...sampleTodo, occurrences: [] };
-    const result = todo2Days(noOccurrencesTodo);
+    const result = todo2Dates(noOccurrencesTodo);
     expect(result).toEqual([]);
   });
 
   it("handles garbage", () => {
     const garbageTodo = { ...sampleTodo, occurrences: ["FOO", 3, {}] };
     // @ts-expect-error - testing garbage input
-    const result = todo2Days(garbageTodo);
+    const result = todo2Dates(garbageTodo);
     expect(result).toEqual([]);
+  });
+
+  it("should return DAILY repetition correctly", () => {
+    const dailyTodo = { ...sampleTodo, occurrences: ["DAILY"] };
+    const result = todo2Dates(dailyTodo);
+    const answer = [
+      "2026-02-01", "2026-02-02", "2026-02-03", "2026-02-04", "2026-02-05", "2026-02-06", "2026-02-07",
+      "2026-02-08", "2026-02-09", "2026-02-10", "2026-02-11", "2026-02-12", "2026-02-13", "2026-02-14",
+      "2026-02-15", "2026-02-16", "2026-02-17", "2026-02-18", "2026-02-19", "2026-02-20", "2026-02-21",
+      "2026-02-22", "2026-02-23", "2026-02-24", "2026-02-25", "2026-02-26", "2026-02-27", "2026-02-28"
+    ];
+    expect(result).toEqual(answer);
+  });
+
+  it("should return DAILY repetition for a week correctly", () => {
+    const dailyWeekTodo = { ...sampleTodo, endsOn: "2026-02-07T05:00:00.000Z", occurrences: ["DAILY"] };
+    const result = todo2Dates(dailyWeekTodo);
+    const answer = [
+      "2026-02-01", "2026-02-02", "2026-02-03", "2026-02-04", "2026-02-05", "2026-02-06", "2026-02-07"
+    ];
+    expect(result).toEqual(answer);
+  });
+
+  it("should return DAILY repetition for a single day correctly", () => {
+    const dailySingleDayTodo = { ...sampleTodo, endsOn: "2026-02-01T05:00:00.000Z", occurrences: ["DAILY"] };
+    const result = todo2Dates(dailySingleDayTodo);
+    const answer = ["2026-02-01"];
+    expect(result).toEqual(answer);
   });
 
 });

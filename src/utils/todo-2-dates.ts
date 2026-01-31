@@ -1,4 +1,4 @@
-const todo2Days = (todo: ToDo) => {
+const todo2Dates = (todo: ToDo) => {
    // Type guard helper
    const isString = (value: unknown): value is string => typeof value === "string";
 
@@ -151,4 +151,4 @@ const todo2Days = (todo: ToDo) => {
    }
    return days;
 };
-export default todo2Days;
+export default todo2Dates;
