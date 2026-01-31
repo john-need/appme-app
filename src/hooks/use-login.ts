@@ -6,6 +6,7 @@ import { addNotification } from "@/features/notification/notification-slice";
 import auth from "../data-layer/auth";
 import { fetchActivitiesThunk } from "@/features/activities/activities-slice";
 import { fetchTimeEntriesThunk } from "@/features/time-entries/time-entries-slice";
+import { fetchTodosThunk } from "@/features/todos/todos-slice";
 
 export function useLogin() {
   const dispatch = useAppDispatch();
@@ -31,7 +32,7 @@ export function useLogin() {
         };
         dispatch(setCredentials({ jwt, user: authUser }));
         // After authentication, load user-related data into the store
-        // dispatch thunks to fetch activities and time entries
+        // dispatch 'thunks' to fetch activities and time entries
         try {
           dispatch(fetchActivitiesThunk());
         } catch (e) {
@@ -39,6 +40,11 @@ export function useLogin() {
         }
         try {
           dispatch(fetchTimeEntriesThunk());
+        } catch (e) {
+          // ignore
+        }
+        try {
+          dispatch(fetchTodosThunk());
         } catch (e) {
           // ignore
         }

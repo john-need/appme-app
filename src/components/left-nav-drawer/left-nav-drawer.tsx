@@ -45,11 +45,14 @@ export default function LeftNavDrawer({ open, onOpen, onClose }: LeftNavDrawerPr
         </Box>
         <Divider />
         <List>
+          <ListItemButton component={RouterLink} to="/dashboard" onClick={onClose}>
+            <ListItemText primary="Dashboard" />
+          </ListItemButton>
           <ListItemButton component={RouterLink} to="/" onClick={onClose}>
             <ListItemText primary="Entries" />
           </ListItemButton>
-          <ListItemButton component={RouterLink} to="/dashboard" onClick={onClose}>
-            <ListItemText primary="Dashboard" />
+          <ListItemButton component={RouterLink} to="/todos" onClick={onClose}>
+            <ListItemText primary="Todos" />
           </ListItemButton>
           <ListItemButton component={RouterLink} to="/pomodoro" onClick={onClose}>
             <ListItemText primary="Pomodoro" />

@@ -5,6 +5,7 @@ import notificationReducer from "../features/notification/notification-slice";
 import activitiesReducer from "../features/activities/activities-slice";
 import timeEntriesReducer from "../features/time-entries/time-entries-slice";
 import pomodorosReducer from "../features/pomodoros/pomodoros-slice";
+import todosReducer from "../features/todos/todos-slice";
 
 import { persistStore, persistReducer, FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER } from "redux-persist";
 import storage from "redux-persist/lib/storage"; // defaults to localStorage for web
@@ -16,12 +17,13 @@ const rootReducer = combineReducers({
   activities: activitiesReducer,
   timeEntries: timeEntriesReducer,
   pomodoros: pomodorosReducer,
+  todos: todosReducer,
 });
 
 const persistConfig = {
   key: "root",
   storage,
-  whitelist: ["preferences", "auth", "activities", "timeEntries", "pomodoros"],
+  whitelist: ["preferences", "auth", "activities", "timeEntries", "pomodoros", "todos"],
 };
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

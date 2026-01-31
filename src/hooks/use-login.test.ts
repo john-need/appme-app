@@ -16,6 +16,11 @@ jest.mock("@tanstack/react-query", () => ({
     };
     return providedMutation;
   },
+  QueryClient: jest.fn().mockImplementation(() => ({
+    fetchQuery: jest.fn(),
+    setQueryData: jest.fn(),
+    invalidateQueries: jest.fn(),
+  })),
 }));
 
 // Mock dispatch
@@ -38,6 +43,9 @@ jest.mock("@/features/activities/activities-slice", () => ({
 jest.mock("@/features/time-entries/time-entries-slice", () => ({
   fetchTimeEntriesThunk: () => ({ type: "timeEntries/fetch" }),
 }));
+jest.mock("@/features/todos/todos-slice", () => ({
+  fetchTodosThunk: () => ({ type: "todos/fetch" }),
+}));
 
 describe("useLogin", () => {
   beforeEach(() => {
@@ -59,6 +67,7 @@ describe("useLogin", () => {
     // Also dispatches fetch thunks
     expect(dispatch).toHaveBeenCalledWith({ type: "activities/fetch" });
     expect(dispatch).toHaveBeenCalledWith({ type: "timeEntries/fetch" });
+    expect(dispatch).toHaveBeenCalledWith({ type: "todos/fetch" });
   });
 
   it("clears auth when no user returned", () => {

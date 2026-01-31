@@ -1,7 +1,7 @@
 import getApiBase from "@/utils/get-api-base";
 
 // network query that POSTs an activity and returns the created Activity
-const query = async (activity: Partial<Activity>, jwt?: string): Promise<Activity> => {
+const addActivity = async (activity: Partial<Activity>, jwt?: string): Promise<Activity> => {
   const API_BASE = getApiBase();
   const url = `${API_BASE.replace(/\/$/, "")}/activities`;
 
@@ -22,4 +22,4 @@ const query = async (activity: Partial<Activity>, jwt?: string): Promise<Activit
   const json = await res.json();
   return json as Activity;
 };
- export default query;
+ export default addActivity;
