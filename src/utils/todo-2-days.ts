@@ -16,20 +16,20 @@ export const todo2Days = (todo: ToDo): string[] => {
   
   // Map occurrence strings to day numbers (0 = Sunday, 1 = Monday, etc.)
   const dayMap: Record<string, number> = {
-    'SUNDAY': 0,
-    'MONDAY': 1,
-    'TUESDAY': 2,
-    'WEDNESDAY': 3,
-    'THURSDAY': 4,
-    'FRIDAY': 5,
-    'SATURDAY': 6,
-    'MONTHLY_SUNDAY': 0,
-    'MONTHLY_MONDAY': 1,
-    'MONTHLY_TUESDAY': 2,
-    'MONTHLY_WEDNESDAY': 3,
-    'MONTHLY_THURSDAY': 4,
-    'MONTHLY_FRIDAY': 5,
-    'MONTHLY_SATURDAY': 6
+    "SUNDAY": 0,
+    "MONDAY": 1,
+    "TUESDAY": 2,
+    "WEDNESDAY": 3,
+    "THURSDAY": 4,
+    "FRIDAY": 5,
+    "SATURDAY": 6,
+    "MONTHLY_SUNDAY": 0,
+    "MONTHLY_MONDAY": 1,
+    "MONTHLY_TUESDAY": 2,
+    "MONTHLY_WEDNESDAY": 3,
+    "MONTHLY_THURSDAY": 4,
+    "MONTHLY_FRIDAY": 5,
+    "MONTHLY_SATURDAY": 6
   };
   
   const targetDays = todo.occurrences
@@ -48,8 +48,8 @@ export const todo2Days = (todo: ToDo): string[] => {
     
     if (targetDays.includes(dayOfWeek)) {
       const year = currentDate.getUTCFullYear();
-      const month = String(currentDate.getUTCMonth() + 1).padStart(2, '0');
-      const day = String(currentDate.getUTCDate()).padStart(2, '0');
+      const month = String(currentDate.getUTCMonth() + 1).padStart(2, "0");
+      const day = String(currentDate.getUTCDate()).padStart(2, "0");
       result.push(`${year}-${month}-${day}`);
     }
     
