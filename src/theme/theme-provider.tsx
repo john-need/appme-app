@@ -9,11 +9,11 @@ import { setMode, toggleMode as toggleModeAction } from "../features/preferences
 type ColorModeContextValue = { mode: PaletteMode; toggleMode: () => void; setMode: (m: PaletteMode) => void };
 const ColorModeContext = createContext<ColorModeContextValue | undefined>(undefined);
 
-export function useColorMode() {
+export const useColorMode = () => {
   const ctx = useContext(ColorModeContext);
   if (!ctx) throw new Error("useColorMode must be used within ThemeProvider");
   return ctx;
-}
+};
 
 export default function ThemeProvider({ children }: { children: React.ReactNode }) {
   const dispatch = useDispatch();

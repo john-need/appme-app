@@ -4,7 +4,7 @@ import { setCredentials, clearCredentials, setJwt, setUser } from "@/features/au
 import type { AuthUser } from "@/features/auth/auth-slice";
 import { isJwtValid } from "@/utils/jwt";
 
-export function useAuth() {
+export const useAuth = () => {
   const dispatch = useAppDispatch();
   const auth = useAppSelector((s) => s.auth);
 
@@ -31,9 +31,9 @@ export function useAuth() {
   }, [dispatch]);
 
   return { auth, login, logout, updateJwt, updateUser };
-}
+};
 
-export function useIsAuthenticated() {
+export const useIsAuthenticated = () => {
   const dispatch = useAppDispatch();
   const { jwt, isAuthenticated } = useAppSelector((s) => s.auth);
 
@@ -44,9 +44,9 @@ export function useIsAuthenticated() {
   }, [jwt, dispatch]);
 
   return !!(isAuthenticated && isJwtValid(jwt));
-}
+};
 
-export function useCurrentUser() {
+export const useCurrentUser = () => {
   const dispatch = useAppDispatch();
   const { jwt, user } = useAppSelector((s) => s.auth);
 
@@ -57,9 +57,9 @@ export function useCurrentUser() {
   }, [jwt, dispatch]);
 
   return isJwtValid(jwt) ? user : null;
-}
+};
 
-export function useJwt() {
+export const useJwt = () => {
   const dispatch = useAppDispatch();
   const { jwt } = useAppSelector((s) => s.auth);
 
@@ -70,5 +70,5 @@ export function useJwt() {
   }, [jwt, dispatch]);
 
   return isJwtValid(jwt) ? jwt : null;
-}
+};
 

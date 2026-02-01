@@ -173,10 +173,10 @@ describe("Activities component", () => {
   });
 
   describe("sorting", () => {
-    function getRenderedOrderByEditAria(): string[] {
+    const getRenderedOrderByEditAria = (): string[] => {
       const buttons = screen.getAllByLabelText(/edit-/i);
       return buttons.map((b) => (b as HTMLElement).getAttribute("aria-label")!.replace("edit-", ""));
-    }
+    };
 
     it("renders initial order as provided (no sort active)", () => {
       render(

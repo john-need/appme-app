@@ -1,4 +1,4 @@
-export function saveToLocalStorage<T>(key: string, value: T) {
+export const saveToLocalStorage = <T>(key: string, value: T)=> {
   try {
     const s = JSON.stringify(value);
     localStorage.setItem(key, s);
@@ -6,9 +6,9 @@ export function saveToLocalStorage<T>(key: string, value: T) {
     // ignore write errors
     // you may want to log to monitoring in real apps
   }
-}
+};
 
-export function loadFromLocalStorage<T>(key: string): T | undefined {
+export const loadFromLocalStorage = <T>(key: string): T | undefined => {
   try {
     const s = localStorage.getItem(key);
     if (!s) return undefined;
@@ -16,5 +16,5 @@ export function loadFromLocalStorage<T>(key: string): T | undefined {
   } catch (e) {
     return undefined;
   }
-}
+};
 

@@ -119,15 +119,14 @@ describe("transmogrifyOccurrences", () => {
     });
 
     it("Rule 3: should only allow positional MONTHLY and dates if positional MONTHLY is present", () => {
-      const result = transmogrifyOccurrences(["MONTHLY_1ST_MONDAY", "WEEKLY_TUESDAY", "2024-02-02", "MONTHLY_DAY_10"], "vet");
       // Note: If both MONTHLY_DAY and MONTHLY_1ST are present, Rule 2 comes first.
       // Wait, let's re-read the rules.
       // 2. If occurrences has a valid string that starts with "MONTHLY_DAY_" then remove all non-date strings that do not start with "MONTHLY_DAY_" are allowed in the array.
       // (The phrasing "are allowed" in the prompt might mean "only ... are allowed")
       // 3. if occurrences has a valid string that starts with "MONTHLY_1ST_", ... remove all non-date strings that do not start with ...
       
-      const result2 = transmogrifyOccurrences(["MONTHLY_1ST_MONDAY", "WEEKLY_TUESDAY", "2024-02-02"], "vet");
-      expect(result2).toEqual(["2024-02-02", "MONTHLY_1ST_MONDAY"]);
+      const result = transmogrifyOccurrences(["MONTHLY_1ST_MONDAY", "WEEKLY_TUESDAY", "2024-02-02"], "vet");
+      expect(result).toEqual(["2024-02-02", "MONTHLY_1ST_MONDAY"]);
     });
 
     it("Rule 4: should only allow WEEKLY_ and dates if WEEKLY_ is present (and no MONTHLY rules match)", () => {

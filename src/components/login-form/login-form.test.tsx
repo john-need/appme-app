@@ -45,7 +45,7 @@ describe("LoginForm", () => {
     localStorage.clear();
   });
 
-  function setUseLoginReturn(partial: Partial<UseLoginReturn>) {
+  const setUseLoginReturn = (partial: Partial<UseLoginReturn>) => {
     (useLogin as jest.Mock).mockReturnValue({
       login: mockLogin,
       isLoading: false,
@@ -54,7 +54,7 @@ describe("LoginForm", () => {
       isSuccess: false,
       ...partial,
     });
-  }
+  };
 
   it("renders fields and Login button", () => {
     render(<LoginForm />);

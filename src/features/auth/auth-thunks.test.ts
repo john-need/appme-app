@@ -4,7 +4,7 @@ import type { AnyAction } from "redux";
 
 type Thunk = (dispatch: (action: AnyAction | Thunk) => Promise<unknown> | AnyAction) => Promise<unknown> | AnyAction;
 
-function createMockStore() {
+const createMockStore = () => {
   const actions: AnyAction[] = [];
   const store: {
     getActions: () => AnyAction[];
@@ -22,7 +22,7 @@ function createMockStore() {
     }
   };
   return store;
-}
+};
 
 describe("auth thunks", () => {
   beforeEach(() => {

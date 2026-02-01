@@ -3,7 +3,7 @@ import getApiBase from "@/utils/get-api-base";
 
 const API_BASE = getApiBase();
 
-function parseJwtPayload(token: string): Record<string, unknown> | null {
+const parseJwtPayload = (token: string): Record<string, unknown> | null => {
   try {
     const parts = token.split(".");
     if (parts.length < 2) return null;
@@ -21,7 +21,7 @@ function parseJwtPayload(token: string): Record<string, unknown> | null {
   } catch (err) {
     return null;
   }
-}
+};
 
 const auth = async (email: string, password: string): Promise<{ token: string; user: User }> => {
   const url = `${API_BASE.replace(/\/$/, "")}/auth`;
