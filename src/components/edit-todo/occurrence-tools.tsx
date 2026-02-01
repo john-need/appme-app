@@ -46,7 +46,7 @@ export default function OccurrenceTools({
       <Box>
         <Stack direction="row" spacing={1} flexWrap="wrap" gap={1} sx={{ mb: 1 }}>
           {
-            occurrences.map((occ: string) => (
+            occurrences.map((occ) => (
               <Chip
                 key={occ}
                 label={occ}

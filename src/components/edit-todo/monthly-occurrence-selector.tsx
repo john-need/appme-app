@@ -39,8 +39,8 @@ export default function MonthlyOccurrenceSelector({
         <FormLabel id="monthly-control-set-label">Set By</FormLabel>
         <RadioGroup
           row
-          aria-labelledby="monthly-control-sets-label"
-          name="monthly-controls-sets"
+          aria-labelledby="monthly-control-set-label"
+          name="monthly-control-set"
           value={monthlyControlSet}
           onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
             setMonthlyControlSet((event.target as HTMLInputElement).value === "day" ? "day" : "date");
