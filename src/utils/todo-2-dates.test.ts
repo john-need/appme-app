@@ -725,6 +725,43 @@ describe("todo2Dates", () => {
     expect(result).toEqual(answer);
   });
 
+  describe("MONTHLY_DAY_{i} occurrences", () => {
+    it("should return MONTHLY_DAY_15 repetition correctly", () => {
+      const monthlyDayTodo = {
+        ...sampleTodo,
+        startsOn: "2026-02-01T05:00:00.000Z",
+        endsOn: "2026-05-01T05:00:00.000Z",
+        occurrences: ["MONTHLY_DAY_15"]
+      };
+      const result = todo2Dates(monthlyDayTodo);
+      expect(result).toEqual(["2026-02-15", "2026-03-15", "2026-04-15"]);
+    });
+
+    it("should handle months where the day does not exist (e.g., Feb 30th)", () => {
+      const monthlyDayTodo = {
+        ...sampleTodo,
+        startsOn: "2026-01-01T05:00:00.000Z",
+        endsOn: "2026-04-01T05:00:00.000Z",
+        occurrences: ["MONTHLY_DAY_30"]
+      };
+      const result = todo2Dates(monthlyDayTodo);
+      // Jan 30, Feb (none), Mar 30
+      expect(result).toEqual(["2026-01-30", "2026-03-30"]);
+    });
+
+    it("should respect startDate and endDate", () => {
+      const monthlyDayTodo = {
+        ...sampleTodo,
+        startsOn: "2026-02-20T05:00:00.000Z",
+        endsOn: "2026-04-10T05:00:00.000Z",
+        occurrences: ["MONTHLY_DAY_15"]
+      };
+      const result = todo2Dates(monthlyDayTodo);
+      // Feb 15 (before start), Mar 15, Apr 15 (after end)
+      expect(result).toEqual(["2026-03-15"]);
+    });
+  });
+
 });
 
 

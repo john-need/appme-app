@@ -10,10 +10,10 @@ jest.mock("@tanstack/react-query-devtools", () => ({
   ),
 }));
 
-function ChildUsingQueryClient() {
+const ChildUsingQueryClient = () => {
   const client = useQueryClient();
   return <div>hasClient:{client ? "yes" : "no"}</div>;
-}
+};
 
 describe("ReactQueryProvider", () => {
   it("provides a QueryClient context to children", () => {

@@ -53,17 +53,15 @@ describe("isToday", () => {
   });
 
   describe("Timezone tests", () => {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    let originalToLocaleString: any;
     let originalToLocaleDateString: any;
 
     beforeEach(() => {
-      originalToLocaleString = realDate.prototype.toLocaleString;
       originalToLocaleDateString = realDate.prototype.toLocaleDateString;
 
       // Mock toLocaleDateString to ensure predictable YYYY-MM-DD output regardless of runner timezone
       // when "en-CA" is used.
-      jest.spyOn(realDate.prototype, "toLocaleDateString").mockImplementation(function(this: Date, locales?: Intl.LocalesArgument) {
+      // eslint-disable-next-line prefer-arrow-callback
+      jest.spyOn(realDate.prototype, "toLocaleDateString").mockImplementation(function (this: Date, locales?: Intl.LocalesArgument) {
         if (locales === "en-CA") {
           const y = this.getFullYear();
           const m = String(this.getMonth() + 1).padStart(2, "0");

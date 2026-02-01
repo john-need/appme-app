@@ -8,7 +8,7 @@ import { fetchActivitiesThunk } from "@/features/activities/activities-slice";
 import { fetchTimeEntriesThunk } from "@/features/time-entries/time-entries-slice";
 import { fetchTodosThunk } from "@/features/todos/todos-slice";
 
-export function useLogin() {
+export const useLogin = () => {
   const dispatch = useAppDispatch();
 
   const mutation = useMutation(async ({ email, password }: { email: string; password: string }) => {
@@ -61,4 +61,4 @@ export function useLogin() {
   const login = useCallback((email: string, password: string) => mutation.mutate({ email, password }), [mutation]);
 
   return { ...mutation, login };
-}
+};

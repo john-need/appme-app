@@ -78,14 +78,14 @@ export const TimeEntry: React.FC<TimeEntryProps> = ({
           type="number"
           value={hours}
           onChange={handleHoursChange}
-          inputProps={{ min: 0, "data-testid": `${testId}-hours` }}
+          slotProps={{ htmlInput: { min: 0, "data-testid": `${testId}-hours` } }}
         />
         <TextField
           label="minutes"
           type="number"
           value={minutes}
           onChange={handleMinutesChange}
-          inputProps={{ min: 0, "data-testid": `${testId}-minutes` }}
+          slotProps={{ htmlInput: { min: 0, "data-testid": `${testId}-minutes` } }}
         />
       </Box>
     </Box>

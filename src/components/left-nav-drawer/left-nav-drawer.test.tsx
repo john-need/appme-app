@@ -20,7 +20,7 @@ describe("LeftNavDrawer", () => {
     jest.clearAllMocks();
   });
 
-  function setup(options?: { isAuthenticated?: boolean }) {
+  const setup = (options?: { isAuthenticated?: boolean }) => {
     (useIsAuthenticated as jest.Mock).mockReturnValue(!!options?.isAuthenticated);
     const onOpen = jest.fn();
     const onClose = jest.fn();
@@ -30,7 +30,7 @@ describe("LeftNavDrawer", () => {
       </MemoryRouter>
     );
     return { onOpen, onClose };
-  }
+  };
 
   it("renders navigation title and core links when open", () => {
     setup({ isAuthenticated: false });

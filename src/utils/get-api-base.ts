@@ -1,4 +1,4 @@
-function getApiBase(): string {
+const getApiBase = (): string => {
   // Try VITE_ prefix (Vite standard)
   try {
     interface ImportMetaEnv {
@@ -37,6 +37,6 @@ function getApiBase(): string {
   }
 
   return "http://192.168.40.100:3000";
-}
+};
 
 export default getApiBase;
