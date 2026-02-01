@@ -8,6 +8,8 @@ import { store } from "./store/root-store";
 import ThemeProvider from "./theme/theme-provider";
 import { queryClient } from "./api/query-client";
 import "./styles.css";
+import { LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 
 // prime react-query cache from persisted auth in store if available
 try {
@@ -29,7 +31,9 @@ root.render(
     <Provider store={store}>
       <QueryClientProvider client={queryClient}>
         <ThemeProvider>
-          <App />
+          <LocalizationProvider dateAdapter={AdapterDayjs}>
+            <App />
+          </LocalizationProvider>
         </ThemeProvider>
         <ReactQueryDevtools initialIsOpen={false} />
       </QueryClientProvider>

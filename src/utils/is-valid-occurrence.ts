@@ -33,10 +33,17 @@ const isValidOccurrence = (o: unknown): boolean => {
 
   if (type === "MONTHLY") {
     if (parts.length === 1) return true;
-    if (parts.length === 2) return dayOfWeekMap.includes(parts[1]);
+    if (parts.length === 2) {
+      if (parts[1] === "DAY") return false; // "MONTHLY_DAY" is invalid
+      return dayOfWeekMap.includes(parts[1]);
+    }
     if (parts.length === 3) {
+      if (parts[1] === "DAY") {
+        const day = parseInt(parts[2], 10);
+        return !isNaN(day) && day >= 1 && day <= 31 && String(day) === parts[2];
+      }
       const position = parts[1];
-      const positions = ["1ST", "2ND", "3RD", "LAST"];
+      const positions = ["1ST", "2ND", "3RD", "4TH", "LAST"];
       return positions.includes(position) && dayOfWeekMap.includes(parts[2]);
     }
   }

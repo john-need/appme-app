@@ -59,7 +59,11 @@ const todo2Dates = (todo: ToDo) => {
    // Separate different types of MONTHLY occurrences
    const monthlyNthOccurrences = monthlyOccurrences.filter(occ => {
      const parts = occ.trim().split("_");
-     return parts.length > 2 && (parts[1] === "1ST" || parts[1] === "2ND" || parts[1] === "3RD" || parts[1] === "LAST");
+     return parts.length > 2 && (parts[1] === "1ST" || parts[1] === "2ND" || parts[1] === "3RD" || parts[1] === "4TH" || parts[1] === "LAST");
+   });
+   const monthlyDayOccurrences = monthlyOccurrences.filter(occ => {
+     const parts = occ.trim().split("_");
+     return parts.length === 3 && parts[1] === "DAY";
    });
    const monthlyAllOccurrences = monthlyOccurrences.filter(occ => {
      const parts = occ.trim().split("_");
@@ -84,6 +88,33 @@ const todo2Dates = (todo: ToDo) => {
        while (date <= endDateOnly) {
          days.push(date.toISOString().split("T")[0]);
          date.setUTCDate(date.getUTCDate() + 7);
+       }
+     });
+   }
+   // Handle MONTHLY_DAY_{i} occurrences
+   if (monthlyDayOccurrences.length > 0) {
+     monthlyDayOccurrences.forEach((occurrence) => {
+       const parts = occurrence.trim().split("_");
+       const targetDay = parseInt(parts[2], 10);
+       if (isNaN(targetDay)) {
+         return;
+       }
+       const currentDate = new Date(startDateOnly);
+       // Ensure we start from the beginning of the month to check the target day
+       currentDate.setUTCDate(1);
+
+       while (currentDate <= endDateOnly) {
+         const year = currentDate.getUTCFullYear();
+         const month = currentDate.getUTCMonth();
+         // Create a date for the target day in the current month
+         const occDate = new Date(Date.UTC(year, month, targetDay));
+
+         // Check if the date is valid and in the correct month (handles Feb 30th etc.)
+         if (occDate.getUTCMonth() === month && occDate >= startDateOnly && occDate <= endDateOnly) {
+           days.push(occDate.toISOString().split("T")[0]);
+         }
+         // Move to the next month
+         currentDate.setUTCMonth(currentDate.getUTCMonth() + 1);
        }
      });
    }
@@ -135,6 +166,12 @@ const todo2Dates = (todo: ToDo) => {
    const hasValidOccurrence = todo.occurrences.some(isDaily) ||
                                todo.occurrences.some(isMonthly) ||
                                todo.occurrences.some(isYearly);
+
+   // If we already handled MONTHLY_DAY or MONTHLY_NTH, we don't want to fall through to the generic monthly handler
+   // which just adds a month to the current date.
+   if (monthlyDayOccurrences.length > 0 || monthlyNthOccurrences.length > 0) {
+     return days.length > 0 ? [...new Set(days)].sort() : days;
+   }
 
    if (!hasValidOccurrence) {
      return days; // Return empty array if no valid occurrence patterns found

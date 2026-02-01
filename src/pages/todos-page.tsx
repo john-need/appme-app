@@ -6,16 +6,17 @@ import { selectTodos } from "@/features/todos/todos-slice";
 import { addTodoThunk, updateTodoThunk } from "@/features/todos/todos-slice";
 import ToDosList from "@/components/todos-list/todos-list";
 import EditTodo from "@/components/edit-todo/edit-todo";
-import toDoFactory from "@/factories/to-do-factory";
+import { selectActivities } from "@/features/activities/activities-slice";
 
 const ToDosPage = () => {
   const todos = useAppSelector(selectTodos);
+  const activities = useAppSelector(selectActivities);
   const dispatch = useAppDispatch();
   const [isOpen, setIsOpen] = useState(false);
-  const [selectedTodo, setSelectedTodo] = useState<ToDo>(toDoFactory());
+  const [selectedTodo, setSelectedTodo] = useState<ToDo | null>(null);
 
   const handleOpenAddDialog = () => {
-    setSelectedTodo(toDoFactory());
+    setSelectedTodo(null);
     setIsOpen(true);
   };
 
@@ -49,6 +50,7 @@ const ToDosPage = () => {
         </Fab>
       </Container>
       <EditTodo
+        activities={activities}
         open={isOpen}
         onClose={() => setIsOpen(false)}
         onSubmit={handleSaveTodo}
