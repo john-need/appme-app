@@ -48,7 +48,7 @@ export default function ToDosList({ todos }: ToDosListProps) {
       <List sx={{ width: "100%" }}>
         {todos.map((todo) => {
           const completed = isCompleted(todo);
-          
+
           return (
             <Paper
               key={todo.id}
@@ -67,9 +67,9 @@ export default function ToDosList({ todos }: ToDosListProps) {
               >
                 <Stack direction="row" spacing={1} alignItems="center" sx={{ width: "100%", mb: 1 }}>
                   {completed ? (
-                    <CheckCircleIcon color="success" />
+                    <CheckCircleIcon color="success"/>
                   ) : (
-                    <RadioButtonUncheckedIcon color="action" />
+                    <RadioButtonUncheckedIcon color="action"/>
                   )}
                   <Typography
                     variant="h6"

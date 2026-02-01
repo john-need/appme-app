@@ -1,5 +1,5 @@
 import getApiBase from "@/utils/get-api-base";
-import todoFactory from "@/factories/todo-factory";
+import toDoFactory from "@/factories/to-do-factory";
 
 const patchTodo = async (todo: Partial<ToDo> & { id: string }, jwt?: string): Promise<ToDo> => {
   if (!todo || !todo.id) throw new Error("patchTodo requires a todo with an id");
@@ -25,7 +25,7 @@ const patchTodo = async (todo: Partial<ToDo> & { id: string }, jwt?: string): Pr
     throw new Error(`Failed to patch todo (${res.status}): ${body}`);
   }
   const json = await res.json();
-  return todoFactory(json);
+  return toDoFactory(json);
 };
 
 export default patchTodo;

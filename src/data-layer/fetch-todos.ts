@@ -1,5 +1,5 @@
 import getApiBase from "@/utils/get-api-base";
-import todoFactory from "@/factories/todo-factory";
+import toDoFactory from "@/factories/to-do-factory";
 
 const fetchTodos = async (jwt: string): Promise<ToDo[]> => {
   const API_BASE = getApiBase();
@@ -19,7 +19,7 @@ const fetchTodos = async (jwt: string): Promise<ToDo[]> => {
   const json = await res.json();
 
   if (!Array.isArray(json)) throw new Error("Invalid todos response: expected an array");
-  return json.map((item) => todoFactory(item));
+  return json.map((item) => toDoFactory(item));
 };
 
 export default fetchTodos;

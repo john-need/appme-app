@@ -11,8 +11,11 @@ module.exports = {
     quotes: ["error", "double", { avoidEscape: true, allowTemplateLiterals: true }],
     // require semicolons
     semi: ["error", "always"],
-    // disallow explicit `any` in TypeScript (overridden in tests below)
+    // disallow explicit `any` in TypeScript (overridden in the tests below)
     "@typescript-eslint/no-explicit-any": "error",
+    // prefer arrow functions
+    "prefer-arrow-callback": ["error", { allowNamedFunctions: false, allowUnboundThis: false }],
+    "func-style": ["error", "expression", { allowArrowFunctions: true }],
   },
   overrides: [
     {

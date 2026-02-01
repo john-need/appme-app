@@ -1,5 +1,5 @@
 import getApiBase from "@/utils/get-api-base";
-import todoFactory from "@/factories/todo-factory";
+import toDoFactory from "@/factories/to-do-factory";
 
 /**
  * Updates a specific todo.
@@ -38,7 +38,7 @@ export const updateTodo = async (
   }
 
   const json = await res.json();
-  return todoFactory(json);
+  return toDoFactory(json);
 };
 
 export default updateTodo;

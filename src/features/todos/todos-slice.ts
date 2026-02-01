@@ -7,7 +7,7 @@ import patchTodoQuery from "@/data-layer/patch-todo";
 import deleteTodoQuery from "@/data-layer/delete-todo";
 import { addNotification } from "@/features/notification/notification-slice";
 import { sortMostRecentFirst } from "@/utils/sort-by-created";
-import todoFactory from "@/factories/todo-factory";
+import toDoFactory from "@/factories/to-do-factory";
 
 interface TodosState {
   items: ToDo[];
@@ -76,7 +76,7 @@ export const fetchTodosThunk = () => async (dispatch: AppDispatch, getState: () 
 export const addTodoThunk = (todo: Partial<ToDo>) => async (dispatch: AppDispatch, getState: () => RootState) => {
   try {
     const jwt = getState().auth?.jwt ?? undefined;
-    const normalized = todoFactory(todo);
+    const normalized = toDoFactory(todo);
     const data = await addTodoQuery(normalized, jwt);
     dispatch(addTodo(data));
     return data;
