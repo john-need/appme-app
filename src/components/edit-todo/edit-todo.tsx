@@ -28,10 +28,11 @@ interface EditTodoProps extends Omit<DialogProps, "onSubmit"> {
   onSubmit: (todo: Partial<ToDo>) => void;
   todo: ToDo | null;
   activities: Activity[];
+  isNew?: boolean;
 }
 
 type FormAction =
-  | { type: "SET_STATE"; payload: ToDo}
+  | { type: "SET_STATE"; payload: ToDo }
   | { type: "SET_TEXT"; payload: string }
   | { type: "SET_COMMENT"; payload: string }
   | { type: "SET_TIME"; payload: string }
@@ -77,6 +78,7 @@ const formReducer = (state: ToDo, action: FormAction): ToDo => {
 const getInitialState = toDoFactory;
 
 export default function EditTodo({
+                                   isNew = true,
                                    onClose,
                                    onSubmit,
                                    open,
@@ -124,9 +126,9 @@ export default function EditTodo({
     dispatch({ type: "SET_OCCURRENCES", payload: occurrences });
   };
 
-  useEffect(()=> {
-    dispatch({type:"SET_STATE", payload: toDoFactory(todo)});
-  },[todo]);
+  useEffect(() => {
+    dispatch({ type: "SET_STATE", payload: toDoFactory(todo) });
+  }, [todo]);
 
 
   return (
@@ -277,7 +279,7 @@ export default function EditTodo({
       <DialogActions>
         <Button onClick={handleClose}>Cancel</Button>
         <Button onClick={handleSubmit} variant="contained" disabled={!state.text.trim() || !state.startsOn}>
-          {todo ? "Update" : "Add"}
+          {isNew ? "Add" : "Update"}
         </Button>
       </DialogActions>
     </Dialog>

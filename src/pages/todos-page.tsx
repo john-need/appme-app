@@ -9,21 +9,22 @@ import EditTodo from "@/components/edit-todo/edit-todo";
 import { selectActivities } from "@/features/activities/activities-slice";
 import { todosByDate, toIso } from "@/utils";
 import toLocalYMD from "@/utils/to-local-ymd";
+import toDoFactory from "@/factories/to-do-factory";
 
 const ToDosPage = () => {
   const todos = useAppSelector(selectTodos);
   const activities = useAppSelector(selectActivities);
   const dispatch = useAppDispatch();
   const [isOpen, setIsOpen] = useState(false);
-  const [selectedTodo, setSelectedTodo] = useState<ToDo | null>(null);
+  const [selectedTodo, setSelectedTodo] = useState<ToDo>(toDoFactory({}));
 
   const handleOpenAddDialog = () => {
-    setSelectedTodo(null);
+    setSelectedTodo(toDoFactory({}));
     setIsOpen(true);
   };
 
   const handleSaveTodo = (todo: Partial<ToDo>) => {
-    if (selectedTodo) {
+    if (todos.map(td => td.id).includes(selectedTodo.id)) {
       // Update existing todo
       dispatch(updateTodoThunk({ ...todo, id: selectedTodo.id } as ToDo));
     } else {
@@ -95,6 +96,7 @@ const ToDosPage = () => {
         onClose={() => setIsOpen(false)}
         onSubmit={handleSaveTodo}
         todo={selectedTodo}
+        isNew={ !todos.map(td => td.id).includes(selectedTodo.id) }
       />
     </>
   );
