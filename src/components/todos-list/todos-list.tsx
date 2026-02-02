@@ -6,16 +6,19 @@ import {
   ListItem,
   Paper,
   Chip,
-  Stack,
+  Stack, IconButton,
 } from "@mui/material";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import RadioButtonUncheckedIcon from "@mui/icons-material/RadioButtonUnchecked";
 
 interface ToDosListProps {
-  todos: ToDo[];
+  todos: ToDo[],
+  onEdit: (todo: ToDo) => (event: React.MouseEvent) => void,
+  setToDoDone: (todo: ToDo) => (event: React.MouseEvent) => void,
+  setToDoUndone: (todo: ToDo) => (event: React.MouseEvent) => void,
 }
 
-export default function ToDosList({ todos }: ToDosListProps) {
+export default function ToDosList({ todos, onEdit, setToDoDone, setToDoUndone }: ToDosListProps) {
   const formatDate = (dateString: string | undefined) => {
     if (!dateString) return "N/A";
     const date = new Date(dateString);
@@ -67,10 +70,10 @@ export default function ToDosList({ todos }: ToDosListProps) {
               >
                 <Stack direction="row" spacing={1} alignItems="center" sx={{ width: "100%", mb: 1 }}>
                   {completed ? (
-                    <CheckCircleIcon color="success"/>
+                    <IconButton onClick={setToDoUndone(todo)}><CheckCircleIcon color="success"/></IconButton>
                   ) : (
-                    <RadioButtonUncheckedIcon color="action"/>
-                  )}
+                    <IconButton onClick={setToDoDone(todo)}> <RadioButtonUncheckedIcon color="action"/></IconButton>
+                    )}
                   <Typography
                     variant="h6"
                     sx={{
@@ -80,6 +83,18 @@ export default function ToDosList({ todos }: ToDosListProps) {
                   >
                     {todo.text}
                   </Typography>
+                  <IconButton onClick={onEdit(todo)} size="small">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      height="20"
+                      viewBox="0 0 24 24"
+                      width="20"
+                      fill="currentColor"
+                    >
+                      <path d="M0 0h24v24H0V0z" fill="none" />
+                      <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34a.9959.9959 0 00-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z" />
+                    </svg>
+                  </IconButton>
                 </Stack>
 
                 {todo.comment && (

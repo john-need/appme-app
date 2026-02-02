@@ -1,4 +1,4 @@
-import React, { useReducer } from "react";
+import React, { useEffect, useReducer } from "react";
 import {
   Box,
   Button,
@@ -31,6 +31,7 @@ interface EditTodoProps extends Omit<DialogProps, "onSubmit"> {
 }
 
 type FormAction =
+  | { type: "SET_STATE"; payload: ToDo}
   | { type: "SET_TEXT"; payload: string }
   | { type: "SET_COMMENT"; payload: string }
   | { type: "SET_TIME"; payload: string }
@@ -44,6 +45,8 @@ type FormAction =
 
 const formReducer = (state: ToDo, action: FormAction): ToDo => {
   switch (action.type) {
+    case "SET_STATE":
+      return { ...state, ...action.payload };
     case "SET_TEXT":
       return { ...state, text: action.payload };
     case "SET_COMMENT":
@@ -82,7 +85,9 @@ export default function EditTodo({
                                    testId = "edit-todo-dialog",
                                    ...rest
                                  }: EditTodoProps) {
+
   const [state, dispatch] = useReducer(formReducer, toDoFactory(todo), getInitialState);
+
   const [showOccurrenceTools, setShowOccurrenceTools] = React.useState<boolean>(false);
   const [activeOccurrenceTool, setActiveOccurrenceTool] = React.useState<string | null>(null);
   const handleSubmit = (e?: React.FormEvent) => {
@@ -118,6 +123,11 @@ export default function EditTodo({
   const handleSetOccurrences = (occurrences: string[]) => {
     dispatch({ type: "SET_OCCURRENCES", payload: occurrences });
   };
+
+  useEffect(()=> {
+    dispatch({type:"SET_STATE", payload: toDoFactory(todo)});
+  },[todo]);
+
 
   return (
     <Dialog open={open} onClose={handleClose} maxWidth="sm" fullWidth data-testid={testId} {...rest}>

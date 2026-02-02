@@ -2,6 +2,7 @@ import getApiBase from "@/utils/get-api-base";
 import toDoFactory from "@/factories/to-do-factory";
 
 const patchTodo = async (todo: Partial<ToDo> & { id: string }, jwt?: string): Promise<ToDo> => {
+  console.log("patchTodo", todo);
   if (!todo || !todo.id) throw new Error("patchTodo requires a todo with an id");
 
   const API_BASE = getApiBase();

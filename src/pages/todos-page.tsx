@@ -7,6 +7,8 @@ import { addTodoThunk, updateTodoThunk } from "@/features/todos/todos-slice";
 import ToDosList from "@/components/todos-list/todos-list";
 import EditTodo from "@/components/edit-todo/edit-todo";
 import { selectActivities } from "@/features/activities/activities-slice";
+import { toIso } from "@/utils";
+import toLocalYMD from "@/utils/to-local-ymd";
 
 const ToDosPage = () => {
   const todos = useAppSelector(selectTodos);
@@ -31,10 +33,44 @@ const ToDosPage = () => {
     setIsOpen(false);
   };
 
+  const handleEdit = (todo: ToDo) => (event: React.MouseEvent) => {
+    console.log("edit todo", todo);
+    event.stopPropagation();
+    setSelectedTodo(todo);
+    setIsOpen(true);
+  };
+
+
+  const setToDoDone = (todo: ToDo) => (event: React.MouseEvent) => {
+    console.log("set todo done", todo);
+    event.stopPropagation();
+    const today = toIso(new Date());
+    const updatedCompletions = todo.completions ? [...todo.completions, today] : [today];
+    dispatch(updateTodoThunk({ ...todo, completions: updatedCompletions }));
+  };
+
+
+  const setToDoUndone = (todo: ToDo) => (event: React.MouseEvent) => {
+    event.stopPropagation();
+    if (!todo.completions || todo.completions.length === 0) {
+      return;
+    }
+    const today = toIso(new Date());
+    const todayDateOnly = toLocalYMD(today);
+    const updatedCompletions = todo.completions.filter((date) => toLocalYMD(date) !== todayDateOnly);
+    dispatch(updateTodoThunk({ ...todo, completions: updatedCompletions }));
+  };
+
+
   return (
     <>
       <Container sx={{ py: 4 }}>
-        <ToDosList todos={todos} />
+        <ToDosList
+          todos={todos}
+          onEdit={handleEdit}
+          setToDoUndone={setToDoUndone}
+          setToDoDone={setToDoDone}
+        />
 
         <Fab
           color="primary"
