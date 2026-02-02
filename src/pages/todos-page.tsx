@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { Container, Fab } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import { useAppSelector, useAppDispatch } from "@/hooks";
@@ -7,7 +7,7 @@ import { addTodoThunk, updateTodoThunk } from "@/features/todos/todos-slice";
 import ToDosList from "@/components/todos-list/todos-list";
 import EditTodo from "@/components/edit-todo/edit-todo";
 import { selectActivities } from "@/features/activities/activities-slice";
-import { toIso } from "@/utils";
+import { todosByDate, toIso } from "@/utils";
 import toLocalYMD from "@/utils/to-local-ymd";
 
 const ToDosPage = () => {
@@ -61,12 +61,16 @@ const ToDosPage = () => {
     dispatch(updateTodoThunk({ ...todo, completions: updatedCompletions }));
   };
 
+  const todayString = toLocalYMD(new Date());
+  const todaysTodos = useMemo(()=>{
+    return todosByDate(todos, todayString);
+  },[todos, todayString]);
 
   return (
     <>
       <Container sx={{ py: 4 }}>
         <ToDosList
-          todos={todos}
+          todos={todaysTodos}
           onEdit={handleEdit}
           setToDoUndone={setToDoUndone}
           setToDoDone={setToDoDone}
